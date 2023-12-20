@@ -55,7 +55,7 @@ class ClassProperty extends Definition with DataPrinter {
 /// Class property name
 class ClassPropertyName extends Name with DataPrinter {
   /// Instantiate a class property name definition.
-  const ClassPropertyName({required String name}) : super(name: name);
+  const ClassPropertyName({required super.name});
 
   @override
   String normalize(String name) {
@@ -76,9 +76,9 @@ const _camelCaseTypes = {'bool', 'double', 'int'};
 class TypeName extends Name with DataPrinter {
   /// Instantiate a type name definition.
   TypeName({
-    required String name,
+    required super.name,
     this.isNonNull = false,
-  }) : super(name: name);
+  });
 
   /// If this type is non-null
   final bool isNonNull;
@@ -107,9 +107,9 @@ class TypeName extends Name with DataPrinter {
 class DartTypeName extends TypeName with DataPrinter {
   /// Instantiate a type name definition.
   DartTypeName({
-    required String name,
-    bool isNonNull = false,
-  }) : super(name: name, isNonNull: isNonNull);
+    required super.name,
+    super.isNonNull,
+  });
 
   @override
   String normalize(String name) => '$name${isNonNull ? '' : '?'}';

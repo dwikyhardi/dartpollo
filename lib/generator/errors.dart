@@ -74,7 +74,7 @@ class MissingBuildConfigurationException implements Exception {
 
   @override
   String toString() =>
-      'Missing `$name` configuration option. Cehck `build.yaml` configuration';
+      'Missing `$name` configuration option. check `build.yaml` configuration';
 }
 
 /// Define an exception thrown when Artemis find a scalar on schema but it's

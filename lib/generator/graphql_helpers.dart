@@ -98,7 +98,13 @@ Map<String, ScalarMap> _defaultScalarMapping = {
   'Float':
       ScalarMap(graphQLType: 'Float', dartType: const DartType(name: 'double')),
   'ID': ScalarMap(graphQLType: 'ID', dartType: const DartType(name: 'String')),
+  'UUID':
+      ScalarMap(graphQLType: 'UUID', dartType: const DartType(name: 'String')),
+  'JSONString': ScalarMap(
+      graphQLType: 'JSONString', dartType: const DartType(name: 'String')),
   'Int': ScalarMap(graphQLType: 'Int', dartType: const DartType(name: 'int')),
+  'GenericScalar': ScalarMap(
+      graphQLType: 'GenericScalar', dartType: const DartType(name: 'Object')),
   'String': ScalarMap(
       graphQLType: 'String', dartType: const DartType(name: 'String')),
 };

@@ -33,7 +33,7 @@ class QueryInput extends Definition with DataPrinter {
 ///
 class QueryInputName extends Name {
   ///
-  QueryInputName({required String name}) : super(name: name);
+  QueryInputName({required super.name});
 
   @override
   Map<String, Object?> get namedProps => {

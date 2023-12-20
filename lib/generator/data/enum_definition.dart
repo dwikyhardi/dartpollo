@@ -29,7 +29,7 @@ class EnumDefinition extends Definition with DataPrinter {
 /// Enum name
 class EnumName extends Name with DataPrinter {
   /// Instantiate a enum name definition.
-  EnumName({required String name}) : super(name: name);
+  EnumName({required super.name});
 
   @override
   String normalize(String name) {

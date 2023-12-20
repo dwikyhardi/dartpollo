@@ -31,7 +31,7 @@ class ClassDefinition extends Definition with DataPrinter {
 
   /// Instantiate a class definition.
   ClassDefinition({
-    required Name name,
+    required super.name,
     this.properties = const [],
     this.extension,
     this.implementations = const [],
@@ -39,8 +39,7 @@ class ClassDefinition extends Definition with DataPrinter {
     this.factoryPossibilities = const {},
     ClassPropertyName? typeNameField,
     this.isInput = false,
-  })  : typeNameField = typeNameField ?? ClassPropertyName(name: '__typename'),
-        super(name: name);
+  })  : typeNameField = typeNameField ?? ClassPropertyName(name: '__typename');
 
   @override
   Map<String, Object?> get namedProps => {
@@ -58,9 +57,8 @@ class ClassDefinition extends Definition with DataPrinter {
 /// Class name.
 class ClassName extends Name with DataPrinter {
   /// Instantiate a class name definition.
-  ClassName({required String name})
-      : assert(hasValue(name)),
-        super(name: name);
+  ClassName({required super.name})
+      : assert(hasValue(name));
 
   /// Generate class name from hierarchical path
   factory ClassName.fromPath({required List<Name> path}) {

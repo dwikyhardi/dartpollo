@@ -29,7 +29,7 @@ class FragmentClassDefinition extends Definition with DataPrinter {
 /// Fragment name
 class FragmentName extends Name with DataPrinter {
   /// Instantiate a fragment name definition.
-  FragmentName({required String name}) : super(name: name);
+  FragmentName({required super.name});
 
   /// Generate class name from hierarchical path
   factory FragmentName.fromPath({required List<Name?> path}) {

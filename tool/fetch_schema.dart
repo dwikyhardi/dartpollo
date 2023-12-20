@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:developer' as $dev;
 
 import 'package:args/args.dart';
 import 'package:http/http.dart' as http;
@@ -119,7 +120,7 @@ void main(List<String> args) async {
   final results = parser.parse(args);
 
   if (results['help'] as bool || args.isEmpty) {
-    return print(parser.usage);
+    return $dev.log(parser.usage);
   }
 
   File(

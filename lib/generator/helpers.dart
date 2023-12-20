@@ -4,7 +4,7 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';
 
 typedef IterableFunction<T, U> = U Function(T i);
-typedef MergeableFunction<T> = T Function(T oldT, T newT);
+typedef MergeAbleFunction<T> = T Function(T oldT, T newT);
 
 /// a list of dart lang keywords
 List<String> dartKeywords = const [
@@ -105,7 +105,7 @@ String normalizeName(String name) {
 Iterable<T> _mergeDuplicatesBy<T, U>(
   Iterable<T> list,
   IterableFunction<T, U> fn,
-  MergeableFunction<T> mergeFn,
+  MergeAbleFunction<T> mergeFn,
 ) {
   final values = <U, T>{};
   for (final i in list) {
@@ -121,7 +121,7 @@ extension ExtensionsOnIterable<T, U> on Iterable<T> {
   /// Merge multiple values from an iterable given a predicate without modifying
   /// the original iterable.
   Iterable<T> mergeDuplicatesBy(
-          IterableFunction<T, U> fn, MergeableFunction<T> mergeFn) =>
+          IterableFunction<T, U> fn, MergeAbleFunction<T> mergeFn) =>
       _mergeDuplicatesBy(this, fn, mergeFn);
 
   /// Remove duplicated values from an iterable given a predicate without

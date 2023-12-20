@@ -4,6 +4,7 @@ import 'package:artemis/generator/errors.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:dart_style/dart_style.dart';
+
 // ignore: implementation_imports
 import 'package:gql_code_builder/src/ast.dart' as dart;
 import 'package:recase/recase.dart';
@@ -143,7 +144,7 @@ Spec classDefinitionToSpec(
       ..extend = definition.extension != null
           ? refer(definition.extension!.namePrintable)
           : refer('JsonSerializable')
-      ..implements.addAll(definition.implementations.map((i) => refer(i)))
+      ..implements.addAll(definition.implementations.map(refer))
       ..constructors.add(Constructor((b) {
         if (definition.isInput) {
           b.optionalParameters.addAll(definition.properties
@@ -174,19 +175,11 @@ Spec classDefinitionToSpec(
         final field = Field((f) {
           f
             ..name = p.name.namePrintable
-            // TODO: remove this workaround when code_builder includes late field modifier:
-            // https://github.com/dart-lang/code_builder/pull/310
-            ..type = refer(
-                '${p.type.isNonNull ? 'late ' : ''} ${p.type.namePrintable}')
+            ..late = p.type.isNonNull
+            ..type = refer(p.type.namePrintable)
             ..annotations.addAll(
               p.annotations.map((e) => CodeExpression(Code(e))),
             );
-
-          if (p.type.isNonNull) {
-            // TODO: apply this fix when code_builder includes late field modifier:
-            // https://github.com/dart-lang/code_builder/pull/310
-            // f.modifier = FieldModifier.late$;
-          }
         });
         return field;
       })),
@@ -259,10 +252,8 @@ Spec generateArgumentClassSpec(QueryDefinition definition) {
           (f) {
             f
               ..name = p.name.namePrintable
-              // TODO: remove this workaround when code_builder includes late field modifier:
-              // https://github.com/dart-lang/code_builder/pull/310
-              ..type = refer(
-                  '${p.type.isNonNull ? 'late ' : ''} ${p.type.namePrintable}')
+              ..late = p.type.isNonNull
+              ..type = refer(p.type.namePrintable)
               ..annotations
                   .addAll(p.annotations.map((e) => CodeExpression(Code(e))));
 
@@ -378,8 +369,7 @@ Spec generateLibrarySpec(LibraryDefinition definition) {
     );
   }
 
-  importDirectives.addAll(definition.customImports
-      .map((customImport) => Directive.import(customImport)));
+  importDirectives.addAll(definition.customImports.map(Directive.import));
 
   final bodyDirectives = <Spec>[
     CodeExpression(Code('part \'${definition.basename}.g.dart\';')),
@@ -427,7 +417,7 @@ Spec generateLibrarySpec(LibraryDefinition definition) {
 
 /// Emit a [Spec] into a String, considering Dart formatting.
 String specToString(Spec spec) {
-  final emitter = DartEmitter();
+  final emitter = DartEmitter(useNullSafetySyntax: true);
   return DartFormatter().format(spec.accept(emitter).toString());
 }
 
