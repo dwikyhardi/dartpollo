@@ -39,7 +39,7 @@ class QueryDefinition extends Definition with DataPrinter {
     this.generateHelpers = false,
     this.generateQueries = false,
     this.suffix = 'Query',
-  })  : assert(hasValue(operationName));
+  }) : assert(hasValue(operationName));
 
   /// class name for helper classes
   String? get className => ClassName(name: operationName).namePrintable;
@@ -65,8 +65,7 @@ class QueryDefinition extends Definition with DataPrinter {
 /// Query name
 class QueryName extends Name with DataPrinter {
   /// Instantiate a query name definition.
-  QueryName({required super.name})
-      : assert(hasValue(name));
+  QueryName({required super.name}) : assert(hasValue(name));
 
   /// Generate class name from hierarchical path
   factory QueryName.fromPath({required List<Name?> path}) {

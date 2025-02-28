@@ -11,7 +11,7 @@ MessagesWithUsers$SubscriptionRoot$Messages$Profile
     _$MessagesWithUsers$SubscriptionRoot$Messages$ProfileFromJson(
             Map<String, dynamic> json) =>
         MessagesWithUsers$SubscriptionRoot$Messages$Profile()
-          ..id = json['id'] as int
+          ..id = (json['id'] as num).toInt()
           ..name = json['name'] as String;
 
 Map<String, dynamic>
@@ -26,7 +26,7 @@ MessagesWithUsers$SubscriptionRoot$Messages
     _$MessagesWithUsers$SubscriptionRoot$MessagesFromJson(
             Map<String, dynamic> json) =>
         MessagesWithUsers$SubscriptionRoot$Messages()
-          ..id = json['id'] as int
+          ..id = (json['id'] as num).toInt()
           ..message = json['message'] as String
           ..profile =
               MessagesWithUsers$SubscriptionRoot$Messages$Profile.fromJson(

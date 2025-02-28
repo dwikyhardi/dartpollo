@@ -195,7 +195,6 @@ Iterable<QueryDefinition> generateDefinitions({
         suffix = 'Mutation';
         break;
       case OperationType.query:
-      default:
         suffix = 'Query';
         break;
     }

@@ -77,7 +77,7 @@ Map<String, dynamic> _$BigQuery$QueryToJson(BigQuery$Query instance) =>
 
 BigQueryArguments _$BigQueryArgumentsFromJson(Map<String, dynamic> json) =>
     BigQueryArguments(
-      quantity: json['quantity'] as int,
+      quantity: (json['quantity'] as num).toInt(),
     );
 
 Map<String, dynamic> _$BigQueryArgumentsToJson(BigQueryArguments instance) =>

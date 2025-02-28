@@ -86,7 +86,7 @@ Map<String, dynamic> _$FragmentQuery$QueryToJson(
 FragmentQueryArguments _$FragmentQueryArgumentsFromJson(
         Map<String, dynamic> json) =>
     FragmentQueryArguments(
-      quantity: json['quantity'] as int,
+      quantity: (json['quantity'] as num).toInt(),
     );
 
 Map<String, dynamic> _$FragmentQueryArgumentsToJson(
