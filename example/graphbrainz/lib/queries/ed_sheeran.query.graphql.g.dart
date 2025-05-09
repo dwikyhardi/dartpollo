@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.12
 
 part of 'ed_sheeran.query.graphql.dart';
 
@@ -12,24 +11,15 @@ EdSheeran$Query$Node$Artist$ReleaseConnection$Release
             Map<String, dynamic> json) =>
         EdSheeran$Query$Node$Artist$ReleaseConnection$Release()
           ..id = json['id'] as String
-          ..status = $enumDecodeNullable(_$ReleaseStatusEnumMap, json['status'],
-              unknownValue: ReleaseStatus.artemisUnknown);
+          ..status = json['status'] as String?;
 
 Map<String, dynamic>
     _$EdSheeran$Query$Node$Artist$ReleaseConnection$ReleaseToJson(
             EdSheeran$Query$Node$Artist$ReleaseConnection$Release instance) =>
         <String, dynamic>{
           'id': instance.id,
-          'status': _$ReleaseStatusEnumMap[instance.status],
+          'status': instance.status,
         };
-
-const _$ReleaseStatusEnumMap = {
-  ReleaseStatus.official: 'OFFICIAL',
-  ReleaseStatus.promotion: 'PROMOTION',
-  ReleaseStatus.bootleg: 'BOOTLEG',
-  ReleaseStatus.pseudorelease: 'PSEUDORELEASE',
-  ReleaseStatus.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
 
 EdSheeran$Query$Node$Artist$ReleaseConnection
     _$EdSheeran$Query$Node$Artist$ReleaseConnectionFromJson(

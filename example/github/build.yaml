@@ -4,7 +4,7 @@ targets:
       - lib/**
       - github.schema.graphql
     builders:
-      artemis:
+      dartpollo:
         options:
           scalar_mapping:
             - graphql_type: GitObjectID

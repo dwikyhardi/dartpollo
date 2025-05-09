@@ -1,9 +1,9 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/nullable.dart';
-import 'package:artemis/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/nullable.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
 import 'package:gql/ast.dart';
 
-import '../schema/options.dart';
+import '../schema/schema_options.dart';
 
 /// Returns the full class name with joined path.
 List<Name> createPathName(List<Name> path, NamingScheme? namingScheme,
@@ -16,7 +16,6 @@ List<Name> createPathName(List<Name> path, NamingScheme? namingScheme,
   switch (namingScheme) {
     case NamingScheme.simple:
       fullPath = className == null
-          // fix for https://github.com/comigor/artemis/issues/226
           ? (path.length == 2 ? path : [path.last])
           : [className];
       break;

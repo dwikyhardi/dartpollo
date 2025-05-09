@@ -1,6 +1,6 @@
 # **Examples**
 
-This folder contains some examples on how to use artemis.
+This folder contains some examples on how to use dartpollo.
 
 ## [**pokemon**](./pokemon)
 
@@ -16,4 +16,4 @@ Even simpler example, for [GitHub GraphQL API](https://graphbrainz.herokuapp.com
 
 ## [**hasura**](./hasura)
 
-This example uses a simple [Hasura](https://hasura.io/) server (with tables schema defined [in this file](./hasura/hasura.sql)), as an example of how to use Artemis with subscriptions.
+This example uses a simple [Hasura](https://hasura.io/) server (with tables schema defined [in this file](./hasura/hasura.sql)), as an example of how to use Dartpollo with subscriptions.

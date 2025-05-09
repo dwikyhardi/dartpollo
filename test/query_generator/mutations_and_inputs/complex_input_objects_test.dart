@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -57,7 +57,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'value1')),
           EnumValueDefinition(name: EnumValueName(name: r'value2')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'SomeQuery$_QueryRoot$_SomeObject'),
@@ -92,7 +92,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false),
               ClassProperty(
@@ -125,7 +125,7 @@ final LibraryDefinition libraryDefinition =
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -176,7 +176,7 @@ class ComplexInput extends JsonSerializable with EquatableMixin {
 
   late String s;
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? e;
 
   List<String?>? ls;
@@ -194,8 +194,8 @@ enum MyEnum {
   value1,
   @JsonValue('value2')
   value2,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 @JsonSerializable(explicitToJson: true)

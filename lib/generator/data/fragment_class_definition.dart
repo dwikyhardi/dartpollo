@@ -1,7 +1,7 @@
-import 'package:artemis/generator/data/class_property.dart';
-import 'package:artemis/generator/data/definition.dart';
-import 'package:artemis/generator/data_printer.dart';
-import 'package:artemis/generator/helpers.dart';
+import 'package:dartpollo/generator/data/class_property.dart';
+import 'package:dartpollo/generator/data/definition.dart';
+import 'package:dartpollo/generator/data_printer.dart';
+import 'package:dartpollo/generator/helpers.dart';
 import 'package:recase/recase.dart';
 
 /// Define a Dart class parsed from GraphQL fragment.

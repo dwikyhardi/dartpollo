@@ -1,9 +1,9 @@
-import 'package:artemis/generator/errors.dart';
-import 'package:artemis/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/generator/errors.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
 import 'package:gql/ast.dart';
 
 import '../generator/data/data.dart';
-import '../schema/options.dart';
+import '../schema/schema_options.dart';
 
 /// Get a full [TypeDefinitionNode] from a type node.
 TypeDefinitionNode getTypeByName(

@@ -13,7 +13,7 @@ assignees: ''
 Please describe what happened wrong and the expected behaviour/output.
 
 ## Specs
-Artemis version: [e.g. 6.0.3-beta.1]
+Dartpollo version: [e.g. 6.0.3-beta.1]
 <details>
 <summary>build.yaml:</summary>
   
@@ -22,7 +22,7 @@ Artemis version: [e.g. 6.0.3-beta.1]
 ```
 </details>
 <details>
-<summary>Artemis output:</summary>
+<summary>Dartpollo output:</summary>
   
 ```bash
 # Please paste the output of

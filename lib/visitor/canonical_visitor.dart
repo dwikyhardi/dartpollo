@@ -1,10 +1,10 @@
-import 'package:artemis/generator.dart';
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
-import 'package:artemis/generator/data/nullable.dart';
-import 'package:artemis/generator/ephemeral_data.dart';
-import 'package:artemis/generator/helpers.dart';
-import 'package:artemis/generator/graphql_helpers.dart' as gql;
+import 'package:dartpollo/generator.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/nullable.dart';
+import 'package:dartpollo/generator/ephemeral_data.dart';
+import 'package:dartpollo/generator/helpers.dart';
+import 'package:dartpollo/generator/graphql_helpers.dart' as gql;
 import 'package:gql/ast.dart';
 
 /// class definition lazy generator
@@ -51,7 +51,7 @@ class CanonicalVisitor extends RecursiveVisitor {
                   annotations: proceedDeprecated(ev.directives),
                 ))
             .toList()
-          ..add(artemisUnknown),
+          ..add(dartpolloUnknown),
       );
     };
   }

@@ -13,5 +13,5 @@ dev_dependencies:
   build_runner:
   json_serializable:
   lints: ^1.0.1
-  artemis:
+  dartpollo:
     path: ../../.

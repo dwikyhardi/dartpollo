@@ -1,9 +1,9 @@
-import 'package:artemis/generator.dart';
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/nullable.dart';
-import 'package:artemis/generator/ephemeral_data.dart';
-import 'package:artemis/generator/graphql_helpers.dart' as gql;
-import 'package:artemis/generator/helpers.dart';
+import 'package:dartpollo/generator.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/nullable.dart';
+import 'package:dartpollo/generator/ephemeral_data.dart';
+import 'package:dartpollo/generator/graphql_helpers.dart' as gql;
+import 'package:dartpollo/generator/helpers.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';
 
@@ -157,7 +157,7 @@ class GeneratorVisitor extends RecursiveVisitor {
         )
         .fullPathName();
 
-    final dartTypeName = gql.buildTypeName(
+    var dartTypeName = gql.buildTypeName(
       node.type,
       context.options,
       dartType: true,
@@ -169,20 +169,37 @@ class GeneratorVisitor extends RecursiveVisitor {
 
     if (leafType is EnumTypeDefinitionNode) {
       context.usedEnums.add(EnumName(name: leafType.name.value));
-      final variableNodeType = node.type;
-      if (variableNodeType is ListTypeNode) {
-        final innerDartTypeName = gql.buildTypeName(
-          variableNodeType.type,
-          context.options,
-          dartType: true,
-          replaceLeafWith: ClassName.fromPath(path: nextClassName),
-          typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
-        );
-        jsonKeyAnnotation['unknownEnumValue'] =
-            '${EnumName(name: innerDartTypeName.name).dartTypeSafe}.${artemisUnknown.name.namePrintable}';
+
+      // Check if convertEnumToString is enabled
+      if (context.schemaMap.convertEnumToString) {
+        // Convert enum to String
+        if (node.type is ListTypeNode) {
+          // For lists of enums, modify the type to be List<String>
+          dartTypeName = ListOfTypeName(
+            typeName: TypeName(name: 'String', isNonNull: false),
+            isNonNull: dartTypeName.isNonNull,
+          );
+        } else {
+          // For single enums, use String
+          dartTypeName = TypeName(name: 'String', isNonNull: dartTypeName.isNonNull);
+        }
       } else {
-        jsonKeyAnnotation['unknownEnumValue'] =
-            '${EnumName(name: dartTypeName.name).dartTypeSafe}.${artemisUnknown.name.namePrintable}';
+        // Original behavior when convertEnumToString is false
+        final variableNodeType = node.type;
+        if (variableNodeType is ListTypeNode) {
+          final innerDartTypeName = gql.buildTypeName(
+            variableNodeType.type,
+            context.options,
+            dartType: true,
+            replaceLeafWith: ClassName.fromPath(path: nextClassName),
+            typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
+          );
+          jsonKeyAnnotation['unknownEnumValue'] =
+              '${EnumName(name: innerDartTypeName.name).dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+        } else {
+          jsonKeyAnnotation['unknownEnumValue'] =
+              '${EnumName(name: dartTypeName.name).dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+        }
       }
     } else if (leafType is InputObjectTypeDefinitionNode) {
       addUsedInputObjectsAndEnums(leafType);

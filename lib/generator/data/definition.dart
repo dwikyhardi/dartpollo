@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data_printer.dart';
-import 'package:artemis/generator/helpers.dart';
+import 'package:dartpollo/generator/data_printer.dart';
+import 'package:dartpollo/generator/helpers.dart';
 import 'package:equatable/equatable.dart';
 
 /// Abstract definition of an entity.

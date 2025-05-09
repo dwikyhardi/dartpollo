@@ -3,7 +3,7 @@ import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 /// A GraphQL query abstraction. This class should be extended automatically
-/// by Artemis and used with [ArtemisClient].
+/// by Dartpollo and used with [DartpolloClient].
 abstract class GraphQLQuery<T, U extends JsonSerializable> extends Equatable {
   /// Instantiates a query or mutation.
   GraphQLQuery({this.variables});

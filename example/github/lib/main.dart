@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 import 'package:http/http.dart' as http;
 
 import 'graphql/search_repositories.dart';
@@ -17,7 +17,7 @@ class AuthenticatedClient extends http.BaseClient {
 }
 
 Future<void> main() async {
-  final client = ArtemisClient(
+  final client = DartpolloClient(
     'https://api.github.com/graphql',
     httpClient: AuthenticatedClient(),
   );

@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -101,7 +101,7 @@ final LibraryDefinition libraryDefinition =
           EnumValueDefinition(name: EnumValueName(name: r'snake_case')),
           EnumValueDefinition(
               name: EnumValueName(name: r'SCREAMING_SNAKE_CASE')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'SomeObject'),
@@ -131,7 +131,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -177,7 +177,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -196,7 +196,7 @@ final LibraryDefinition libraryDefinition =
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -220,7 +220,7 @@ class SomeObject extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')
   ScreamingSnakeCaseType? screamingSnakeCaseField;
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? e;
 
   @override
@@ -273,7 +273,7 @@ class Input extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')
   ScreamingSnakeCaseTypeInput? screamingSnakeCaseField;
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? e;
 
   @override
@@ -297,8 +297,8 @@ enum MyEnum {
   snakeCase,
   @JsonValue('SCREAMING_SNAKE_CASE')
   screamingSnakeCase,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 @JsonSerializable(explicitToJson: true)

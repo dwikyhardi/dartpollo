@@ -1,4 +1,4 @@
-import 'package:artemis/generator/data/data.dart';
+import 'package:dartpollo/generator/data/data.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';

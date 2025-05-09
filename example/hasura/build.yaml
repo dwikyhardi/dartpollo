@@ -5,7 +5,7 @@ targets:
       - graphql/**
       - schema.graphql
     builders:
-      artemis:
+      dartpollo:
         options:
           # fragments_glob: graphql/**.fragment.graphql
           schema_mapping:

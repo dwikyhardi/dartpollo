@@ -1,5 +1,5 @@
-import 'package:artemis/builder.dart';
-import 'package:artemis/generator/errors.dart';
+import 'package:dartpollo/builder.dart';
+import 'package:dartpollo/generator/errors.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:test/test.dart';

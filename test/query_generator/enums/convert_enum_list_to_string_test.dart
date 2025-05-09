@@ -1,28 +1,27 @@
 import 'package:dartpollo/generator/data/data.dart';
-import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
 
 void main() {
-  group('On enums', () {
+  group('On enum lists with convertEnumToString', () {
     test(
-      'Enums can be part of queries responses',
+      'Lists of enums can be converted to lists of strings in query responses',
       () async => testGenerator(
         query: query,
         schema: r'''
           schema {
             query: QueryRoot
           }
-          
+
           type QueryRoot {
             q: QueryResponse
           }
-          
+
           type QueryResponse {
-            e: MyEnum
+            e: [MyEnum]
           }
-          
+
           enum MyEnum {
             A
             B
@@ -31,6 +30,17 @@ void main() {
         ''',
         libraryDefinition: libraryDefinition,
         generatedFile: generatedFile,
+        builderOptionsMap: {
+          'schema_mapping': [
+            {
+              'schema': 'api.schema.graphql',
+              'queries_glob': 'queries/**.graphql',
+              'output': 'lib/query.graphql.dart',
+              'naming_scheme': 'pathedWithTypes',
+              'convert_enum_to_string': true,
+            }
+          ],
+        },
       ),
     );
   });
@@ -50,21 +60,15 @@ final LibraryDefinition libraryDefinition =
       name: QueryName(name: r'Custom$_QueryRoot'),
       operationName: r'custom',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'A')),
-          EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'IN')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
-        ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
             properties: [
               ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
+                  type: ListOfTypeName(
+                    typeName: TypeName(name: r'String', isNonNull: false),
+                    isNonNull: false,
+                  ),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -88,9 +92,9 @@ final LibraryDefinition libraryDefinition =
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
+import 'package:json_annotation/json_annotation.dart';
 part 'query.graphql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -101,11 +105,11 @@ class Custom$QueryRoot$QueryResponse extends JsonSerializable
   factory Custom$QueryRoot$QueryResponse.fromJson(Map<String, dynamic> json) =>
       _$Custom$QueryRoot$QueryResponseFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
-  MyEnum? e;
+  List<String?>? e;
 
   @override
   List<Object?> get props => [e];
+
   @override
   Map<String, dynamic> toJson() => _$Custom$QueryRoot$QueryResponseToJson(this);
 }
@@ -121,18 +125,8 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
 
   @override
   List<Object?> get props => [q];
+
   @override
   Map<String, dynamic> toJson() => _$Custom$QueryRootToJson(this);
-}
-
-enum MyEnum {
-  @JsonValue('A')
-  a,
-  @JsonValue('B')
-  b,
-  @JsonValue('IN')
-  kw$IN,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
 }
 ''';

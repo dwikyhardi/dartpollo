@@ -1,6 +1,6 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
-import 'package:artemis/generator/errors.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/errors.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:dart_style/dart_style.dart';
@@ -365,7 +365,7 @@ Spec generateLibrarySpec(LibraryDefinition definition) {
     importDirectives.insertAll(
       0,
       [
-        Directive.import('package:artemis/artemis.dart'),
+        Directive.import('package:dartpollo/dartpollo.dart'),
       ],
     );
   }
@@ -387,7 +387,19 @@ Spec generateLibrarySpec(LibraryDefinition definition) {
 
   final fragments = uniqueDefinitions.whereType<FragmentClassDefinition>();
   final classes = uniqueDefinitions.whereType<ClassDefinition>();
-  final enums = uniqueDefinitions.whereType<EnumDefinition>();
+  Iterable<EnumDefinition> enums =
+      uniqueDefinitions.whereType<EnumDefinition>();
+
+  if (definition.schemaMap?.convertEnumToString ?? false) {
+    // Filter out enums that are not referenced in any class
+    final enumNames = classes
+        .expand((c) => c.properties)
+        .map((p) => p.type.dartTypeSafe)
+        .whereType<String>()
+        .toSet();
+
+    enums = enums.where((e) => enumNames.contains(e.name.namePrintable));
+  }
 
   bodyDirectives.addAll(fragments.map(fragmentClassDefinitionToSpec));
   bodyDirectives.addAll(

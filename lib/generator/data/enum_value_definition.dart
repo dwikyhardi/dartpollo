@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/definition.dart';
-import 'package:artemis/generator/data_printer.dart';
+import 'package:dartpollo/generator/data/definition.dart';
+import 'package:dartpollo/generator/data_printer.dart';
 import 'package:recase/recase.dart';
 
 /// Enum value

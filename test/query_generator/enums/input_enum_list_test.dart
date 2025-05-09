@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -57,7 +57,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'ArticleType'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'NEWS')),
           EnumValueDefinition(name: EnumValueName(name: r'TUTORIAL')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'BrowseArticles$_Query$_Article'),
@@ -74,7 +74,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'ArticleType', isNonNull: true),
                   name: ClassPropertyName(name: r'article_type'),
                   annotations: [
-                    r'''JsonKey(name: 'article_type', unknownEnumValue: ArticleType.artemisUnknown)'''
+                    r'''JsonKey(name: 'article_type', unknownEnumValue: ArticleType.dartpolloUnknown)'''
                   ],
                   isResolveType: false)
             ],
@@ -104,7 +104,7 @@ final LibraryDefinition libraryDefinition =
                 isNonNull: false),
             name: QueryInputName(name: r'article_type_in'),
             annotations: [
-              r'JsonKey(unknownEnumValue: ArticleType.artemisUnknown)'
+              r'JsonKey(unknownEnumValue: ArticleType.dartpolloUnknown)'
             ])
       ],
       generateHelpers: true,
@@ -113,7 +113,7 @@ final LibraryDefinition libraryDefinition =
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -131,7 +131,7 @@ class BrowseArticles$Query$Article extends JsonSerializable
 
   late String title;
 
-  @JsonKey(name: 'article_type', unknownEnumValue: ArticleType.artemisUnknown)
+  @JsonKey(name: 'article_type', unknownEnumValue: ArticleType.dartpolloUnknown)
   late ArticleType articleType;
 
   @override
@@ -160,8 +160,8 @@ enum ArticleType {
   news,
   @JsonValue('TUTORIAL')
   tutorial,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -172,7 +172,7 @@ class BrowseArticlesArguments extends JsonSerializable with EquatableMixin {
   factory BrowseArticlesArguments.fromJson(Map<String, dynamic> json) =>
       _$BrowseArticlesArgumentsFromJson(json);
 
-  @JsonKey(unknownEnumValue: ArticleType.artemisUnknown)
+  @JsonKey(unknownEnumValue: ArticleType.dartpolloUnknown)
   final List<ArticleType>? article_type_in;
 
   @override

@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../helpers.dart';
@@ -88,7 +88,7 @@ final LibraryDefinition libraryDefinition =
           EnumValueDefinition(name: EnumValueName(name: r'UserTechLead')),
           EnumValueDefinition(name: EnumValueName(name: r'UserDev')),
           EnumValueDefinition(name: EnumValueName(name: r'UserQA')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'NewUserSub$_Subscription$_User'),
@@ -105,7 +105,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'UserType', isNonNull: true),
                   name: ClassPropertyName(name: r'userType'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: UserType.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: UserType.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -148,7 +148,7 @@ class NewUserSub$Subscription$User extends JsonSerializable
 
   late String lastName;
 
-  @JsonKey(unknownEnumValue: UserType.artemisUnknown)
+  @JsonKey(unknownEnumValue: UserType.dartpolloUnknown)
   late UserType userType;
 
   @override
@@ -181,7 +181,7 @@ enum UserType {
   userDev,
   @JsonValue('UserQA')
   userQA,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 ''';

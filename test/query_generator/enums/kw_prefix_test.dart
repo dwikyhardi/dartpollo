@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -55,7 +55,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'SQLOperator'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'EQ')),
           EnumValueDefinition(name: EnumValueName(name: r'IN')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'SearchArticles$_Query$_Article'),
@@ -94,7 +94,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'SQLOperator'),
                   name: ClassPropertyName(name: r'operator'),
                   annotations: [
-                    r'''JsonKey(name: 'operator', unknownEnumValue: SQLOperator.artemisUnknown)'''
+                    r'''JsonKey(name: 'operator', unknownEnumValue: SQLOperator.dartpolloUnknown)'''
                   ],
                   isResolveType: false),
               ClassProperty(
@@ -165,7 +165,7 @@ class ArticleTitleWhereConditions extends JsonSerializable with EquatableMixin {
   factory ArticleTitleWhereConditions.fromJson(Map<String, dynamic> json) =>
       _$ArticleTitleWhereConditionsFromJson(json);
 
-  @JsonKey(name: 'operator', unknownEnumValue: SQLOperator.artemisUnknown)
+  @JsonKey(name: 'operator', unknownEnumValue: SQLOperator.dartpolloUnknown)
   SQLOperator? kw$operator;
 
   String? value;
@@ -181,7 +181,7 @@ enum SQLOperator {
   eq,
   @JsonValue('IN')
   kw$IN,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 ''';

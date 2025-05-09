@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -51,7 +51,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
@@ -61,7 +61,7 @@ final LibraryDefinition libraryDefinition =
                       typeName: TypeName(name: r'MyEnum'), isNonNull: false),
                   name: ClassPropertyName(name: r'le'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -99,7 +99,7 @@ class Custom$QueryRoot$QueryResponse extends JsonSerializable
   factory Custom$QueryRoot$QueryResponse.fromJson(Map<String, dynamic> json) =>
       _$Custom$QueryRoot$QueryResponseFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   List<MyEnum?>? le;
 
   @override
@@ -128,7 +128,7 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 ''';

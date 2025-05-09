@@ -13,15 +13,15 @@ import './schema/graphql_response.dart';
 /// Used to execute a GraphQL query or mutation and return its typed response.
 ///
 /// A [Link] is used as the network interface.
-class ArtemisClient {
+class DartpolloClient {
   HttpLink? _httpLink;
   final Link _link;
 
-  /// Instantiate an [ArtemisClient].
+  /// Instantiate an [DartpolloClient].
   ///
   /// [DedupeLink] and [HttpLink] are included.
-  /// To use different [Link] create an [ArtemisClient] with [ArtemisClient.fromLink].
-  factory ArtemisClient(
+  /// To use different [Link] create an [DartpolloClient] with [DartpolloClient.fromLink].
+  factory DartpolloClient(
     String graphQLEndpoint, {
     http.Client? httpClient,
   }) {
@@ -29,7 +29,7 @@ class ArtemisClient {
       graphQLEndpoint,
       httpClient: httpClient,
     );
-    return ArtemisClient.fromLink(
+    return DartpolloClient.fromLink(
       Link.from([
         DedupeLink(),
         httpLink,
@@ -37,8 +37,8 @@ class ArtemisClient {
     ).._httpLink = httpLink;
   }
 
-  /// Create an [ArtemisClient] from [Link].
-  ArtemisClient.fromLink(this._link);
+  /// Create an [DartpolloClient] from [Link].
+  DartpolloClient.fromLink(this._link);
 
   /// Executes a [GraphQLQuery], returning a typed response.
   Future<GraphQLResponse<T>> execute<T, U extends JsonSerializable>(
@@ -86,8 +86,8 @@ class ArtemisClient {
 
   /// Close the inline [http.Client].
   ///
-  /// Keep in mind this will not close clients whose Artemis client
-  /// was instantiated from [ArtemisClient.fromLink]. If you're using
+  /// Keep in mind this will not close clients whose Dartpollo client
+  /// was instantiated from [DartpolloClient.fromLink]. If you're using
   /// this constructor, you need to close your own links.
   void dispose() {
     _httpLink?.dispose();

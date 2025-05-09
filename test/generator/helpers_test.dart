@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:artemis/generator/helpers.dart';
+import 'package:dartpollo/generator/helpers.dart';
 
 void main() {
   group('On removeDuplicatedBy helper', () {

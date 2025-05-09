@@ -1,4 +1,4 @@
-import 'package:artemis/generator/data/data.dart';
+import 'package:dartpollo/generator/data/data.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -6,7 +6,7 @@ import '../../helpers.dart';
 void main() {
   group('Recursive input objects', () {
     test(
-      r'''Artemis won't StackOverflow on recursive input objects''',
+      r'''Dartpollo won't StackOverflow on recursive input objects''',
       () async => testGenerator(
         query: query,
         schema: r'''

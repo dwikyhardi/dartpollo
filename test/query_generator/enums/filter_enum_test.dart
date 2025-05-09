@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -81,19 +81,19 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'input_enum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'C')),
           EnumValueDefinition(name: EnumValueName(name: r'D')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'_InputInputEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'_E')),
           EnumValueDefinition(name: EnumValueName(name: r'_F')),
           EnumValueDefinition(name: EnumValueName(name: r'_new')),
           EnumValueDefinition(name: EnumValueName(name: r'new')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
@@ -102,7 +102,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -127,7 +127,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'_InputInputEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: $InputInputEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: $InputInputEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -140,7 +140,7 @@ final LibraryDefinition libraryDefinition =
             type: TypeName(name: r'input_enum', isNonNull: true),
             name: QueryInputName(name: r'e'),
             annotations: [
-              r'JsonKey(unknownEnumValue: InputEnum.artemisUnknown)'
+              r'JsonKey(unknownEnumValue: InputEnum.dartpolloUnknown)'
             ]),
         QueryInput(
             type: TypeName(name: r'Input', isNonNull: true),
@@ -165,7 +165,7 @@ class Custom$QueryRoot$QueryResponse extends JsonSerializable
   factory Custom$QueryRoot$QueryResponse.fromJson(Map<String, dynamic> json) =>
       _$Custom$QueryRoot$QueryResponseFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? e;
 
   @override
@@ -195,7 +195,7 @@ class Input extends JsonSerializable with EquatableMixin {
 
   factory Input.fromJson(Map<String, dynamic> json) => _$InputFromJson(json);
 
-  @JsonKey(unknownEnumValue: $InputInputEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: $InputInputEnum.dartpolloUnknown)
   $InputInputEnum? e;
 
   @override
@@ -209,8 +209,8 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 enum InputEnum {
@@ -218,8 +218,8 @@ enum InputEnum {
   c,
   @JsonValue('D')
   d,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 enum $InputInputEnum {
@@ -231,7 +231,7 @@ enum $InputInputEnum {
   $new,
   @JsonValue('new')
   kw$new,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 ''';

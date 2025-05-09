@@ -1,4 +1,4 @@
-import 'package:artemis/generator/data/data.dart';
+import 'package:dartpollo/generator/data/data.dart';
 
 /// Define an exception thrown when duplicated classes names were generated.
 class DuplicatedClassesException implements Exception {
@@ -25,10 +25,10 @@ ${b.toString()}
 }
 
 /// Define an exception thrown when `queries_glob` configuration contains the
-/// `schema` (Artemis would try to generate the schema as a query).
+/// `schema` (Dartpollo would try to generate the schema as a query).
 class QueryGlobsSchemaException implements Exception {
   /// Define an exception thrown when `queries_glob` configuration contains the
-  /// `schema` (Artemis would try to generate the schema as a query).
+  /// `schema` (Dartpollo would try to generate the schema as a query).
   const QueryGlobsSchemaException();
 
   @override
@@ -50,12 +50,12 @@ Change `schema` or `output` location and try again.
 ''';
 }
 
-/// Define an exception thrown when Artemis does not find asset files
+/// Define an exception thrown when Dartpollo does not find asset files
 class MissingFilesException implements Exception {
   /// glob pattern which was used
   final String globPattern;
 
-  /// Define an exception thrown when Artemis does not find asset files
+  /// Define an exception thrown when Dartpollo does not find asset files
   MissingFilesException(this.globPattern);
 
   @override
@@ -64,12 +64,12 @@ class MissingFilesException implements Exception {
   }
 }
 
-/// Define an exception thrown when Artemis does not find required config params
+/// Define an exception thrown when Dartpollo does not find required config params
 class MissingBuildConfigurationException implements Exception {
   /// missing config option name
   final String name;
 
-  /// Define an exception thrown when Artemis does not find required config params
+  /// Define an exception thrown when Dartpollo does not find required config params
   MissingBuildConfigurationException(this.name);
 
   @override
@@ -77,10 +77,10 @@ class MissingBuildConfigurationException implements Exception {
       'Missing `$name` configuration option. check `build.yaml` configuration';
 }
 
-/// Define an exception thrown when Artemis find a scalar on schema but it's
+/// Define an exception thrown when Dartpollo find a scalar on schema but it's
 /// not configured on `build.yaml`.
 class MissingScalarConfigurationException implements Exception {
-  /// Define an exception thrown when Artemis find a scalar on schema but it's
+  /// Define an exception thrown when Dartpollo find a scalar on schema but it's
   /// not configured on `build.yaml`.
   const MissingScalarConfigurationException(this.scalarName);
 
@@ -95,10 +95,10 @@ Please configure it, following the README on `scalar_mapping`.
 ''';
 }
 
-/// Thrown when Artemis can't find the default (or configured) root object type
+/// Thrown when Dartpollo can't find the default (or configured) root object type
 /// on schema.
 class MissingRootTypeException implements Exception {
-  /// Thrown when Artemis can't find the default (or configured) root object
+  /// Thrown when Dartpollo can't find the default (or configured) root object
   /// type on schema.
   const MissingRootTypeException(this.rootTypeName);
 
@@ -111,9 +111,9 @@ Make sure your schema file contains it.
 ''';
 }
 
-/// Thrown when Artemis can't find the requested fragment on schema.
+/// Thrown when Dartpollo can't find the requested fragment on schema.
 class MissingFragmentException implements Exception {
-  /// Thrown when Artemis can't find the requested fragment on schema.
+  /// Thrown when Dartpollo can't find the requested fragment on schema.
   const MissingFragmentException(this.fragmentName, this.className);
 
   /// The missing fragment name.

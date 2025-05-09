@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/transformer/add_typename_transformer.dart';
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
 import 'package:gql/ast.dart';
@@ -9,8 +7,10 @@ import 'package:gql/language.dart';
 
 import './generator.dart';
 import './generator/print_helpers.dart';
-import './schema/options.dart';
+import './schema/schema_options.dart';
+import 'generator/data/library_definition.dart';
 import 'generator/errors.dart';
+import 'transformer/add_typename_transformer.dart';
 
 /// [GraphQLQueryBuilder] instance, to be used by `build_runner`.
 GraphQLQueryBuilder graphQLQueryBuilder(BuilderOptions options) =>
@@ -48,7 +48,7 @@ List<String> _builderOptionsToExpectedOutputs(BuilderOptions builderOptions) {
       .toList();
 }
 
-/// Main Artemis builder.
+/// Main Dartpollo builder.
 class GraphQLQueryBuilder implements Builder {
   /// Creates a builder from [BuilderOptions].
   GraphQLQueryBuilder(BuilderOptions builderOptions)

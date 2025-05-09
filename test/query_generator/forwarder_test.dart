@@ -1,4 +1,4 @@
-import 'package:artemis/generator/data/data.dart';
+import 'package:dartpollo/generator/data/data.dart';
 import 'package:test/test.dart';
 
 import '../helpers.dart';
@@ -69,9 +69,9 @@ final LibraryDefinition libraryDefinition =
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
+import 'package:json_annotation/json_annotation.dart';
 part 'query.graphql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -85,6 +85,7 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
 
   @override
   List<Object?> get props => [a];
+
   @override
   Map<String, dynamic> toJson() => _$Custom$QueryRootToJson(this);
 }

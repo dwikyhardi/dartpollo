@@ -1,9 +1,9 @@
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 
 import 'queries/ed_sheeran.query.dart';
 
 void main() async {
-  final client = ArtemisClient(
+  final client = DartpolloClient(
     'https://graphbrainz.herokuapp.com/',
   );
 

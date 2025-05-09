@@ -1,4 +1,4 @@
-import 'package:artemis/generator/ephemeral_data.dart';
+import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:build/build.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';

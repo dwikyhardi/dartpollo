@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 
 import 'graphql/big_query.dart';
 import 'graphql/simple_query.dart';
 
 Future<void> main() async {
-  final client = ArtemisClient(
+  final client = DartpolloClient(
     'https://graphql-pokemon2.vercel.app',
   );
 

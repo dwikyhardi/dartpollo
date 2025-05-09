@@ -1,11 +1,11 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
-import 'package:artemis/generator/data/nullable.dart';
-import 'package:artemis/visitor/canonical_visitor.dart';
-import 'package:artemis/visitor/generator_visitor.dart';
-import 'package:artemis/visitor/object_type_definition_visitor.dart';
-import 'package:artemis/visitor/schema_definition_visitor.dart';
-import 'package:artemis/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/nullable.dart';
+import 'package:dartpollo/visitor/canonical_visitor.dart';
+import 'package:dartpollo/visitor/generator_visitor.dart';
+import 'package:dartpollo/visitor/object_type_definition_visitor.dart';
+import 'package:dartpollo/visitor/schema_definition_visitor.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';
 import 'package:path/path.dart' as p;
@@ -14,17 +14,17 @@ import './generator/ephemeral_data.dart';
 import './generator/errors.dart';
 import './generator/graphql_helpers.dart' as gql;
 import './generator/helpers.dart';
-import './schema/options.dart';
+import './schema/schema_options.dart';
 
 typedef OnNewClassFoundCallback = void Function(Context context);
 
 /// Enum value for values not mapped in the GraphQL enum
-final EnumValueDefinition artemisUnknown = EnumValueDefinition(
-  name: EnumValueName(name: 'ARTEMIS_UNKNOWN'),
+final EnumValueDefinition dartpolloUnknown = EnumValueDefinition(
+  name: EnumValueName(name: 'DARTPOLLO_UNKNOWN'),
 );
 
 /// Generate queries definitions from a GraphQL schema and a list of queries,
-/// given Artemis options and schema mappings.
+/// given Dartpollo options and schema mappings.
 LibraryDefinition generateLibrary(
   String path,
   List<DocumentNode> gqlDocs,
@@ -106,6 +106,7 @@ LibraryDefinition generateLibrary(
     basename: basename,
     queries: queryDefinitions,
     customImports: customImports,
+    schemaMap: schemaMap,
   );
 }
 
@@ -139,7 +140,7 @@ Set<FragmentDefinitionNode> _extractFragments(SelectionSetNode? selectionSet,
 }
 
 /// Generate a query definition from a GraphQL schema and a query, given
-/// Artemis options and schema mappings.
+/// Dartpollo options and schema mappings.
 Iterable<QueryDefinition> generateDefinitions({
   required DocumentNode schema,
   required TypeDefinitionNodeVisitor typeDefinitionNodeVisitor,
@@ -248,9 +249,11 @@ Iterable<QueryDefinition> generateDefinitions({
       operationName: operationName,
       document: documentDefinitions,
       classes: [
-        ...context.usedEnums
-            .map((e) => canonicalVisitor.enums[e.name]?.call())
-            .whereType<Definition>(),
+        // Only include enum definitions if convertEnumToString is false
+        if (!schemaMap.convertEnumToString)
+          ...context.usedEnums
+              .map((e) => canonicalVisitor.enums[e.name]?.call())
+              .whereType<Definition>(),
         ...visitor.context.generatedClasses,
         ...context.usedInputObjects
             .map((e) => canonicalVisitor.inputObjects[e.name]?.call())
@@ -398,19 +401,54 @@ Make sure your query is correct and your schema is updated.''');
       context.usedEnums.add(EnumName(name: nextType.name.value));
     }
 
-    if (fieldType is ListTypeNode) {
-      final innerDartTypeName = gql.buildTypeName(
-        fieldType.type,
-        context.options,
-        dartType: true,
-        replaceLeafWith: ClassName.fromPath(path: nextClassName),
-        typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
-      );
-      jsonKeyAnnotation['unknownEnumValue'] =
-          '${innerDartTypeName.dartTypeSafe}.${artemisUnknown.name.namePrintable}';
+    if (context.schemaMap.convertEnumToString) {
+      // If convertEnumToString is enabled, we'll return a String instead of an enum
+      if (fieldType is ListTypeNode) {
+        // For lists of enums, we need to modify the type to be List<String>
+        // Use a simpler approach to avoid json_serializable errors
+        // Don't use complex lambda expressions in JsonKey annotations
+
+        // Override the dartTypeName to be List<String>
+        return ClassProperty(
+          type: ListOfTypeName(
+            typeName: TypeName(name: 'String', isNonNull: false),
+            isNonNull: dartTypeName.isNonNull,
+          ),
+          name: name,
+          // No custom fromJson/toJson functions, let json_serializable handle it
+          annotations: name.namePrintable != name.name
+              ? ['JsonKey(name: \'${name.name}\')']
+              : [],
+        );
+      } else {
+        // For single enums, we'll return a String
+        // Create the JSON key annotation string
+        final jsonKey = jsonKeyAnnotation.entries
+            .map<String>((e) => '${e.key}: ${e.value}')
+            .join(', ');
+
+        return ClassProperty(
+          type: TypeName(name: 'String', isNonNull: dartTypeName.isNonNull),
+          name: name,
+          annotations: jsonKeyAnnotation.isEmpty ? [] : ['JsonKey($jsonKey)'],
+        );
+      }
     } else {
-      jsonKeyAnnotation['unknownEnumValue'] =
-          '${dartTypeName.dartTypeSafe}.${artemisUnknown.name.namePrintable}';
+      // Original behavior when convertEnumToString is false
+      if (fieldType is ListTypeNode) {
+        final innerDartTypeName = gql.buildTypeName(
+          fieldType.type,
+          context.options,
+          dartType: true,
+          replaceLeafWith: ClassName.fromPath(path: nextClassName),
+          typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
+        );
+        jsonKeyAnnotation['unknownEnumValue'] =
+            '${innerDartTypeName.dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+      } else {
+        jsonKeyAnnotation['unknownEnumValue'] =
+            '${dartTypeName.dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+      }
     }
   }
 

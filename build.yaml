@@ -1,6 +1,6 @@
 builders:
-  artemis:
-    import: 'package:artemis/builder.dart'
+  dartpollo:
+    import: 'package:dartpollo/builder.dart'
     builder_factories: ['graphQLQueryBuilder']
     build_extensions: {'$lib$': ['.graphql.dart']}
     auto_apply: dependents

@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:yaml/yaml.dart';
 
-// I can't use the default json_serializable flow because the artemis generator
-// would crash when importing options.dart file.
-part 'options.g2.dart';
+// I can't use the default json_serializable flow because the dartpollo generator
+// would crash when importing schema_options.dart file.
+part 'schema_options.g.dart';
 
 /// This generator options, gathered from `build.yaml` file.
 @JsonSerializable(fieldRename: FieldRename.snake, anyMap: true)
@@ -124,7 +124,7 @@ enum NamingScheme {
   pathedWithFields,
 
   /// Considers only the actual GraphQL class name. This will probably lead to
-  /// duplication and an Artemis error unless user uses aliases.
+  /// duplication and an Dartpollo error unless user uses aliases.
   simple,
 }
 
@@ -151,6 +151,9 @@ class SchemaMap {
   @JsonKey(defaultValue: false)
   final bool appendTypeName;
 
+  @JsonKey(defaultValue: false)
+  final bool convertEnumToString;
+
   /// The naming scheme to be used.
   ///
   /// - [NamingScheme.pathedWithTypes]: default, where the names of
@@ -158,7 +161,7 @@ class SchemaMap {
   /// - [NamingScheme.pathedWithFields]: the field names are joined
   /// together to generate the path.
   /// - [NamingScheme.simple]: considers only the actual GraphQL class name.
-  /// This will probably lead to duplication and an Artemis error unless you
+  /// This will probably lead to duplication and an Dartpollo error unless you
   /// use aliases.
   @JsonKey(unknownEnumValue: NamingScheme.pathedWithTypes)
   final NamingScheme? namingScheme;
@@ -171,6 +174,7 @@ class SchemaMap {
     this.fragmentsGlob,
     this.typeNameField = '__typename',
     this.appendTypeName = false,
+    this.convertEnumToString = false,
     this.namingScheme = NamingScheme.pathedWithTypes,
   });
 

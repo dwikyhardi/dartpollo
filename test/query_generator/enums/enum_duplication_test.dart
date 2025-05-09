@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -65,7 +65,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_Query$_q'),
@@ -74,7 +74,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -102,7 +102,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'CustomList$_Query$_qList'),
@@ -111,7 +111,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -150,7 +150,7 @@ class Custom$Query$Q extends JsonSerializable with EquatableMixin {
   factory Custom$Query$Q.fromJson(Map<String, dynamic> json) =>
       _$Custom$Query$QFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? e;
 
   @override
@@ -181,7 +181,7 @@ class CustomList$Query$QList extends JsonSerializable with EquatableMixin {
   factory CustomList$Query$QList.fromJson(Map<String, dynamic> json) =>
       _$CustomList$Query$QListFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? e;
 
   @override
@@ -210,7 +210,7 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 ''';

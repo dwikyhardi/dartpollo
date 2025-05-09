@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart = 2.12
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -18,11 +17,11 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
 
   late String id;
 
-  @JsonKey(unknownEnumValue: ReleaseStatus.artemisUnknown)
-  ReleaseStatus? status;
+  String? status;
 
   @override
   List<Object?> get props => [id, status];
+
   @override
   Map<String, dynamic> toJson() =>
       _$EdSheeran$Query$Node$Artist$ReleaseConnection$ReleaseToJson(this);
@@ -41,6 +40,7 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection extends JsonSerializable
 
   @override
   List<Object?> get props => [nodes];
+
   @override
   Map<String, dynamic> toJson() =>
       _$EdSheeran$Query$Node$Artist$ReleaseConnectionToJson(this);
@@ -59,6 +59,7 @@ class EdSheeran$Query$Node$Artist$LifeSpan extends JsonSerializable
 
   @override
   List<Object?> get props => [begin];
+
   @override
   Map<String, dynamic> toJson() =>
       _$EdSheeran$Query$Node$Artist$LifeSpanToJson(this);
@@ -77,6 +78,7 @@ class EdSheeran$Query$Node$Artist$SpotifyArtist extends JsonSerializable
 
   @override
   List<Object?> get props => [href];
+
   @override
   Map<String, dynamic> toJson() =>
       _$EdSheeran$Query$Node$Artist$SpotifyArtistToJson(this);
@@ -102,6 +104,7 @@ class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node
 
   @override
   List<Object?> get props => [mbid, name, releases, lifeSpan, spotify];
+
   @override
   Map<String, dynamic> toJson() => _$EdSheeran$Query$Node$ArtistToJson(this);
 }
@@ -126,6 +129,7 @@ class EdSheeran$Query$Node extends JsonSerializable with EquatableMixin {
 
   @override
   List<Object?> get props => [$$typename, id];
+
   @override
   Map<String, dynamic> toJson() {
     switch ($$typename) {
@@ -148,6 +152,7 @@ class EdSheeran$Query extends JsonSerializable with EquatableMixin {
 
   @override
   List<Object?> get props => [node];
+
   @override
   Map<String, dynamic> toJson() => _$EdSheeran$QueryToJson(this);
 }
@@ -161,115 +166,135 @@ enum ReleaseStatus {
   bootleg,
   @JsonValue('PSEUDORELEASE')
   pseudorelease,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
+final ED_SHEERAN_QUERY_DOCUMENT_OPERATION_NAME = 'ed_sheeran';
 final ED_SHEERAN_QUERY_DOCUMENT = DocumentNode(definitions: [
   OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'ed_sheeran'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'node'),
+    type: OperationType.query,
+    name: NameNode(value: 'ed_sheeran'),
+    variableDefinitions: [],
+    directives: [],
+    selectionSet: SelectionSetNode(selections: [
+      FieldNode(
+        name: NameNode(value: 'node'),
+        alias: null,
+        arguments: [
+          ArgumentNode(
+            name: NameNode(value: 'id'),
+            value: StringValueNode(
+              value:
+                  'QXJ0aXN0OmI4YTdjNTFmLTM2MmMtNGRjYi1hMjU5LWJjNmUwMDk1ZjBhNg==',
+              isBlock: false,
+            ),
+          )
+        ],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+            name: NameNode(value: '__typename'),
             alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: StringValueNode(
-                      value:
-                          'QXJ0aXN0OmI4YTdjNTFmLTM2MmMtNGRjYi1hMjU5LWJjNmUwMDk1ZjBhNg==',
-                      isBlock: false))
-            ],
+            arguments: [],
+            directives: [],
+            selectionSet: null,
+          ),
+          FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null,
+          ),
+          InlineFragmentNode(
+            typeCondition: TypeConditionNode(
+                on: NamedTypeNode(
+              name: NameNode(value: 'Artist'),
+              isNonNull: false,
+            )),
             directives: [],
             selectionSet: SelectionSetNode(selections: [
               FieldNode(
-                  name: NameNode(value: '__typename'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
+                name: NameNode(value: 'mbid'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null,
+              ),
               FieldNode(
-                  name: NameNode(value: 'id'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              InlineFragmentNode(
-                  typeCondition: TypeConditionNode(
-                      on: NamedTypeNode(
-                          name: NameNode(value: 'Artist'), isNonNull: false)),
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FieldNode(
-                        name: NameNode(value: 'mbid'),
+                name: NameNode(value: 'name'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null,
+              ),
+              FieldNode(
+                name: NameNode(value: 'releases'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: SelectionSetNode(selections: [
+                  FieldNode(
+                    name: NameNode(value: 'nodes'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: SelectionSetNode(selections: [
+                      FieldNode(
+                        name: NameNode(value: 'id'),
                         alias: null,
                         arguments: [],
                         directives: [],
-                        selectionSet: null),
-                    FieldNode(
-                        name: NameNode(value: 'name'),
+                        selectionSet: null,
+                      ),
+                      FieldNode(
+                        name: NameNode(value: 'status'),
                         alias: null,
                         arguments: [],
                         directives: [],
-                        selectionSet: null),
-                    FieldNode(
-                        name: NameNode(value: 'releases'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: SelectionSetNode(selections: [
-                          FieldNode(
-                              name: NameNode(value: 'nodes'),
-                              alias: null,
-                              arguments: [],
-                              directives: [],
-                              selectionSet: SelectionSetNode(selections: [
-                                FieldNode(
-                                    name: NameNode(value: 'id'),
-                                    alias: null,
-                                    arguments: [],
-                                    directives: [],
-                                    selectionSet: null),
-                                FieldNode(
-                                    name: NameNode(value: 'status'),
-                                    alias: null,
-                                    arguments: [],
-                                    directives: [],
-                                    selectionSet: null)
-                              ]))
-                        ])),
-                    FieldNode(
-                        name: NameNode(value: 'lifeSpan'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: SelectionSetNode(selections: [
-                          FieldNode(
-                              name: NameNode(value: 'begin'),
-                              alias: null,
-                              arguments: [],
-                              directives: [],
-                              selectionSet: null)
-                        ])),
-                    FieldNode(
-                        name: NameNode(value: 'spotify'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: SelectionSetNode(selections: [
-                          FieldNode(
-                              name: NameNode(value: 'href'),
-                              alias: null,
-                              arguments: [],
-                              directives: [],
-                              selectionSet: null)
-                        ]))
-                  ]))
-            ]))
-      ]))
+                        selectionSet: null,
+                      ),
+                    ]),
+                  )
+                ]),
+              ),
+              FieldNode(
+                name: NameNode(value: 'lifeSpan'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: SelectionSetNode(selections: [
+                  FieldNode(
+                    name: NameNode(value: 'begin'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null,
+                  )
+                ]),
+              ),
+              FieldNode(
+                name: NameNode(value: 'spotify'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: SelectionSetNode(selections: [
+                  FieldNode(
+                    name: NameNode(value: 'href'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null,
+                  )
+                ]),
+              ),
+            ]),
+          ),
+        ]),
+      )
+    ]),
+  )
 ]);
 
 class EdSheeranQuery extends GraphQLQuery<EdSheeran$Query, JsonSerializable> {
@@ -279,10 +304,11 @@ class EdSheeranQuery extends GraphQLQuery<EdSheeran$Query, JsonSerializable> {
   final DocumentNode document = ED_SHEERAN_QUERY_DOCUMENT;
 
   @override
-  final String operationName = 'ed_sheeran';
+  final String operationName = ED_SHEERAN_QUERY_DOCUMENT_OPERATION_NAME;
 
   @override
   List<Object?> get props => [document, operationName];
+
   @override
   EdSheeran$Query parse(Map<String, dynamic> json) =>
       EdSheeran$Query.fromJson(json);

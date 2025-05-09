@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:test/test.dart';
 
 import '../../helpers.dart';
@@ -66,12 +66,12 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'OtherEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'O1')),
           EnumValueDefinition(name: EnumValueName(name: r'O2')),
-          EnumValueDefinition(name: EnumValueName(name: r'ARTEMIS_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
@@ -84,14 +84,14 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'my'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false),
               ClassProperty(
                   type: TypeName(name: r'OtherEnum'),
                   name: ClassPropertyName(name: r'other'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: OtherEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -116,7 +116,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'MyEnum', isNonNull: true),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.artemisUnknown)'
+                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
                   ],
                   isResolveType: false)
             ],
@@ -136,7 +136,7 @@ final LibraryDefinition libraryDefinition =
             type: TypeName(name: r'OtherEnum', isNonNull: true),
             name: QueryInputName(name: r'o'),
             annotations: [
-              r'JsonKey(unknownEnumValue: OtherEnum.artemisUnknown)'
+              r'JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)'
             ])
       ],
       generateHelpers: true,
@@ -145,7 +145,7 @@ final LibraryDefinition libraryDefinition =
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:artemis/artemis.dart';
+import 'package:dartpollo/dartpollo.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -161,10 +161,10 @@ class Custom$QueryRoot$QueryResponse extends JsonSerializable
 
   String? s;
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   MyEnum? my;
 
-  @JsonKey(unknownEnumValue: OtherEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)
   OtherEnum? other;
 
   @override
@@ -194,7 +194,7 @@ class Input extends JsonSerializable with EquatableMixin {
 
   factory Input.fromJson(Map<String, dynamic> json) => _$InputFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
   late MyEnum e;
 
   @override
@@ -208,8 +208,8 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 enum OtherEnum {
@@ -217,8 +217,8 @@ enum OtherEnum {
   o1,
   @JsonValue('O2')
   o2,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -238,7 +238,7 @@ class CustomArguments extends JsonSerializable with EquatableMixin {
 
   late Input input;
 
-  @JsonKey(unknownEnumValue: OtherEnum.artemisUnknown)
+  @JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)
   late OtherEnum o;
 
   @override

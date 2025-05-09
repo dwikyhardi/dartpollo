@@ -1,5 +1,5 @@
-import 'package:artemis/generator/data/data.dart';
-import 'package:artemis/generator/data/enum_value_definition.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:gql/language.dart';
 import 'package:test/test.dart';
 
@@ -62,7 +62,7 @@ final LibraryDefinition libraryDefinition =
               name: EnumValueName(name: 'JEDI'),
             ),
             EnumValueDefinition(
-              name: EnumValueName(name: 'ARTEMIS_UNKNOWN'),
+              name: EnumValueName(name: 'DARTPOLLO_UNKNOWN'),
             ),
           ],
         ),
@@ -75,7 +75,7 @@ final LibraryDefinition libraryDefinition =
                   // isOverride: false,
 
                   annotations: [
-                    r'JsonKey(unknownEnumValue: StarWarsMovies.artemisUnknown)',
+                    r'JsonKey(unknownEnumValue: StarWarsMovies.dartpolloUnknown)',
                   ])
             ],
             factoryPossibilities: {},
@@ -100,7 +100,7 @@ class SomeQuery$QueryResponse extends JsonSerializable with EquatableMixin {
   factory SomeQuery$QueryResponse.fromJson(Map<String, dynamic> json) =>
       _$SomeQuery$QueryResponseFromJson(json);
 
-  @JsonKey(unknownEnumValue: StarWarsMovies.artemisUnknown)
+  @JsonKey(unknownEnumValue: StarWarsMovies.dartpolloUnknown)
   StarWarsMovies? someValue;
 
   @override
@@ -117,7 +117,7 @@ enum StarWarsMovies {
   empire,
   @JsonValue('JEDI')
   jedi,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
+  @JsonValue('DARTPOLLO_UNKNOWN')
+  dartpolloUnknown,
 }
 ''';
