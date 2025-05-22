@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.0.1 - 2024-07-01
+## 0.0.2 - 2025-05-22
+
+- Added general build options for DartPollo
+- Fix some lint errors
+
+## 0.0.1 - 2025-05-09
 
 - Initial release of DartPollo
 - Generate Dart types from GraphQL schemas and queries
