@@ -88,7 +88,7 @@ final LibraryDefinition libraryDefinition =
           EnumValueDefinition(name: EnumValueName(name: r'UserTechLead')),
           EnumValueDefinition(name: EnumValueName(name: r'UserDev')),
           EnumValueDefinition(name: EnumValueName(name: r'UserQA')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'NewUserSub$_Subscription$_User'),
@@ -104,9 +104,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'UserType', isNonNull: true),
                   name: ClassPropertyName(name: r'userType'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: UserType.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: UserType.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -148,7 +146,7 @@ class NewUserSub$Subscription$User extends JsonSerializable
 
   late String lastName;
 
-  @JsonKey(unknownEnumValue: UserType.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: UserType.unknown)
   late UserType userType;
 
   @override
@@ -181,7 +179,7 @@ enum UserType {
   userDev,
   @JsonValue('UserQA')
   userQA,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 ''';

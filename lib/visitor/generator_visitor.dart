@@ -181,7 +181,8 @@ class GeneratorVisitor extends RecursiveVisitor {
           );
         } else {
           // For single enums, use String
-          dartTypeName = TypeName(name: 'String', isNonNull: dartTypeName.isNonNull);
+          dartTypeName =
+              TypeName(name: 'String', isNonNull: dartTypeName.isNonNull);
         }
       } else {
         // Original behavior when convertEnumToString is false
@@ -195,10 +196,10 @@ class GeneratorVisitor extends RecursiveVisitor {
             typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
           );
           jsonKeyAnnotation['unknownEnumValue'] =
-              '${EnumName(name: innerDartTypeName.name).dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+              '${EnumName(name: innerDartTypeName.name).dartTypeSafe}.${unknown.name.namePrintable}';
         } else {
           jsonKeyAnnotation['unknownEnumValue'] =
-              '${EnumName(name: dartTypeName.name).dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+              '${EnumName(name: dartTypeName.name).dartTypeSafe}.${unknown.name.namePrintable}';
         }
       }
     } else if (leafType is InputObjectTypeDefinitionNode) {

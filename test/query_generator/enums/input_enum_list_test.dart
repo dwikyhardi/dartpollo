@@ -57,7 +57,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'ArticleType'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'NEWS')),
           EnumValueDefinition(name: EnumValueName(name: r'TUTORIAL')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'BrowseArticles$_Query$_Article'),
@@ -74,7 +74,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'ArticleType', isNonNull: true),
                   name: ClassPropertyName(name: r'article_type'),
                   annotations: [
-                    r'''JsonKey(name: 'article_type', unknownEnumValue: ArticleType.dartpolloUnknown)'''
+                    r'''JsonKey(name: 'article_type', unknownEnumValue: ArticleType.unknown)'''
                   ],
                   isResolveType: false)
             ],
@@ -103,9 +103,7 @@ final LibraryDefinition libraryDefinition =
                 typeName: TypeName(name: r'ArticleType', isNonNull: true),
                 isNonNull: false),
             name: QueryInputName(name: r'article_type_in'),
-            annotations: [
-              r'JsonKey(unknownEnumValue: ArticleType.dartpolloUnknown)'
-            ])
+            annotations: [r'JsonKey(unknownEnumValue: ArticleType.unknown)'])
       ],
       generateHelpers: true,
       suffix: r'Query')
@@ -131,7 +129,7 @@ class BrowseArticles$Query$Article extends JsonSerializable
 
   late String title;
 
-  @JsonKey(name: 'article_type', unknownEnumValue: ArticleType.dartpolloUnknown)
+  @JsonKey(name: 'article_type', unknownEnumValue: ArticleType.unknown)
   late ArticleType articleType;
 
   @override
@@ -160,8 +158,8 @@ enum ArticleType {
   news,
   @JsonValue('TUTORIAL')
   tutorial,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -172,7 +170,7 @@ class BrowseArticlesArguments extends JsonSerializable with EquatableMixin {
   factory BrowseArticlesArguments.fromJson(Map<String, dynamic> json) =>
       _$BrowseArticlesArgumentsFromJson(json);
 
-  @JsonKey(unknownEnumValue: ArticleType.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: ArticleType.unknown)
   final List<ArticleType>? article_type_in;
 
   @override

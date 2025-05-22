@@ -58,8 +58,10 @@ void main() {
             'a|queries/queryB.graphql': queryB,
           },
           outputs: {
-            'a|lib/outputA.graphql.dart': anything, // Use 'anything' matcher to accept any output
-            'a|lib/outputB.graphql.dart': anything, // Use 'anything' matcher to accept any output
+            'a|lib/outputA.graphql.dart':
+                anything, // Use 'anything' matcher to accept any output
+            'a|lib/outputB.graphql.dart':
+                anything, // Use 'anything' matcher to accept any output
           },
           onLog: print,
         );
@@ -158,7 +160,7 @@ final LibraryDefinition libraryDefinitionA =
         EnumDefinition(name: EnumName(name: r'ArticleType'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'NEWS')),
           EnumValueDefinition(name: EnumValueName(name: r'TUTORIAL')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'BrowseArticles$_Query$_articles'),
@@ -175,7 +177,7 @@ final LibraryDefinition libraryDefinitionA =
                   type: TypeName(name: r'ArticleType', isNonNull: true),
                   name: ClassPropertyName(name: r'articleType'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: ArticleType.dartpolloUnknown)'
+                    r'JsonKey(unknownEnumValue: ArticleType.unknown)'
                   ],
                   isResolveType: false)
             ],
@@ -211,19 +213,19 @@ final libraryDefinitionB =
         EnumDefinition(name: EnumName(name: r'Privacy'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'PRIVATE')),
           EnumValueDefinition(name: EnumValueName(name: r'PUBLIC')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'Status'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'ARCHIVED')),
           EnumValueDefinition(name: EnumValueName(name: r'NORMAL')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'NotificationType'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'ACTIVITY_MESSAGE')),
           EnumValueDefinition(name: EnumValueName(name: r'ACTIVITY_REPLY')),
           EnumValueDefinition(name: EnumValueName(name: r'FOLLOWING')),
           EnumValueDefinition(name: EnumValueName(name: r'ACTIVITY_MENTION')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'BrowseRepositories$_Query$_repositories'),
@@ -239,16 +241,12 @@ final libraryDefinitionB =
               ClassProperty(
                   type: TypeName(name: r'Privacy', isNonNull: true),
                   name: ClassPropertyName(name: r'privacy'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: Privacy.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: Privacy.unknown)'],
                   isResolveType: false),
               ClassProperty(
                   type: TypeName(name: r'Status', isNonNull: true),
                   name: ClassPropertyName(name: r'status'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: Status.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: Status.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -276,7 +274,7 @@ final libraryDefinitionB =
                   type: TypeName(name: r'NotificationType'),
                   name: ClassPropertyName(name: r'type'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: NotificationType.dartpolloUnknown)'
+                    r'JsonKey(unknownEnumValue: NotificationType.unknown)'
                   ],
                   isResolveType: false),
               ClassProperty(
@@ -319,7 +317,7 @@ class BrowseArticles$Query$Articles extends JsonSerializable
 
   late String title;
 
-  @JsonKey(unknownEnumValue: ArticleType.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: ArticleType.unknown)
   late ArticleType articleType;
 
   @override
@@ -348,8 +346,8 @@ enum ArticleType {
   news,
   @JsonValue('TUTORIAL')
   tutorial,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 final BROWSE_ARTICLES_QUERY_DOCUMENT_OPERATION_NAME = 'BrowseArticles';
@@ -432,10 +430,10 @@ class BrowseRepositories$Query$Repositories extends JsonSerializable
 
   late String title;
 
-  @JsonKey(unknownEnumValue: Privacy.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: Privacy.unknown)
   late Privacy privacy;
 
-  @JsonKey(unknownEnumValue: Status.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: Status.unknown)
   late Status status;
 
   @override
@@ -470,7 +468,7 @@ class NotificationOptionInput extends JsonSerializable with EquatableMixin {
   factory NotificationOptionInput.fromJson(Map<String, dynamic> json) =>
       _$NotificationOptionInputFromJson(json);
 
-  @JsonKey(unknownEnumValue: NotificationType.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: NotificationType.unknown)
   NotificationType? type;
 
   bool? enabled;
@@ -486,8 +484,8 @@ enum Privacy {
   private,
   @JsonValue('PUBLIC')
   public,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 enum Status {
@@ -495,8 +493,8 @@ enum Status {
   archived,
   @JsonValue('NORMAL')
   normal,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 enum NotificationType {
@@ -508,8 +506,8 @@ enum NotificationType {
   following,
   @JsonValue('ACTIVITY_MENTION')
   activityMention,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 @JsonSerializable(explicitToJson: true)

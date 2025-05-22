@@ -58,7 +58,8 @@ Future testGenerator({
       ...sourceAssetsMap,
     },
     outputs: {
-      'a|lib/query.graphql.dart': anything, // Use 'anything' matcher to accept any output
+      'a|lib/query.graphql.dart': anything,
+      // Use 'anything' matcher to accept any output
       ...outputsMap,
     },
     onLog: print,
@@ -66,28 +67,28 @@ Future testGenerator({
 }
 
 // Helper function to normalize content for comparison
-String _normalizeContent(String content) {
-  // Split the content into lines
-  final lines = content.split('\n');
-
-  // Separate import statements from the rest of the content
-  final imports = <String>[];
-  final otherLines = <String>[];
-
-  for (final line in lines) {
-    if (line.trim().startsWith('import ')) {
-      imports.add(line.trim());
-    } else {
-      otherLines.add(line);
-    }
-  }
-
-  // Sort import statements
-  imports.sort();
-
-  // Combine everything back together
-  return [...imports, ...otherLines].join('\n');
-}
+// String _normalizeContent(String content) {
+//   // Split the content into lines
+//   final lines = content.split('\n');
+//
+//   // Separate import statements from the rest of the content
+//   final imports = <String>[];
+//   final otherLines = <String>[];
+//
+//   for (final line in lines) {
+//     if (line.trim().startsWith('import ')) {
+//       imports.add(line.trim());
+//     } else {
+//       otherLines.add(line);
+//     }
+//   }
+//
+//   // Sort import statements
+//   imports.sort();
+//
+//   // Combine everything back together
+//   return [...imports, ...otherLines].join('\n');
+// }
 
 Future testNaming({
   required String query,

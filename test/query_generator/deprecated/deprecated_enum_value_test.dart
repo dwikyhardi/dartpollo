@@ -62,7 +62,7 @@ final LibraryDefinition libraryDefinition =
               name: EnumValueName(name: 'JEDI'),
             ),
             EnumValueDefinition(
-              name: EnumValueName(name: 'DARTPOLLO_UNKNOWN'),
+              name: EnumValueName(name: 'UNKNOWN'),
             ),
           ],
         ),
@@ -75,7 +75,7 @@ final LibraryDefinition libraryDefinition =
                   // isOverride: false,
 
                   annotations: [
-                    r'JsonKey(unknownEnumValue: StarWarsMovies.dartpolloUnknown)',
+                    r'JsonKey(unknownEnumValue: StarWarsMovies.unknown)',
                   ])
             ],
             factoryPossibilities: {},
@@ -100,7 +100,7 @@ class SomeQuery$QueryResponse extends JsonSerializable with EquatableMixin {
   factory SomeQuery$QueryResponse.fromJson(Map<String, dynamic> json) =>
       _$SomeQuery$QueryResponseFromJson(json);
 
-  @JsonKey(unknownEnumValue: StarWarsMovies.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: StarWarsMovies.unknown)
   StarWarsMovies? someValue;
 
   @override
@@ -117,7 +117,7 @@ enum StarWarsMovies {
   empire,
   @JsonValue('JEDI')
   jedi,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 ''';

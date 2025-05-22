@@ -55,7 +55,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'SQLOperator'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'EQ')),
           EnumValueDefinition(name: EnumValueName(name: r'IN')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'SearchArticles$_Query$_Article'),
@@ -94,7 +94,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'SQLOperator'),
                   name: ClassPropertyName(name: r'operator'),
                   annotations: [
-                    r'''JsonKey(name: 'operator', unknownEnumValue: SQLOperator.dartpolloUnknown)'''
+                    r'''JsonKey(name: 'operator', unknownEnumValue: SQLOperator.unknown)'''
                   ],
                   isResolveType: false),
               ClassProperty(
@@ -165,7 +165,7 @@ class ArticleTitleWhereConditions extends JsonSerializable with EquatableMixin {
   factory ArticleTitleWhereConditions.fromJson(Map<String, dynamic> json) =>
       _$ArticleTitleWhereConditionsFromJson(json);
 
-  @JsonKey(name: 'operator', unknownEnumValue: SQLOperator.dartpolloUnknown)
+  @JsonKey(name: 'operator', unknownEnumValue: SQLOperator.unknown)
   SQLOperator? kw$operator;
 
   String? value;
@@ -181,7 +181,7 @@ enum SQLOperator {
   eq,
   @JsonValue('IN')
   kw$IN,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 ''';

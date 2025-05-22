@@ -1,9 +1,9 @@
 builders:
   dartpollo:
     import: 'package:dartpollo/builder.dart'
-    builder_factories: ['graphQLQueryBuilder']
-    build_extensions: {'$lib$': ['.graphql.dart']}
+    builder_factories: [ 'graphQLQueryBuilder' ]
+    build_extensions: { '$lib$': [ '.graphql.dart' ] }
     auto_apply: dependents
     build_to: source
-    applies_builders: ['json_serializable']
-    runs_before: ['json_serializable']
+    applies_builders: [ 'smart_enum_converter','json_serializable' ]
+    runs_before: [ 'json_serializable' ]

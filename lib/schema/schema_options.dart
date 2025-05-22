@@ -32,12 +32,16 @@ class GeneratorOptions {
   @JsonKey(defaultValue: [])
   final List<String> ignoreForFile;
 
+  @JsonKey(defaultValue: false)
+  final bool convertEnumToString;
+
   /// Instantiate generator options.
   GeneratorOptions({
     this.generateHelpers = true,
     this.generateQueries = true,
     this.scalarMapping = const [],
     this.fragmentsGlob,
+    this.convertEnumToString = false,
     this.schemaMapping = const [],
     this.ignoreForFile = const [],
   });
@@ -48,6 +52,28 @@ class GeneratorOptions {
 
   /// Convert this options instance to JSON.
   Map<String, dynamic> toJson() => _$GeneratorOptionsToJson(this);
+
+  /// Creates a copy of this [GeneratorOptions] but with the given fields
+  /// replaced with the new values.
+  GeneratorOptions copyWith({
+    bool? generateHelpers,
+    bool? generateQueries,
+    List<ScalarMap?>? scalarMapping,
+    String? fragmentsGlob,
+    List<SchemaMap>? schemaMapping,
+    List<String>? ignoreForFile,
+    bool? convertEnumToString,
+  }) {
+    return GeneratorOptions(
+      generateHelpers: generateHelpers ?? this.generateHelpers,
+      generateQueries: generateQueries ?? this.generateQueries,
+      scalarMapping: scalarMapping ?? this.scalarMapping,
+      fragmentsGlob: fragmentsGlob ?? this.fragmentsGlob,
+      schemaMapping: schemaMapping ?? this.schemaMapping,
+      ignoreForFile: ignoreForFile ?? this.ignoreForFile,
+      convertEnumToString: convertEnumToString ?? this.convertEnumToString,
+    );
+  }
 }
 
 /// Define a Dart type.
@@ -184,4 +210,26 @@ class SchemaMap {
 
   /// Convert this schema mapping instance to JSON.
   Map<String, dynamic> toJson() => _$SchemaMapToJson(this);
+
+  SchemaMap copyWith({
+    String? output,
+    String? schema,
+    String? queriesGlob,
+    String? fragmentsGlob,
+    String? typeNameField,
+    bool? appendTypeName,
+    bool? convertEnumToString,
+    NamingScheme? namingScheme,
+  }) {
+    return SchemaMap(
+      output: output ?? this.output,
+      schema: schema ?? this.schema,
+      queriesGlob: queriesGlob ?? this.queriesGlob,
+      fragmentsGlob: fragmentsGlob ?? this.fragmentsGlob,
+      typeNameField: typeNameField ?? this.typeNameField,
+      appendTypeName: appendTypeName ?? this.appendTypeName,
+      convertEnumToString: convertEnumToString ?? this.convertEnumToString,
+      namingScheme: namingScheme ?? this.namingScheme,
+    );
+  }
 }

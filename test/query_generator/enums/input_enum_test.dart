@@ -66,12 +66,12 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'OtherEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'O1')),
           EnumValueDefinition(name: EnumValueName(name: r'O2')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
@@ -83,15 +83,13 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'my'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false),
               ClassProperty(
                   type: TypeName(name: r'OtherEnum'),
                   name: ClassPropertyName(name: r'other'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)'
+                    r'JsonKey(unknownEnumValue: OtherEnum.unknown)'
                   ],
                   isResolveType: false)
             ],
@@ -115,9 +113,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum', isNonNull: true),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -135,9 +131,7 @@ final LibraryDefinition libraryDefinition =
         QueryInput(
             type: TypeName(name: r'OtherEnum', isNonNull: true),
             name: QueryInputName(name: r'o'),
-            annotations: [
-              r'JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)'
-            ])
+            annotations: [r'JsonKey(unknownEnumValue: OtherEnum.unknown)'])
       ],
       generateHelpers: true,
       suffix: r'Query')
@@ -161,10 +155,10 @@ class Custom$QueryRoot$QueryResponse extends JsonSerializable
 
   String? s;
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? my;
 
-  @JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: OtherEnum.unknown)
   OtherEnum? other;
 
   @override
@@ -194,7 +188,7 @@ class Input extends JsonSerializable with EquatableMixin {
 
   factory Input.fromJson(Map<String, dynamic> json) => _$InputFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   late MyEnum e;
 
   @override
@@ -208,8 +202,8 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 enum OtherEnum {
@@ -217,8 +211,8 @@ enum OtherEnum {
   o1,
   @JsonValue('O2')
   o2,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -238,7 +232,7 @@ class CustomArguments extends JsonSerializable with EquatableMixin {
 
   late Input input;
 
-  @JsonKey(unknownEnumValue: OtherEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: OtherEnum.unknown)
   late OtherEnum o;
 
   @override

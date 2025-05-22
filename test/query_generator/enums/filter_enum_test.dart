@@ -81,19 +81,19 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'input_enum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'C')),
           EnumValueDefinition(name: EnumValueName(name: r'D')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         EnumDefinition(name: EnumName(name: r'_InputInputEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'_E')),
           EnumValueDefinition(name: EnumValueName(name: r'_F')),
           EnumValueDefinition(name: EnumValueName(name: r'_new')),
           EnumValueDefinition(name: EnumValueName(name: r'new')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
@@ -101,9 +101,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -127,7 +125,7 @@ final LibraryDefinition libraryDefinition =
                   type: TypeName(name: r'_InputInputEnum'),
                   name: ClassPropertyName(name: r'e'),
                   annotations: [
-                    r'JsonKey(unknownEnumValue: $InputInputEnum.dartpolloUnknown)'
+                    r'JsonKey(unknownEnumValue: $InputInputEnum.unknown)'
                   ],
                   isResolveType: false)
             ],
@@ -139,9 +137,7 @@ final LibraryDefinition libraryDefinition =
         QueryInput(
             type: TypeName(name: r'input_enum', isNonNull: true),
             name: QueryInputName(name: r'e'),
-            annotations: [
-              r'JsonKey(unknownEnumValue: InputEnum.dartpolloUnknown)'
-            ]),
+            annotations: [r'JsonKey(unknownEnumValue: InputEnum.unknown)']),
         QueryInput(
             type: TypeName(name: r'Input', isNonNull: true),
             name: QueryInputName(name: r'i'))
@@ -165,7 +161,7 @@ class Custom$QueryRoot$QueryResponse extends JsonSerializable
   factory Custom$QueryRoot$QueryResponse.fromJson(Map<String, dynamic> json) =>
       _$Custom$QueryRoot$QueryResponseFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? e;
 
   @override
@@ -195,7 +191,7 @@ class Input extends JsonSerializable with EquatableMixin {
 
   factory Input.fromJson(Map<String, dynamic> json) => _$InputFromJson(json);
 
-  @JsonKey(unknownEnumValue: $InputInputEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: $InputInputEnum.unknown)
   $InputInputEnum? e;
 
   @override
@@ -209,8 +205,8 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 enum InputEnum {
@@ -218,8 +214,8 @@ enum InputEnum {
   c,
   @JsonValue('D')
   d,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 enum $InputInputEnum {
@@ -231,7 +227,7 @@ enum $InputInputEnum {
   $new,
   @JsonValue('new')
   kw$new,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 ''';

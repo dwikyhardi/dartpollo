@@ -93,7 +93,21 @@ class GraphQLQueryBuilder implements Builder {
   Future<void> build(BuildStep buildStep) async {
     List<FragmentDefinitionNode> fragmentsCommon = [];
 
-    final fragmentsGlob = options.fragmentsGlob;
+    GeneratorOptions copyOptions = options;
+    if (copyOptions.convertEnumToString) {
+      final copyMapping = copyOptions.schemaMapping
+          .map(
+            (e) => e.copyWith(
+                convertEnumToString: copyOptions.convertEnumToString),
+          )
+          .toList();
+
+      copyOptions = copyOptions.copyWith(
+        schemaMapping: copyMapping,
+      );
+    }
+
+    final fragmentsGlob = copyOptions.fragmentsGlob;
     if (fragmentsGlob != null) {
       final commonFragments = (await readGraphQlFiles(buildStep, fragmentsGlob))
           .map((e) => e.definitions.whereType<FragmentDefinitionNode>())
@@ -107,7 +121,7 @@ class GraphQLQueryBuilder implements Builder {
       fragmentsCommon.addAll(commonFragments);
     }
 
-    for (final schemaMap in options.schemaMapping) {
+    for (final schemaMap in copyOptions.schemaMapping) {
       List<FragmentDefinitionNode> schemaCommonFragments = [
         ...fragmentsCommon,
       ];
@@ -185,7 +199,7 @@ class GraphQLQueryBuilder implements Builder {
       final libDefinition = generateLibrary(
         _addGraphQLExtensionToPathIfNeeded(output),
         gqlDocs,
-        options,
+        copyOptions,
         schemaMap,
         schemaCommonFragments,
         gqlSchema.first,
@@ -204,7 +218,7 @@ class GraphQLQueryBuilder implements Builder {
 
       writeLibraryDefinitionToBuffer(
         buffer,
-        options.ignoreForFile,
+        copyOptions.ignoreForFile,
         libDefinition,
       );
 

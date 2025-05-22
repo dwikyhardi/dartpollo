@@ -65,7 +65,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'Custom$_Query$_q'),
@@ -73,9 +73,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -102,7 +100,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'A')),
           EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'CustomList$_Query$_qList'),
@@ -110,9 +108,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -150,7 +146,7 @@ class Custom$Query$Q extends JsonSerializable with EquatableMixin {
   factory Custom$Query$Q.fromJson(Map<String, dynamic> json) =>
       _$Custom$Query$QFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? e;
 
   @override
@@ -181,7 +177,7 @@ class CustomList$Query$QList extends JsonSerializable with EquatableMixin {
   factory CustomList$Query$QList.fromJson(Map<String, dynamic> json) =>
       _$CustomList$Query$QListFromJson(json);
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? e;
 
   @override
@@ -210,7 +206,7 @@ enum MyEnum {
   a,
   @JsonValue('B')
   b,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 ''';

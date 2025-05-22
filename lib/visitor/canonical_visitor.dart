@@ -51,7 +51,7 @@ class CanonicalVisitor extends RecursiveVisitor {
                   annotations: proceedDeprecated(ev.directives),
                 ))
             .toList()
-          ..add(dartpolloUnknown),
+          ..add(unknown),
       );
     };
   }

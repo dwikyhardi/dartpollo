@@ -57,7 +57,7 @@ final LibraryDefinition libraryDefinition =
         EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
           EnumValueDefinition(name: EnumValueName(name: r'value1')),
           EnumValueDefinition(name: EnumValueName(name: r'value2')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'SomeQuery$_QueryRoot$_SomeObject'),
@@ -91,9 +91,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false),
               ClassProperty(
                   type: ListOfTypeName(
@@ -176,7 +174,7 @@ class ComplexInput extends JsonSerializable with EquatableMixin {
 
   late String s;
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? e;
 
   List<String?>? ls;
@@ -194,8 +192,8 @@ enum MyEnum {
   value1,
   @JsonValue('value2')
   value2,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 @JsonSerializable(explicitToJson: true)

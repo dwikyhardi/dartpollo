@@ -101,7 +101,7 @@ final LibraryDefinition libraryDefinition =
           EnumValueDefinition(name: EnumValueName(name: r'snake_case')),
           EnumValueDefinition(
               name: EnumValueName(name: r'SCREAMING_SNAKE_CASE')),
-          EnumValueDefinition(name: EnumValueName(name: r'DARTPOLLO_UNKNOWN'))
+          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
         ]),
         ClassDefinition(
             name: ClassName(name: r'SomeObject'),
@@ -130,9 +130,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -176,9 +174,7 @@ final LibraryDefinition libraryDefinition =
               ClassProperty(
                   type: TypeName(name: r'MyEnum'),
                   name: ClassPropertyName(name: r'e'),
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)'
-                  ],
+                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
                   isResolveType: false)
             ],
             factoryPossibilities: {},
@@ -220,7 +216,7 @@ class SomeObject extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')
   ScreamingSnakeCaseType? screamingSnakeCaseField;
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? e;
 
   @override
@@ -273,7 +269,7 @@ class Input extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')
   ScreamingSnakeCaseTypeInput? screamingSnakeCaseField;
 
-  @JsonKey(unknownEnumValue: MyEnum.dartpolloUnknown)
+  @JsonKey(unknownEnumValue: MyEnum.unknown)
   MyEnum? e;
 
   @override
@@ -297,8 +293,8 @@ enum MyEnum {
   snakeCase,
   @JsonValue('SCREAMING_SNAKE_CASE')
   screamingSnakeCase,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 @JsonSerializable(explicitToJson: true)

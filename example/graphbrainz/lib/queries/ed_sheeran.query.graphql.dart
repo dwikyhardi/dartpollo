@@ -166,8 +166,8 @@ enum ReleaseStatus {
   bootleg,
   @JsonValue('PSEUDORELEASE')
   pseudorelease,
-  @JsonValue('DARTPOLLO_UNKNOWN')
-  dartpolloUnknown,
+  @JsonValue('UNKNOWN')
+  unknown,
 }
 
 final ED_SHEERAN_QUERY_DOCUMENT_OPERATION_NAME = 'ed_sheeran';

@@ -19,8 +19,8 @@ import './schema/schema_options.dart';
 typedef OnNewClassFoundCallback = void Function(Context context);
 
 /// Enum value for values not mapped in the GraphQL enum
-final EnumValueDefinition dartpolloUnknown = EnumValueDefinition(
-  name: EnumValueName(name: 'DARTPOLLO_UNKNOWN'),
+final EnumValueDefinition unknown = EnumValueDefinition(
+  name: EnumValueName(name: 'UNKNOWN'),
 );
 
 /// Generate queries definitions from a GraphQL schema and a list of queries,
@@ -444,10 +444,10 @@ Make sure your query is correct and your schema is updated.''');
           typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
         );
         jsonKeyAnnotation['unknownEnumValue'] =
-            '${innerDartTypeName.dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+            '${innerDartTypeName.dartTypeSafe}.${unknown.name.namePrintable}';
       } else {
         jsonKeyAnnotation['unknownEnumValue'] =
-            '${dartTypeName.dartTypeSafe}.${dartpolloUnknown.name.namePrintable}';
+            '${dartTypeName.dartTypeSafe}.${unknown.name.namePrintable}';
       }
     }
   }
