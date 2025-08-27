@@ -1,30 +1,58 @@
 import 'package:dartpollo/generator/data/data.dart';
-import 'package:dartpollo/generator/data/enum_value_definition.dart';
-import 'package:dartpollo/generator/data/nullable.dart';
+import 'package:dartpollo/generator/class_generator.dart';
+import 'package:dartpollo/generator/input_generator.dart';
+import 'package:dartpollo/services/generation_service.dart';
+import 'package:dartpollo/services/schema_service.dart';
+import 'package:dartpollo/services/file_service.dart';
 import 'package:dartpollo/visitor/canonical_visitor.dart';
-import 'package:dartpollo/visitor/generator_visitor.dart';
-import 'package:dartpollo/visitor/object_type_definition_visitor.dart';
-import 'package:dartpollo/visitor/schema_definition_visitor.dart';
 import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';
-import 'package:path/path.dart' as p;
 
 import './generator/ephemeral_data.dart';
-import './generator/errors.dart';
-import './generator/graphql_helpers.dart' as gql;
-import './generator/helpers.dart';
 import './schema/schema_options.dart';
 
+/// Callback function type for handling new class discoveries during generation.
+///
+/// This callback is invoked whenever a new class needs to be generated
+/// during the GraphQL code generation process.
 typedef OnNewClassFoundCallback = void Function(Context context);
 
-/// Enum value for values not mapped in the GraphQL enum
-final EnumValueDefinition unknown = EnumValueDefinition(
-  name: EnumValueName(name: 'UNKNOWN'),
-);
-
-/// Generate queries definitions from a GraphQL schema and a list of queries,
-/// given Dartpollo options and schema mappings.
+/// Generates a complete library definition from GraphQL documents and schema.
+///
+/// This is the main entry point for generating Dart code from GraphQL documents.
+/// It coordinates the entire generation process by:
+/// 1. Creating necessary services (SchemaService, FileService, GenerationService)
+/// 2. Delegating the generation work to the GenerationService
+/// 3. Returning a complete LibraryDefinition with all generated code
+///
+/// **Parameters:**
+/// - [path] - The file path for the generated library (used for naming)
+/// - [gqlDocs] - List of GraphQL documents containing queries, mutations, subscriptions
+/// - [options] - Generator configuration options (naming schemes, features, etc.)
+/// - [schemaMap] - Schema mapping configuration for type resolution
+/// - [fragmentsCommon] - Common fragments shared across documents
+/// - [schema] - The GraphQL schema document
+///
+/// **Returns:**
+/// A [LibraryDefinition] containing all generated classes, queries, and metadata
+///
+/// **Throws:**
+/// - [GenerationProcessError] if generation fails
+/// - [DuplicatedClassesException] if duplicate classes are detected
+/// - [MissingRootTypeException] if required root types are missing
+///
+/// **Example:**
+/// ```dart
+/// final library = generateLibrary(
+///   'lib/graphql/queries.dart',
+///   [queryDocument, mutationDocument],
+///   GeneratorOptions(),
+///   SchemaMap(),
+///   [],
+///   schemaDocument,
+/// );
+/// ```
 LibraryDefinition generateLibrary(
   String path,
   List<DocumentNode> gqlDocs,
@@ -33,114 +61,50 @@ LibraryDefinition generateLibrary(
   List<FragmentDefinitionNode> fragmentsCommon,
   DocumentNode schema,
 ) {
-  final typeDefinitionNodeVisitor = TypeDefinitionNodeVisitor();
-  schema.accept(typeDefinitionNodeVisitor);
-
-  final canonicalVisitor = CanonicalVisitor(
-    context: Context(
-      schema: schema,
-      typeDefinitionNodeVisitor: typeDefinitionNodeVisitor,
-      options: options,
-      schemaMap: schemaMap,
-      path: [],
-      currentType: null,
-      currentFieldName: null,
-      currentClassName: null,
-      generatedClasses: [],
-      inputsClasses: [],
-      fragments: [],
-      usedEnums: {},
-      usedInputObjects: {},
-    ),
+  // Create services with dependency injection
+  final schemaService = SchemaService(schema);
+  final fileService = FileService();
+  final generationService = GenerationService(
+    schemaService: schemaService,
+    fileService: fileService,
   );
 
-  schema.accept(canonicalVisitor);
-
-  final documentFragments = gqlDocs
-      .map((doc) => doc.definitions.whereType<FragmentDefinitionNode>())
-      .expand((e) => e)
-      .toList();
-
-  final documentsWithoutFragments = gqlDocs.map((doc) {
-    return DocumentNode(
-      definitions:
-          doc.definitions.where((e) => e is! FragmentDefinitionNode).toList(),
-      span: doc.span,
-    );
-  }).toList();
-
-  final queryDefinitions = documentsWithoutFragments
-      .map((doc) => generateDefinitions(
-            schema: schema,
-            typeDefinitionNodeVisitor: typeDefinitionNodeVisitor,
-            path: path,
-            document: doc,
-            options: options,
-            schemaMap: schemaMap,
-            fragmentsCommon: [
-              ...documentFragments,
-              ...fragmentsCommon,
-            ],
-            canonicalVisitor: canonicalVisitor,
-          ))
-      .expand((e) => e)
-      .toList();
-
-  final allClassesNames = queryDefinitions
-      .map((def) => def.classes.map((c) => c))
-      .expand((e) => e)
-      .toList();
-
-  allClassesNames.mergeDuplicatesBy((a) => a.name, (a, b) {
-    if (a.name == b.name && a != b) {
-      throw DuplicatedClassesException(a, b);
-    }
-
-    return a;
-  });
-
-  final basename = p.basenameWithoutExtension(path);
-
-  final customImports = _extractCustomImports(schema, options);
-  return LibraryDefinition(
-    basename: basename,
-    queries: queryDefinitions,
-    customImports: customImports,
-    schemaMap: schemaMap,
+  // Use GenerationService to generate the library
+  return generationService.generateLibrary(
+    path,
+    gqlDocs,
+    options,
+    schemaMap,
+    fragmentsCommon,
   );
 }
 
-Set<FragmentDefinitionNode> _extractFragments(SelectionSetNode? selectionSet,
-    List<FragmentDefinitionNode> fragmentsCommon) {
-  final result = <FragmentDefinitionNode>{};
-  if (selectionSet != null) {
-    selectionSet.selections.whereType<FieldNode>().forEach((selection) {
-      result.addAll(_extractFragments(selection.selectionSet, fragmentsCommon));
-    });
-
-    selectionSet.selections
-        .whereType<InlineFragmentNode>()
-        .forEach((selection) {
-      result.addAll(_extractFragments(selection.selectionSet, fragmentsCommon));
-    });
-
-    selectionSet.selections
-        .whereType<FragmentSpreadNode>()
-        .forEach((selection) {
-      final fragmentDefinitions = fragmentsCommon.where((fragmentDefinition) =>
-          fragmentDefinition.name.value == selection.name.value);
-      result.addAll(fragmentDefinitions);
-      for (var fragmentDefinition in fragmentDefinitions) {
-        result.addAll(_extractFragments(
-            fragmentDefinition.selectionSet, fragmentsCommon));
-      }
-    });
-  }
-  return result;
-}
-
-/// Generate a query definition from a GraphQL schema and a query, given
-/// Dartpollo options and schema mappings.
+/// Generates query definitions from a single GraphQL document.
+///
+/// This function processes a single GraphQL document and generates all necessary
+/// query definitions. It's typically used internally by the generation pipeline
+/// but can also be used directly for more granular control.
+///
+/// **Parameters:**
+/// - [schema] - The GraphQL schema document
+/// - [typeDefinitionNodeVisitor] - Visitor for type definitions (legacy parameter)
+/// - [path] - The file path for context
+/// - [document] - The GraphQL document to process
+/// - [options] - Generator configuration options
+/// - [schemaMap] - Schema mapping configuration
+/// - [fragmentsCommon] - Common fragments to include
+/// - [canonicalVisitor] - Pre-configured canonical visitor
+///
+/// **Returns:**
+/// An iterable of [QueryDefinition] objects representing the generated queries
+///
+/// **Throws:**
+/// - [GenerationProcessError] if generation fails
+/// - [MissingRootTypeException] if root type is not found
+///
+/// **Note:**
+/// This function is primarily used internally. For most use cases,
+/// prefer using [generateLibrary] instead.
 Iterable<QueryDefinition> generateDefinitions({
   required DocumentNode schema,
   required TypeDefinitionNodeVisitor typeDefinitionNodeVisitor,
@@ -151,139 +115,61 @@ Iterable<QueryDefinition> generateDefinitions({
   required List<FragmentDefinitionNode> fragmentsCommon,
   required CanonicalVisitor canonicalVisitor,
 }) {
-  // final documentFragments =
-  //     document.definitions.whereType<FragmentDefinitionNode>();
+  // Create services for this generation
+  final schemaService = SchemaService(schema);
+  final fileService = FileService();
+  final generationService = GenerationService(
+    schemaService: schemaService,
+    fileService: fileService,
+  );
 
-  // if (documentFragments.isNotEmpty && fragmentsCommon.isNotEmpty) {
-  //   throw FragmentIgnoreException();
-  // }
-
-  final operations =
-      document.definitions.whereType<OperationDefinitionNode>().toList();
-
-  return operations.map((operation) {
-    // final fragments = <FragmentDefinitionNode>[
-    //   ...documentFragments,
-    // ];
-    final definitions = document.definitions
-        // filtering unused operations
-        .where((e) {
-      return e is! OperationDefinitionNode || e == operation;
-    }).toList();
-
-    if (fragmentsCommon.isNotEmpty) {
-      final fragmentsOperation =
-          _extractFragments(operation.selectionSet, fragmentsCommon);
-      definitions.addAll(fragmentsOperation);
-      // fragments.addAll(fragmentsOperation);
-    }
-
-    final basename = p.basenameWithoutExtension(path).split('.').first;
-    final operationName = operation.name?.value ?? basename;
-
-    final schemaVisitor = SchemaDefinitionVisitor();
-    final objectVisitor = ObjectTypeDefinitionVisitor();
-
-    schema.accept(schemaVisitor);
-    schema.accept(objectVisitor);
-
-    String suffix;
-    switch (operation.type) {
-      case OperationType.subscription:
-        suffix = 'Subscription';
-        break;
-      case OperationType.mutation:
-        suffix = 'Mutation';
-        break;
-      case OperationType.query:
-        suffix = 'Query';
-        break;
-    }
-
-    final rootTypeName =
-        (schemaVisitor.schemaDefinitionNode?.operationTypes ?? [])
-                .firstWhereOrNull((e) => e.operation == operation.type)
-                ?.type
-                .name
-                .value ??
-            suffix;
-
-    final parentType = objectVisitor.getByName(rootTypeName);
-
-    if (parentType == null) {
-      throw MissingRootTypeException(rootTypeName);
-    }
-
-    final name = QueryName.fromPath(
-      path: createPathName([
-        ClassName(name: operationName),
-        ClassName(name: parentType.name.value)
-      ], schemaMap.namingScheme),
-    );
-
-    final context = Context(
-      schema: schema,
-      typeDefinitionNodeVisitor: typeDefinitionNodeVisitor,
-      options: options,
-      schemaMap: schemaMap,
-      path: [
-        TypeName(name: operationName),
-        TypeName(name: parentType.name.value)
-      ],
-      currentType: parentType,
-      currentFieldName: null,
-      currentClassName: null,
-      generatedClasses: [],
-      inputsClasses: [],
-      fragments: fragmentsCommon,
-      usedEnums: {},
-      usedInputObjects: {},
-    );
-
-    final visitor = GeneratorVisitor(context: context);
-    final documentDefinitions = DocumentNode(definitions: definitions);
-    documentDefinitions.accept(visitor);
-
-    return QueryDefinition(
-      name: name,
-      operationName: operationName,
-      document: documentDefinitions,
-      classes: [
-        // Only include enum definitions if convertEnumToString is false
-        if (!schemaMap.convertEnumToString)
-          ...context.usedEnums
-              .map((e) => canonicalVisitor.enums[e.name]?.call())
-              .whereType<Definition>(),
-        ...visitor.context.generatedClasses,
-        ...context.usedInputObjects
-            .map((e) => canonicalVisitor.inputObjects[e.name]?.call())
-            .whereType<Definition>(),
-      ],
-      inputs: visitor.context.inputsClasses,
-      generateHelpers: options.generateHelpers,
-      generateQueries: options.generateQueries,
-      suffix: suffix,
-    );
-  });
+  // Use GenerationService to generate definitions
+  return generationService.generateDefinitions(
+    path: path,
+    document: document,
+    options: options,
+    schemaMap: schemaMap,
+    fragmentsCommon: fragmentsCommon,
+    canonicalVisitor: canonicalVisitor,
+  );
 }
 
-List<String> _extractCustomImports(
-  DocumentNode schema,
-  GeneratorOptions options,
-) {
-  final typeVisitor = TypeDefinitionNodeVisitor();
+// Removed _extractCustomImports - now handled by SchemaService.extractCustomImports
 
-  schema.accept(typeVisitor);
-
-  return typeVisitor.types.values
-      .whereType<ScalarTypeDefinitionNode>()
-      .map((type) => gql.importsOfScalar(options, type.name.value))
-      .expand((i) => i)
-      .toSet()
-      .toList();
-}
-
-/// Creates class property object
+/// Creates a class property object from GraphQL field information.
+///
+/// This function analyzes a GraphQL field and creates the corresponding
+/// Dart class property with proper type mapping, annotations, and validation.
+/// It handles both regular object fields and input object fields by delegating
+/// to the appropriate specialized generators.
+///
+/// **Parameters:**
+/// - [fieldName] - The name of the field to create a property for
+/// - [fieldAlias] - Optional alias for the field (used in queries)
+/// - [context] - The current generation context containing schema and type information
+/// - [onNewClassFound] - Optional callback for when new classes need to be generated
+/// - [markAsUsed] - Whether to mark related types as used (default: true)
+///
+/// **Returns:**
+/// A [ClassProperty] object representing the Dart property
+///
+/// **Throws:**
+/// - [Exception] if the field is not found in the GraphQL type
+/// - [Exception] if unable to determine the field type
+///
+/// **Special Handling:**
+/// - `__typename` fields are automatically handled with proper JSON annotations
+/// - Input object fields are processed using [InputGenerator]
+/// - Regular object fields are processed using [ClassGenerator]
+///
+/// **Example:**
+/// ```dart
+/// final property = createClassProperty(
+///   fieldName: ClassPropertyName(name: 'userId'),
+///   context: generationContext,
+///   onNewClassFound: (context) => print('New class: ${context.currentClassName}'),
+/// );
+/// ```
 ClassProperty createClassProperty({
   required ClassPropertyName fieldName,
   ClassPropertyName? fieldAlias,
@@ -291,6 +177,7 @@ ClassProperty createClassProperty({
   OnNewClassFoundCallback? onNewClassFound,
   bool markAsUsed = true,
 }) {
+  // Handle __typename field
   if (fieldName.name == context.schemaMap.typeNameField) {
     return ClassProperty(
       type: TypeName(name: 'String'),
@@ -300,8 +187,8 @@ ClassProperty createClassProperty({
     );
   }
 
+  // Determine field type and directives based on current type
   var finalFields = <Node>[];
-
   if (context.currentType is ObjectTypeDefinitionNode) {
     finalFields = (context.currentType as ObjectTypeDefinitionNode).fields;
   } else if (context.currentType is InterfaceTypeDefinitionNode) {
@@ -318,6 +205,8 @@ ClassProperty createClassProperty({
       .firstWhereOrNull((f) => f.name.value == fieldName.name);
 
   final fieldType = regularField?.type ?? regularInputField?.type;
+  final fieldDirectives =
+      regularField?.directives ?? regularInputField?.directives;
 
   if (fieldType == null) {
     throw Exception(
@@ -325,149 +214,29 @@ ClassProperty createClassProperty({
 Make sure your query is correct and your schema is updated.''');
   }
 
-  final nextType =
-      gql.getTypeByName(context.typeDefinitionNodeVisitor, fieldType);
-
-  final aliasedContext = context.withAlias(
-    nextFieldName: fieldName,
-    nextClassName: ClassName(name: nextType.name.value),
-    alias: fieldAlias,
-  );
-
-  final nextClassName = aliasedContext.fullPathName();
-
-  final dartTypeName = gql.buildTypeName(
-    fieldType,
-    context.options,
-    dartType: true,
-    replaceLeafWith: ClassName.fromPath(path: nextClassName),
-    typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
-  );
-
-  logFn(context, aliasedContext.align + 1,
-      '${aliasedContext.path}[${aliasedContext.currentType!.name.value}][${aliasedContext.currentClassName} ${aliasedContext.currentFieldName}] ${fieldAlias == null ? '' : '($fieldAlias) '}-> ${dartTypeName.namePrintable}');
-
-  if ((nextType is ObjectTypeDefinitionNode ||
-          nextType is UnionTypeDefinitionNode ||
-          nextType is InterfaceTypeDefinitionNode) &&
-      onNewClassFound != null) {
-    ClassPropertyName? nextFieldName;
-
-    if (regularField != null) {
-      nextFieldName = ClassPropertyName(name: regularField.name.value);
-    } else if (regularInputField != null) {
-      nextFieldName = ClassPropertyName(name: regularInputField.name.value);
-    }
-
-    onNewClassFound(
-      aliasedContext.next(
-        nextType: nextType,
-        nextFieldName: nextFieldName,
-        nextClassName: ClassName(name: nextType.name.value),
-        alias: fieldAlias,
-        ofUnion: Nullable<TypeDefinitionNode?>(null),
-      ),
+  // Use ClassGenerator or InputGenerator based on context
+  if (context.currentType is InputObjectTypeDefinitionNode &&
+      regularInputField != null) {
+    // Use InputGenerator for input object fields
+    return InputGenerator.createInputClassProperty(
+      fieldName: fieldName,
+      fieldType: fieldType,
+      fieldDirectives: regularInputField.directives,
+      context: context,
     );
+  } else if (regularField != null) {
+    // Use ClassGenerator for regular object fields
+    return ClassGenerator.createClassProperty(
+      fieldName: fieldName,
+      fieldAlias: fieldAlias,
+      fieldType: fieldType,
+      fieldDirectives: fieldDirectives,
+      context: context,
+      onNewClassFound: onNewClassFound ?? (_) {},
+      markAsUsed: markAsUsed,
+    );
+  } else {
+    throw Exception(
+        '''Unable to determine field type for $fieldName in ${context.currentType?.name.value}''');
   }
-
-  final name = fieldAlias ?? fieldName;
-
-  // On custom scalars
-  final jsonKeyAnnotation = <String, String>{};
-  if (name.namePrintable != name.name) {
-    jsonKeyAnnotation['name'] = '\'${name.name}\'';
-  }
-
-  if (nextType is ScalarTypeDefinitionNode) {
-    final scalar = gql.getSingleScalarMap(context.options, nextType.name.value);
-
-    if (scalar?.customParserImport != null &&
-        nextType.name.value == scalar?.graphQLType) {
-      final graphqlTypeName = gql.buildTypeName(
-        fieldType,
-        context.options,
-        dartType: false,
-        typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
-      );
-
-      jsonKeyAnnotation['fromJson'] =
-          'fromGraphQL${graphqlTypeName.parserSafe}ToDart${dartTypeName.parserSafe}';
-      jsonKeyAnnotation['toJson'] =
-          'fromDart${dartTypeName.parserSafe}ToGraphQL${graphqlTypeName.parserSafe}';
-    }
-  } // On enums
-  else if (nextType is EnumTypeDefinitionNode) {
-    if (markAsUsed) {
-      context.usedEnums.add(EnumName(name: nextType.name.value));
-    }
-
-    if (context.schemaMap.convertEnumToString) {
-      // If convertEnumToString is enabled, we'll return a String instead of an enum
-      if (fieldType is ListTypeNode) {
-        // For lists of enums, we need to modify the type to be List<String>
-        // Use a simpler approach to avoid json_serializable errors
-        // Don't use complex lambda expressions in JsonKey annotations
-
-        // Override the dartTypeName to be List<String>
-        return ClassProperty(
-          type: ListOfTypeName(
-            typeName: TypeName(name: 'String', isNonNull: false),
-            isNonNull: dartTypeName.isNonNull,
-          ),
-          name: name,
-          // No custom fromJson/toJson functions, let json_serializable handle it
-          annotations: name.namePrintable != name.name
-              ? ['JsonKey(name: \'${name.name}\')']
-              : [],
-        );
-      } else {
-        // For single enums, we'll return a String
-        // Create the JSON key annotation string
-        final jsonKey = jsonKeyAnnotation.entries
-            .map<String>((e) => '${e.key}: ${e.value}')
-            .join(', ');
-
-        return ClassProperty(
-          type: TypeName(name: 'String', isNonNull: dartTypeName.isNonNull),
-          name: name,
-          annotations: jsonKeyAnnotation.isEmpty ? [] : ['JsonKey($jsonKey)'],
-        );
-      }
-    } else {
-      // Original behavior when convertEnumToString is false
-      if (fieldType is ListTypeNode) {
-        final innerDartTypeName = gql.buildTypeName(
-          fieldType.type,
-          context.options,
-          dartType: true,
-          replaceLeafWith: ClassName.fromPath(path: nextClassName),
-          typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
-        );
-        jsonKeyAnnotation['unknownEnumValue'] =
-            '${innerDartTypeName.dartTypeSafe}.${unknown.name.namePrintable}';
-      } else {
-        jsonKeyAnnotation['unknownEnumValue'] =
-            '${dartTypeName.dartTypeSafe}.${unknown.name.namePrintable}';
-      }
-    }
-  }
-
-  final fieldDirectives =
-      regularField?.directives ?? regularInputField?.directives;
-
-  var annotations = <String>[];
-
-  if (jsonKeyAnnotation.isNotEmpty) {
-    final jsonKey = jsonKeyAnnotation.entries
-        .map<String>((e) => '${e.key}: ${e.value}')
-        .join(', ');
-    annotations.add('JsonKey($jsonKey)');
-  }
-  annotations.addAll(proceedDeprecated(fieldDirectives));
-
-  return ClassProperty(
-    type: dartTypeName,
-    name: name,
-    annotations: annotations,
-  );
 }

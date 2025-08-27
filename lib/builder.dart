@@ -220,6 +220,7 @@ class GraphQLQueryBuilder implements Builder {
         buffer,
         copyOptions.ignoreForFile,
         libDefinition,
+        copyOptions,
       );
 
       await buildStep.writeAsString(outputFileId, buffer.toString());

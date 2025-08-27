@@ -1,6 +1,7 @@
 import 'package:dartpollo/generator.dart';
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/data/nullable.dart';
+import 'package:dartpollo/generator/enum_generator.dart';
 import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:dartpollo/generator/graphql_helpers.dart' as gql;
 import 'package:dartpollo/generator/helpers.dart';
@@ -196,10 +197,10 @@ class GeneratorVisitor extends RecursiveVisitor {
             typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
           );
           jsonKeyAnnotation['unknownEnumValue'] =
-              '${EnumName(name: innerDartTypeName.name).dartTypeSafe}.${unknown.name.namePrintable}';
+              '${EnumName(name: innerDartTypeName.name).dartTypeSafe}.${EnumGenerator.unknownEnumValue.name.namePrintable}';
         } else {
           jsonKeyAnnotation['unknownEnumValue'] =
-              '${EnumName(name: dartTypeName.name).dartTypeSafe}.${unknown.name.namePrintable}';
+              '${EnumName(name: dartTypeName.name).dartTypeSafe}.${EnumGenerator.unknownEnumValue.name.namePrintable}';
         }
       }
     } else if (leafType is InputObjectTypeDefinitionNode) {
@@ -233,9 +234,22 @@ class GeneratorVisitor extends RecursiveVisitor {
     var annotations = <String>[];
 
     if (jsonKeyAnnotation.isNotEmpty) {
-      final jsonKey = jsonKeyAnnotation.entries
-          .map<String>((e) => '${e.key}: ${e.value}')
-          .join(', ');
+      // Create the JSON key annotation string with consistent ordering
+      final orderedEntries = <String>[];
+      if (jsonKeyAnnotation.containsKey('name')) {
+        orderedEntries.add('name: ${jsonKeyAnnotation['name']}');
+      }
+      if (jsonKeyAnnotation.containsKey('unknownEnumValue')) {
+        orderedEntries
+            .add('unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}');
+      }
+      // Add any other entries
+      for (final entry in jsonKeyAnnotation.entries) {
+        if (entry.key != 'name' && entry.key != 'unknownEnumValue') {
+          orderedEntries.add('${entry.key}: ${entry.value}');
+        }
+      }
+      final jsonKey = orderedEntries.join(', ');
       annotations.add('JsonKey($jsonKey)');
     }
 

@@ -151,7 +151,7 @@ final LibraryDefinition libraryDefinition =
             name: ClassName(name: r'Input'),
             properties: [
               ClassProperty(
-                  type: TypeName(name: r'CamelCaseTypeInput'),
+                  type: TypeName(name: r'camelCaseTypeInput'),
                   name: ClassPropertyName(name: r'camelCaseField'),
                   isResolveType: false),
               ClassProperty(
@@ -160,12 +160,12 @@ final LibraryDefinition libraryDefinition =
                   annotations: [r'''JsonKey(name: 'PascalCaseField')'''],
                   isResolveType: false),
               ClassProperty(
-                  type: TypeName(name: r'SnakeCaseTypeInput'),
+                  type: TypeName(name: r'snake_case_type_input'),
                   name: ClassPropertyName(name: r'snake_case_field'),
                   annotations: [r'''JsonKey(name: 'snake_case_field')'''],
                   isResolveType: false),
               ClassProperty(
-                  type: TypeName(name: r'ScreamingSnakeCaseTypeInput'),
+                  type: TypeName(name: r'SCREAMING_SNAKE_CASE_TYPE_INPUT'),
                   name: ClassPropertyName(name: r'SCREAMING_SNAKE_CASE_FIELD'),
                   annotations: [
                     r'''JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')'''

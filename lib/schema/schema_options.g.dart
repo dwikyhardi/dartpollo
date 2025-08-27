@@ -17,6 +17,7 @@ GeneratorOptions _$GeneratorOptionsFromJson(Map json) => GeneratorOptions(
           [],
       fragmentsGlob: json['fragments_glob'] as String?,
       convertEnumToString: json['convert_enum_to_string'] as bool? ?? false,
+      optimizeDocumentNodes: json['optimize_document_nodes'] as bool? ?? false,
       schemaMapping: (json['schema_mapping'] as List<dynamic>?)
               ?.map((e) =>
                   SchemaMap.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -37,6 +38,7 @@ Map<String, dynamic> _$GeneratorOptionsToJson(GeneratorOptions instance) =>
       'schema_mapping': instance.schemaMapping,
       'ignore_for_file': instance.ignoreForFile,
       'convert_enum_to_string': instance.convertEnumToString,
+      'optimize_document_nodes': instance.optimizeDocumentNodes,
     };
 
 DartType _$DartTypeFromJson(Map<String, dynamic> json) => DartType(

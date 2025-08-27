@@ -1,6 +1,7 @@
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/data/enum_value_definition.dart';
 import 'package:dartpollo/generator/print_helpers.dart';
+import 'package:dartpollo/schema/schema_options.dart';
 import 'package:gql/language.dart';
 import 'package:test/test.dart';
 
@@ -385,7 +386,9 @@ class AClass extends JsonSerializable with EquatableMixin {
 
   group('On generateQueryClassSpec', () {
     test('It will throw if basename is null or empty.', () {
-      expect(() => generateLibrarySpec(LibraryDefinition(basename: '')),
+      expect(
+          () => generateLibrarySpec(
+              LibraryDefinition(basename: ''), GeneratorOptions()),
           throwsA(TypeMatcher<AssertionError>()));
     });
 
@@ -427,7 +430,8 @@ class AClass extends JsonSerializable with EquatableMixin {
       final buffer = StringBuffer();
       final definition = LibraryDefinition(basename: r'test_query.graphql');
       final ignoreForFile = <String>[];
-      writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+      writeLibraryDefinitionToBuffer(
+          buffer, ignoreForFile, definition, GeneratorOptions());
 
       expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -444,7 +448,8 @@ part 'test_query.graphql.g.dart';
           basename: r'test_query.graphql', customImports: ['some_file.dart']);
       final ignoreForFile = <String>[];
 
-      writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+      writeLibraryDefinitionToBuffer(
+          buffer, ignoreForFile, definition, GeneratorOptions());
 
       expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -472,7 +477,8 @@ part 'test_query.graphql.g.dart';
       );
       final ignoreForFile = <String>[];
 
-      writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+      writeLibraryDefinitionToBuffer(
+          buffer, ignoreForFile, definition, GeneratorOptions());
 
       expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -503,10 +509,10 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, JsonSerializable> {
   final String operationName = TEST_QUERY_QUERY_DOCUMENT_OPERATION_NAME;
 
   @override
-  List<Object?> get props => [document, operationName];
+  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
 
   @override
-  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
+  List<Object?> get props => [document, operationName];
 }
 ''');
     });
@@ -529,7 +535,8 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, JsonSerializable> {
       );
       final ignoreForFile = <String>[];
 
-      writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+      writeLibraryDefinitionToBuffer(
+          buffer, ignoreForFile, definition, GeneratorOptions());
 
       expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -569,7 +576,8 @@ final TEST_QUERY_QUERY_DOCUMENT = DocumentNode(definitions: [
       ]);
       final ignoreForFile = <String>[];
 
-      writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+      writeLibraryDefinitionToBuffer(
+          buffer, ignoreForFile, definition, GeneratorOptions());
 
       expect(buffer.toString(), r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -620,10 +628,10 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
   final TestQueryArguments variables;
 
   @override
-  List<Object?> get props => [document, operationName, variables];
+  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
 
   @override
-  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
+  List<Object?> get props => [document, operationName, variables];
 }
 ''');
     });
@@ -701,10 +709,10 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
   final TestQueryArguments variables;
 
   @override
-  List<Object?> get props => [document, operationName, variables];
+  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
 
   @override
-  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
+  List<Object?> get props => [document, operationName, variables];
 }
 ''');
     });
@@ -729,7 +737,8 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
       ]);
       final ignoreForFile = <String>[];
 
-      writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+      writeLibraryDefinitionToBuffer(
+          buffer, ignoreForFile, definition, GeneratorOptions());
 
       expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -764,7 +773,8 @@ enum SomeEnum {
     final definition = LibraryDefinition(basename: r'test_query.graphql');
     final ignoreForFile = <String>[];
 
-    writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+    writeLibraryDefinitionToBuffer(
+        buffer, ignoreForFile, definition, GeneratorOptions());
 
     expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -780,7 +790,8 @@ part 'test_query.graphql.g.dart';
     final definition = LibraryDefinition(basename: r'test_query.graphql');
     final ignoreForFile = <String>[];
 
-    writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+    writeLibraryDefinitionToBuffer(
+        buffer, ignoreForFile, definition, GeneratorOptions());
 
     expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -797,7 +808,8 @@ part 'test_query.graphql.g.dart';
     final definition = LibraryDefinition(basename: r'test_query.graphql');
     final ignoreForFile = <String>['my_rule_1', 'my_rule_2'];
 
-    writeLibraryDefinitionToBuffer(buffer, ignoreForFile, definition);
+    writeLibraryDefinitionToBuffer(
+        buffer, ignoreForFile, definition, GeneratorOptions());
 
     expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: my_rule_1, my_rule_2

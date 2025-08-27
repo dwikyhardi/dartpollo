@@ -1,10 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart = 2.12
 
+import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:equatable/equatable.dart';
+import 'package:dartpollo/generator/document_helpers.dart';
+import 'package:dartpollo/schema/graphql_data_class.dart';
 import 'package:gql/ast.dart';
+import 'package:json_annotation/json_annotation.dart';
 part 'fragments_glob.graphql.g.dart';
 
 mixin PokemonMixin {
@@ -23,8 +24,8 @@ mixin AttackMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentsGlob$Query$Pokemon$Pokemon extends JsonSerializable
-    with EquatableMixin, PokemonMixin {
+class FragmentsGlob$Query$Pokemon$Pokemon extends GraphQLDataClass
+    with PokemonMixin {
   FragmentsGlob$Query$Pokemon$Pokemon();
 
   factory FragmentsGlob$Query$Pokemon$Pokemon.fromJson(
@@ -32,15 +33,27 @@ class FragmentsGlob$Query$Pokemon$Pokemon extends JsonSerializable
       _$FragmentsGlob$Query$Pokemon$PokemonFromJson(json);
 
   @override
-  List<Object?> get props => [id, weight, attacks];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FragmentsGlob$Query$Pokemon$Pokemon) return false;
+    return id == other.id && attacks == other.attacks && weight == other.weight;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id.hashCode, weight.hashCode, attacks.hashCode);
+
+  @override
+  String toString() =>
+      'FragmentsGlob\$Query\$Pokemon\$Pokemon(id: $id, attacks: $attacks, weight: $weight)';
+
   @override
   Map<String, dynamic> toJson() =>
       _$FragmentsGlob$Query$Pokemon$PokemonToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentsGlob$Query$Pokemon extends JsonSerializable
-    with EquatableMixin, PokemonMixin {
+class FragmentsGlob$Query$Pokemon extends GraphQLDataClass with PokemonMixin {
   FragmentsGlob$Query$Pokemon();
 
   factory FragmentsGlob$Query$Pokemon.fromJson(Map<String, dynamic> json) =>
@@ -49,13 +62,29 @@ class FragmentsGlob$Query$Pokemon extends JsonSerializable
   List<FragmentsGlob$Query$Pokemon$Pokemon?>? evolutions;
 
   @override
-  List<Object?> get props => [id, weight, attacks, evolutions];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FragmentsGlob$Query$Pokemon) return false;
+    return id == other.id &&
+        attacks == other.attacks &&
+        const DeepCollectionEquality().equals(evolutions, other.evolutions) &&
+        weight == other.weight;
+  }
+
+  @override
+  int get hashCode => Object.hash(id.hashCode, weight.hashCode,
+      attacks.hashCode, const DeepCollectionEquality().hash(evolutions));
+
+  @override
+  String toString() =>
+      'FragmentsGlob\$Query\$Pokemon(id: $id, attacks: $attacks, evolutions: ${evolutions?.length ?? 0} items, weight: $weight)';
+
   @override
   Map<String, dynamic> toJson() => _$FragmentsGlob$Query$PokemonToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentsGlob$Query extends JsonSerializable with EquatableMixin {
+class FragmentsGlob$Query extends GraphQLDataClass {
   FragmentsGlob$Query();
 
   factory FragmentsGlob$Query.fromJson(Map<String, dynamic> json) =>
@@ -64,159 +93,111 @@ class FragmentsGlob$Query extends JsonSerializable with EquatableMixin {
   FragmentsGlob$Query$Pokemon? pokemon;
 
   @override
-  List<Object?> get props => [pokemon];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FragmentsGlob$Query) return false;
+    return pokemon == other.pokemon;
+  }
+
+  @override
+  int get hashCode => pokemon.hashCode;
+
+  @override
+  String toString() => 'FragmentsGlob\$Query(pokemon: $pokemon)';
+
   @override
   Map<String, dynamic> toJson() => _$FragmentsGlob$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class PokemonMixin$PokemonDimension extends JsonSerializable
-    with EquatableMixin, WeightMixin {
+class PokemonMixin$PokemonDimension extends GraphQLDataClass with WeightMixin {
   PokemonMixin$PokemonDimension();
 
   factory PokemonMixin$PokemonDimension.fromJson(Map<String, dynamic> json) =>
       _$PokemonMixin$PokemonDimensionFromJson(json);
 
   @override
-  List<Object?> get props => [minimum];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PokemonMixin$PokemonDimension) return false;
+    return minimum == other.minimum;
+  }
+
+  @override
+  int get hashCode => minimum.hashCode;
+
+  @override
+  String toString() => 'PokemonMixin\$PokemonDimension(minimum: $minimum)';
+
   @override
   Map<String, dynamic> toJson() => _$PokemonMixin$PokemonDimensionToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class PokemonMixin$PokemonAttack extends JsonSerializable
-    with EquatableMixin, PokemonAttackMixin {
+class PokemonMixin$PokemonAttack extends GraphQLDataClass
+    with PokemonAttackMixin {
   PokemonMixin$PokemonAttack();
 
   factory PokemonMixin$PokemonAttack.fromJson(Map<String, dynamic> json) =>
       _$PokemonMixin$PokemonAttackFromJson(json);
 
   @override
-  List<Object?> get props => [special];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PokemonMixin$PokemonAttack) return false;
+    return special == other.special;
+  }
+
+  @override
+  int get hashCode => special.hashCode;
+
+  @override
+  String toString() => 'PokemonMixin\$PokemonAttack(special: $special)';
+
   @override
   Map<String, dynamic> toJson() => _$PokemonMixin$PokemonAttackToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class PokemonAttackMixin$Attack extends JsonSerializable
-    with EquatableMixin, AttackMixin {
+class PokemonAttackMixin$Attack extends GraphQLDataClass with AttackMixin {
   PokemonAttackMixin$Attack();
 
   factory PokemonAttackMixin$Attack.fromJson(Map<String, dynamic> json) =>
       _$PokemonAttackMixin$AttackFromJson(json);
 
   @override
-  List<Object?> get props => [name];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! PokemonAttackMixin$Attack) return false;
+    return name == other.name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() => 'PokemonAttackMixin\$Attack(name: $name)';
+
   @override
   Map<String, dynamic> toJson() => _$PokemonAttackMixin$AttackToJson(this);
 }
 
-final FRAGMENTS_GLOB_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: null,
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'pokemon'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'name'),
-                  value: StringValueNode(value: 'Pikachu', isBlock: false))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'Pokemon'), directives: []),
-              FieldNode(
-                  name: NameNode(value: 'evolutions'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'Pokemon'), directives: [])
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'Pokemon'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'Pokemon'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'weight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'weight'), directives: [])
-            ])),
-        FieldNode(
-            name: NameNode(value: 'attacks'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'pokemonAttack'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'weight'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'PokemonDimension'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'minimum'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'pokemonAttack'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'PokemonAttack'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'special'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'attack'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'attack'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(name: NameNode(value: 'Attack'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
+final FRAGMENTS_GLOB_QUERY_DOCUMENT_OPERATION_NAME = 'fragments_glob';
+final FRAGMENTS_GLOB_QUERY_DOCUMENT = DocumentNodeHelpers.document([
+  DocumentNodeHelpers.operation(
+    OperationType.query,
+    '',
+    selections: [
+      DocumentNodeHelpers.field('pokemon', args: {
+        'name': 'Pikachu'
+      }, selections: [
+        DocumentNodeHelpers.fragmentSpread('Pokemon'),
+        DocumentNodeHelpers.field('evolutions', selections: [
+          DocumentNodeHelpers.fragmentSpread('Pokemon'),
+        ]),
+      ]),
+    ],
+  ),
 ]);
 
 class FragmentsGlobQuery
@@ -227,10 +208,11 @@ class FragmentsGlobQuery
   final DocumentNode document = FRAGMENTS_GLOB_QUERY_DOCUMENT;
 
   @override
-  final String operationName = 'fragments_glob';
+  final String operationName = FRAGMENTS_GLOB_QUERY_DOCUMENT_OPERATION_NAME;
 
   @override
   List<Object?> get props => [document, operationName];
+
   @override
   FragmentsGlob$Query parse(Map<String, dynamic> json) =>
       FragmentsGlob$Query.fromJson(json);

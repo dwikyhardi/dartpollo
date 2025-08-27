@@ -1,14 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:equatable/equatable.dart';
+import 'package:dartpollo/schema/graphql_data_class.dart';
 import 'package:gql/ast.dart';
+import 'package:json_annotation/json_annotation.dart';
 part 'ed_sheeran.query.graphql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
-    extends JsonSerializable with EquatableMixin {
+    extends GraphQLDataClass {
   EdSheeran$Query$Node$Artist$ReleaseConnection$Release();
 
   factory EdSheeran$Query$Node$Artist$ReleaseConnection$Release.fromJson(
@@ -20,7 +21,19 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
   String? status;
 
   @override
-  List<Object?> get props => [id, status];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query$Node$Artist$ReleaseConnection$Release)
+      return false;
+    return id == other.id && status == other.status;
+  }
+
+  @override
+  int get hashCode => Object.hash(id.hashCode, status.hashCode);
+
+  @override
+  String toString() =>
+      'EdSheeran\$Query\$Node\$Artist\$ReleaseConnection\$Release(id: $id, status: $status)';
 
   @override
   Map<String, dynamic> toJson() =>
@@ -28,8 +41,7 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist$ReleaseConnection extends JsonSerializable
-    with EquatableMixin {
+class EdSheeran$Query$Node$Artist$ReleaseConnection extends GraphQLDataClass {
   EdSheeran$Query$Node$Artist$ReleaseConnection();
 
   factory EdSheeran$Query$Node$Artist$ReleaseConnection.fromJson(
@@ -39,7 +51,18 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection extends JsonSerializable
   List<EdSheeran$Query$Node$Artist$ReleaseConnection$Release?>? nodes;
 
   @override
-  List<Object?> get props => [nodes];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query$Node$Artist$ReleaseConnection) return false;
+    return const DeepCollectionEquality().equals(nodes, other.nodes);
+  }
+
+  @override
+  int get hashCode => const DeepCollectionEquality().hash(nodes);
+
+  @override
+  String toString() =>
+      'EdSheeran\$Query\$Node\$Artist\$ReleaseConnection(nodes: ${nodes?.length ?? 0} items)';
 
   @override
   Map<String, dynamic> toJson() =>
@@ -47,8 +70,7 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist$LifeSpan extends JsonSerializable
-    with EquatableMixin {
+class EdSheeran$Query$Node$Artist$LifeSpan extends GraphQLDataClass {
   EdSheeran$Query$Node$Artist$LifeSpan();
 
   factory EdSheeran$Query$Node$Artist$LifeSpan.fromJson(
@@ -58,7 +80,18 @@ class EdSheeran$Query$Node$Artist$LifeSpan extends JsonSerializable
   DateTime? begin;
 
   @override
-  List<Object?> get props => [begin];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query$Node$Artist$LifeSpan) return false;
+    return begin == other.begin;
+  }
+
+  @override
+  int get hashCode => begin.hashCode;
+
+  @override
+  String toString() =>
+      'EdSheeran\$Query\$Node\$Artist\$LifeSpan(begin: $begin)';
 
   @override
   Map<String, dynamic> toJson() =>
@@ -66,8 +99,7 @@ class EdSheeran$Query$Node$Artist$LifeSpan extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist$SpotifyArtist extends JsonSerializable
-    with EquatableMixin {
+class EdSheeran$Query$Node$Artist$SpotifyArtist extends GraphQLDataClass {
   EdSheeran$Query$Node$Artist$SpotifyArtist();
 
   factory EdSheeran$Query$Node$Artist$SpotifyArtist.fromJson(
@@ -77,7 +109,18 @@ class EdSheeran$Query$Node$Artist$SpotifyArtist extends JsonSerializable
   late String href;
 
   @override
-  List<Object?> get props => [href];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query$Node$Artist$SpotifyArtist) return false;
+    return href == other.href;
+  }
+
+  @override
+  int get hashCode => href.hashCode;
+
+  @override
+  String toString() =>
+      'EdSheeran\$Query\$Node\$Artist\$SpotifyArtist(href: $href)';
 
   @override
   Map<String, dynamic> toJson() =>
@@ -85,8 +128,7 @@ class EdSheeran$Query$Node$Artist$SpotifyArtist extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node
-    with EquatableMixin {
+class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node {
   EdSheeran$Query$Node$Artist();
 
   factory EdSheeran$Query$Node$Artist.fromJson(Map<String, dynamic> json) =>
@@ -103,24 +145,34 @@ class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node
   EdSheeran$Query$Node$Artist$SpotifyArtist? spotify;
 
   @override
-  List<Object?> get props => [mbid, name, releases, lifeSpan, spotify];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query$Node$Artist) return false;
+    return mbid == other.mbid &&
+        lifeSpan == other.lifeSpan &&
+        name == other.name &&
+        releases == other.releases &&
+        spotify == other.spotify;
+  }
+
+  @override
+  int get hashCode => Object.hash(mbid.hashCode, name.hashCode,
+      releases.hashCode, lifeSpan.hashCode, spotify.hashCode);
+
+  @override
+  String toString() =>
+      'EdSheeran\$Query\$Node\$Artist(mbid: $mbid, lifeSpan: $lifeSpan, name: $name, releases: $releases, spotify: $spotify)';
 
   @override
   Map<String, dynamic> toJson() => _$EdSheeran$Query$Node$ArtistToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node extends JsonSerializable with EquatableMixin {
+class EdSheeran$Query$Node extends GraphQLDataClass {
   EdSheeran$Query$Node();
 
-  factory EdSheeran$Query$Node.fromJson(Map<String, dynamic> json) {
-    switch (json['__typename'].toString()) {
-      case r'Artist':
-        return EdSheeran$Query$Node$Artist.fromJson(json);
-      default:
-    }
-    return _$EdSheeran$Query$NodeFromJson(json);
-  }
+  factory EdSheeran$Query$Node.fromJson(Map<String, dynamic> json) =>
+      _$EdSheeran$Query$NodeFromJson(json);
 
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -128,7 +180,20 @@ class EdSheeran$Query$Node extends JsonSerializable with EquatableMixin {
   late String id;
 
   @override
-  List<Object?> get props => [$$typename, id];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query$Node) return false;
+    return id == other.id && $$typename == other.$$typename;
+  }
+
+  @override
+  int get hashCode => Object.hash($$typename.hashCode, id.hashCode);
+
+  @override
+  String toString() =>
+      'EdSheeran\$Query\$Node(id: $id, \$\$typename: ' +
+      $$typename.toString() +
+      ')';
 
   @override
   Map<String, dynamic> toJson() {
@@ -142,7 +207,7 @@ class EdSheeran$Query$Node extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query extends JsonSerializable with EquatableMixin {
+class EdSheeran$Query extends GraphQLDataClass {
   EdSheeran$Query();
 
   factory EdSheeran$Query.fromJson(Map<String, dynamic> json) =>
@@ -151,23 +216,20 @@ class EdSheeran$Query extends JsonSerializable with EquatableMixin {
   EdSheeran$Query$Node? node;
 
   @override
-  List<Object?> get props => [node];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EdSheeran$Query) return false;
+    return node == other.node;
+  }
+
+  @override
+  int get hashCode => node.hashCode;
+
+  @override
+  String toString() => 'EdSheeran\$Query(node: $node)';
 
   @override
   Map<String, dynamic> toJson() => _$EdSheeran$QueryToJson(this);
-}
-
-enum ReleaseStatus {
-  @JsonValue('OFFICIAL')
-  official,
-  @JsonValue('PROMOTION')
-  promotion,
-  @JsonValue('BOOTLEG')
-  bootleg,
-  @JsonValue('PSEUDORELEASE')
-  pseudorelease,
-  @JsonValue('UNKNOWN')
-  unknown,
 }
 
 final ED_SHEERAN_QUERY_DOCUMENT_OPERATION_NAME = 'ed_sheeran';

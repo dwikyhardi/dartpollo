@@ -1,14 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart = 2.12
 
+import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:equatable/equatable.dart';
+import 'package:dartpollo/generator/document_helpers.dart';
+import 'package:dartpollo/schema/graphql_data_class.dart';
 import 'package:gql/ast.dart';
+import 'package:json_annotation/json_annotation.dart';
 part 'simple_query.graphql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class SimpleQuery$Query$Pokemon extends JsonSerializable with EquatableMixin {
+class SimpleQuery$Query$Pokemon extends GraphQLDataClass {
   SimpleQuery$Query$Pokemon();
 
   factory SimpleQuery$Query$Pokemon.fromJson(Map<String, dynamic> json) =>
@@ -19,13 +20,27 @@ class SimpleQuery$Query$Pokemon extends JsonSerializable with EquatableMixin {
   List<String?>? types;
 
   @override
-  List<Object?> get props => [number, types];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SimpleQuery$Query$Pokemon) return false;
+    return number == other.number &&
+        const DeepCollectionEquality().equals(types, other.types);
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(number.hashCode, const DeepCollectionEquality().hash(types));
+
+  @override
+  String toString() =>
+      'SimpleQuery\$Query\$Pokemon(number: $number, types: ${types?.length ?? 0} items)';
+
   @override
   Map<String, dynamic> toJson() => _$SimpleQuery$Query$PokemonToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class SimpleQuery$Query extends JsonSerializable with EquatableMixin {
+class SimpleQuery$Query extends GraphQLDataClass {
   SimpleQuery$Query();
 
   factory SimpleQuery$Query.fromJson(Map<String, dynamic> json) =>
@@ -34,42 +49,36 @@ class SimpleQuery$Query extends JsonSerializable with EquatableMixin {
   SimpleQuery$Query$Pokemon? pokemon;
 
   @override
-  List<Object?> get props => [pokemon];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SimpleQuery$Query) return false;
+    return pokemon == other.pokemon;
+  }
+
+  @override
+  int get hashCode => pokemon.hashCode;
+
+  @override
+  String toString() => 'SimpleQuery\$Query(pokemon: $pokemon)';
+
   @override
   Map<String, dynamic> toJson() => _$SimpleQuery$QueryToJson(this);
 }
 
-final SIMPLE_QUERY_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'simple_query'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'pokemon'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'name'),
-                  value: StringValueNode(value: 'Charmander', isBlock: false))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                  name: NameNode(value: 'number'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'types'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null)
-            ]))
-      ]))
+final SIMPLE_QUERY_QUERY_DOCUMENT_OPERATION_NAME = 'simple_query';
+final SIMPLE_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
+  DocumentNodeHelpers.operation(
+    OperationType.query,
+    'simple_query',
+    selections: [
+      DocumentNodeHelpers.field('pokemon', args: {
+        'name': 'Charmander'
+      }, selections: [
+        DocumentNodeHelpers.field('number'),
+        DocumentNodeHelpers.field('types'),
+      ]),
+    ],
+  ),
 ]);
 
 class SimpleQueryQuery
@@ -80,10 +89,11 @@ class SimpleQueryQuery
   final DocumentNode document = SIMPLE_QUERY_QUERY_DOCUMENT;
 
   @override
-  final String operationName = 'simple_query';
+  final String operationName = SIMPLE_QUERY_QUERY_DOCUMENT_OPERATION_NAME;
 
   @override
   List<Object?> get props => [document, operationName];
+
   @override
   SimpleQuery$Query parse(Map<String, dynamic> json) =>
       SimpleQuery$Query.fromJson(json);

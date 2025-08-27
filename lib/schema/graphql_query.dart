@@ -20,6 +20,18 @@ abstract class GraphQLQuery<T, U extends JsonSerializable> extends Equatable {
   /// Parses a JSON map into the response type.
   T parse(Map<String, dynamic> json);
 
+  /// Get variables as a JSON map from constructor parameters.
+  /// This method should be overridden by combined mutation classes
+  /// to provide parameter-based variable mapping.
+  Map<String, dynamic> getParameterVariablesMap() => {};
+
   /// Get variables as a JSON map.
-  Map<String, dynamic> getVariablesMap() => variables?.toJson() ?? {};
+  /// Uses parameter-based mapping if available, otherwise falls back to variables field.
+  Map<String, dynamic> getVariablesMap() {
+    final parameterVars = getParameterVariablesMap();
+    if (parameterVars.isNotEmpty) {
+      return parameterVars;
+    }
+    return variables?.toJson() ?? {};
+  }
 }
