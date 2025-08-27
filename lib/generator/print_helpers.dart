@@ -563,6 +563,10 @@ Spec generateQueryClassSpec(QueryDefinition definition) {
       ..extend = refer('GraphQLQuery<$typeDeclaration>')
       ..constructors.add(constructor)
       ..fields.addAll(fields)
+      ..methods.add(_propsMethod([
+        'document',
+        'operationName${definition.inputs.isNotEmpty ? ', variables' : ''}'
+      ]))
       ..methods.add(Method(
         (m) => m
           ..annotations.add(CodeExpression(Code('override')))
@@ -575,11 +579,7 @@ Spec generateQueryClassSpec(QueryDefinition definition) {
           ))
           ..lambda = true
           ..body = Code('${definition.name.namePrintable}.fromJson(json)'),
-      ))
-      ..methods.add(_propsMethod([
-        'document',
-        'operationName${definition.inputs.isNotEmpty ? ', variables' : ''}'
-      ])),
+      )),
   );
 }
 
