@@ -142,7 +142,8 @@ String _generateAutoOutputPath(
   // Add .dart extension
   final outputFilename = '$updatedFilename.dart';
   outputSegments.add(outputFilename);
-
+  pathSegments.removeAt(0);
+  outputSegments.insertAll(0, pathSegments);
   return outputSegments.join('/');
 }
 
@@ -462,7 +463,7 @@ class GraphQLQueryBuilder implements Builder {
     final result = _SchemaProcessingResult(
       outputFileId: outputFileId,
       content: buffer.toString(),
-      forwarderOutputFileId: null, // No forwarders needed
+      forwarderOutputFileId: null,
       forwarderContent: null,
       libDefinition: libDefinition,
     );
