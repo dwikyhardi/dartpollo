@@ -1,15 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:dartpollo/schema/graphql_data_class.dart';
+import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'messages_with_users.graphql.g.dart';
+part 'messages_with_users.subscription.gql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MessagesWithUsers$SubscriptionRoot$Messages$Profile
-    extends GraphQLDataClass {
+    extends JsonSerializable with EquatableMixin {
   MessagesWithUsers$SubscriptionRoot$Messages$Profile();
 
   factory MessagesWithUsers$SubscriptionRoot$Messages$Profile.fromJson(
@@ -21,19 +20,7 @@ class MessagesWithUsers$SubscriptionRoot$Messages$Profile
   late String name;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! MessagesWithUsers$SubscriptionRoot$Messages$Profile)
-      return false;
-    return id == other.id && name == other.name;
-  }
-
-  @override
-  int get hashCode => Object.hash(id.hashCode, name.hashCode);
-
-  @override
-  String toString() =>
-      'MessagesWithUsers\$SubscriptionRoot\$Messages\$Profile(id: $id, name: $name)';
+  List<Object?> get props => [id, name];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -41,7 +28,8 @@ class MessagesWithUsers$SubscriptionRoot$Messages$Profile
 }
 
 @JsonSerializable(explicitToJson: true)
-class MessagesWithUsers$SubscriptionRoot$Messages extends GraphQLDataClass {
+class MessagesWithUsers$SubscriptionRoot$Messages extends JsonSerializable
+    with EquatableMixin {
   MessagesWithUsers$SubscriptionRoot$Messages();
 
   factory MessagesWithUsers$SubscriptionRoot$Messages.fromJson(
@@ -55,21 +43,7 @@ class MessagesWithUsers$SubscriptionRoot$Messages extends GraphQLDataClass {
   late MessagesWithUsers$SubscriptionRoot$Messages$Profile profile;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! MessagesWithUsers$SubscriptionRoot$Messages) return false;
-    return id == other.id &&
-        message == other.message &&
-        profile == other.profile;
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id.hashCode, message.hashCode, profile.hashCode);
-
-  @override
-  String toString() =>
-      'MessagesWithUsers\$SubscriptionRoot\$Messages(id: $id, message: $message, profile: $profile)';
+  List<Object?> get props => [id, message, profile];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -77,7 +51,8 @@ class MessagesWithUsers$SubscriptionRoot$Messages extends GraphQLDataClass {
 }
 
 @JsonSerializable(explicitToJson: true)
-class MessagesWithUsers$SubscriptionRoot extends GraphQLDataClass {
+class MessagesWithUsers$SubscriptionRoot extends JsonSerializable
+    with EquatableMixin {
   MessagesWithUsers$SubscriptionRoot();
 
   factory MessagesWithUsers$SubscriptionRoot.fromJson(
@@ -87,18 +62,7 @@ class MessagesWithUsers$SubscriptionRoot extends GraphQLDataClass {
   late List<MessagesWithUsers$SubscriptionRoot$Messages> messages;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! MessagesWithUsers$SubscriptionRoot) return false;
-    return const DeepCollectionEquality().equals(messages, other.messages);
-  }
-
-  @override
-  int get hashCode => const DeepCollectionEquality().hash(messages);
-
-  @override
-  String toString() =>
-      'MessagesWithUsers\$SubscriptionRoot(messages: ${messages?.length ?? 0} items)';
+  List<Object?> get props => [messages];
 
   @override
   Map<String, dynamic> toJson() =>

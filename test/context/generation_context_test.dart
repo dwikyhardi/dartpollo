@@ -15,7 +15,7 @@ void main() {
     late Set<ClassName> usedInputObjects;
 
     setUp(() {
-      schemaMap = SchemaMap(output: 'test.dart', schema: 'test schema');
+      schemaMap = SchemaMap(schema: 'test schema');
       path = [TypeName(name: 'Query'), TypeName(name: 'User')];
       generatedClasses = [];
       inputsClasses = [];
@@ -88,8 +88,7 @@ void main() {
       });
 
       test('creates new context with updated schemaMap', () {
-        final newSchemaMap =
-            SchemaMap(output: 'new.dart', schema: 'new schema');
+        final newSchemaMap = SchemaMap(schema: 'new schema');
         final newContext = originalContext.copyWith(schemaMap: newSchemaMap);
 
         expect(newContext.schemaMap, equals(newSchemaMap));
@@ -405,8 +404,7 @@ void main() {
           usedInputObjects: usedInputObjects,
         );
 
-        final newSchemaMap =
-            SchemaMap(output: 'new.dart', schema: 'new schema');
+        final newSchemaMap = SchemaMap(schema: 'new schema');
         final newContext = originalContext.copyWith(schemaMap: newSchemaMap);
 
         expect(originalContext.schemaMap, equals(schemaMap));

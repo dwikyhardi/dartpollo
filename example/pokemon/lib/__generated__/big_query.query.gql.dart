@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:dartpollo/generator/document_helpers.dart';
-import 'package:dartpollo/schema/graphql_data_class.dart';
+import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'big_query.graphql.g.dart';
+part 'big_query.query.gql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class BigQuery$Query$Charmander extends GraphQLDataClass {
+class BigQuery$Query$Charmander extends JsonSerializable with EquatableMixin {
   BigQuery$Query$Charmander();
 
   factory BigQuery$Query$Charmander.fromJson(Map<String, dynamic> json) =>
@@ -20,27 +18,15 @@ class BigQuery$Query$Charmander extends GraphQLDataClass {
   List<String?>? types;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! BigQuery$Query$Charmander) return false;
-    return number == other.number &&
-        const DeepCollectionEquality().equals(types, other.types);
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(number.hashCode, const DeepCollectionEquality().hash(types));
-
-  @override
-  String toString() =>
-      'BigQuery\$Query\$Charmander(number: $number, types: ${types?.length ?? 0} items)';
+  List<Object?> get props => [number, types];
 
   @override
   Map<String, dynamic> toJson() => _$BigQuery$Query$CharmanderToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class BigQuery$Query$Pokemon$Evolutions extends GraphQLDataClass {
+class BigQuery$Query$Pokemon$Evolutions extends JsonSerializable
+    with EquatableMixin {
   BigQuery$Query$Pokemon$Evolutions();
 
   factory BigQuery$Query$Pokemon$Evolutions.fromJson(
@@ -52,18 +38,7 @@ class BigQuery$Query$Pokemon$Evolutions extends GraphQLDataClass {
   String? name;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! BigQuery$Query$Pokemon$Evolutions) return false;
-    return name == other.name && number == other.number;
-  }
-
-  @override
-  int get hashCode => Object.hash(number.hashCode, name.hashCode);
-
-  @override
-  String toString() =>
-      'BigQuery\$Query\$Pokemon\$Evolutions(name: $name, number: $number)';
+  List<Object?> get props => [number, name];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -71,7 +46,7 @@ class BigQuery$Query$Pokemon$Evolutions extends GraphQLDataClass {
 }
 
 @JsonSerializable(explicitToJson: true)
-class BigQuery$Query$Pokemon extends GraphQLDataClass {
+class BigQuery$Query$Pokemon extends JsonSerializable with EquatableMixin {
   BigQuery$Query$Pokemon();
 
   factory BigQuery$Query$Pokemon.fromJson(Map<String, dynamic> json) =>
@@ -86,33 +61,14 @@ class BigQuery$Query$Pokemon extends GraphQLDataClass {
   List<BigQuery$Query$Pokemon$Evolutions?>? evolutions;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! BigQuery$Query$Pokemon) return false;
-    return const DeepCollectionEquality()
-            .equals(evolutions, other.evolutions) &&
-        name == other.name &&
-        number == other.number &&
-        const DeepCollectionEquality().equals(types, other.types);
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      number.hashCode,
-      name.hashCode,
-      const DeepCollectionEquality().hash(types),
-      const DeepCollectionEquality().hash(evolutions));
-
-  @override
-  String toString() =>
-      'BigQuery\$Query\$Pokemon(evolutions: ${evolutions?.length ?? 0} items, name: $name, number: $number, types: ${types?.length ?? 0} items)';
+  List<Object?> get props => [number, name, types, evolutions];
 
   @override
   Map<String, dynamic> toJson() => _$BigQuery$Query$PokemonToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class BigQuery$Query extends GraphQLDataClass {
+class BigQuery$Query extends JsonSerializable with EquatableMixin {
   BigQuery$Query();
 
   factory BigQuery$Query.fromJson(Map<String, dynamic> json) =>
@@ -123,33 +79,24 @@ class BigQuery$Query extends GraphQLDataClass {
   List<BigQuery$Query$Pokemon?>? pokemons;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! BigQuery$Query) return false;
-    return charmander == other.charmander &&
-        const DeepCollectionEquality().equals(pokemons, other.pokemons);
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      charmander.hashCode, const DeepCollectionEquality().hash(pokemons));
-
-  @override
-  String toString() =>
-      'BigQuery\$Query(charmander: $charmander, pokemons: ${pokemons?.length ?? 0} items)';
+  List<Object?> get props => [charmander, pokemons];
 
   @override
   Map<String, dynamic> toJson() => _$BigQuery$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class BigQueryArguments extends GraphQLDataClass {
+class BigQueryArguments extends JsonSerializable with EquatableMixin {
   BigQueryArguments({required this.quantity});
 
+  @override
   factory BigQueryArguments.fromJson(Map<String, dynamic> json) =>
       _$BigQueryArgumentsFromJson(json);
 
   late int quantity;
+
+  @override
+  List<Object?> get props => [quantity];
 
   @override
   Map<String, dynamic> toJson() => _$BigQueryArgumentsToJson(this);

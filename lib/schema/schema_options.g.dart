@@ -69,7 +69,6 @@ Map<String, dynamic> _$ScalarMapToJson(ScalarMap instance) => <String, dynamic>{
     };
 
 SchemaMap _$SchemaMapFromJson(Map<String, dynamic> json) => SchemaMap(
-      output: json['output'] as String?,
       schema: json['schema'] as String?,
       queriesGlob: json['queries_glob'] as String?,
       fragmentsGlob: json['fragments_glob'] as String?,
@@ -83,7 +82,6 @@ SchemaMap _$SchemaMapFromJson(Map<String, dynamic> json) => SchemaMap(
     );
 
 Map<String, dynamic> _$SchemaMapToJson(SchemaMap instance) => <String, dynamic>{
-      'output': instance.output,
       'schema': instance.schema,
       'queries_glob': instance.queriesGlob,
       'fragments_glob': instance.fragmentsGlob,

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ed_sheeran.query.graphql.dart';
+part of 'ed_sheeran.query.gql.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

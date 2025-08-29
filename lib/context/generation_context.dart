@@ -68,12 +68,6 @@ class GenerationContext {
 
   /// Validates the generation context state for consistency
   void validate() {
-    // Validate that schemaMap has required fields
-    if (schemaMap.output == null || schemaMap.output!.isEmpty) {
-      throw GenerationContextValidationException(
-          'SchemaMap output cannot be null or empty');
-    }
-
     // Validate that path doesn't contain null or empty type names
     for (final typeName in path) {
       if (typeName.name.isEmpty) {

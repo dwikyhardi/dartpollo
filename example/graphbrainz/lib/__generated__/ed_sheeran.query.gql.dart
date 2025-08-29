@@ -1,15 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:dartpollo/schema/graphql_data_class.dart';
+import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'ed_sheeran.query.graphql.g.dart';
+part 'ed_sheeran.query.gql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
-    extends GraphQLDataClass {
+    extends JsonSerializable with EquatableMixin {
   EdSheeran$Query$Node$Artist$ReleaseConnection$Release();
 
   factory EdSheeran$Query$Node$Artist$ReleaseConnection$Release.fromJson(
@@ -21,19 +20,7 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
   String? status;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query$Node$Artist$ReleaseConnection$Release)
-      return false;
-    return id == other.id && status == other.status;
-  }
-
-  @override
-  int get hashCode => Object.hash(id.hashCode, status.hashCode);
-
-  @override
-  String toString() =>
-      'EdSheeran\$Query\$Node\$Artist\$ReleaseConnection\$Release(id: $id, status: $status)';
+  List<Object?> get props => [id, status];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -41,7 +28,8 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection$Release
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist$ReleaseConnection extends GraphQLDataClass {
+class EdSheeran$Query$Node$Artist$ReleaseConnection extends JsonSerializable
+    with EquatableMixin {
   EdSheeran$Query$Node$Artist$ReleaseConnection();
 
   factory EdSheeran$Query$Node$Artist$ReleaseConnection.fromJson(
@@ -51,18 +39,7 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection extends GraphQLDataClass {
   List<EdSheeran$Query$Node$Artist$ReleaseConnection$Release?>? nodes;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query$Node$Artist$ReleaseConnection) return false;
-    return const DeepCollectionEquality().equals(nodes, other.nodes);
-  }
-
-  @override
-  int get hashCode => const DeepCollectionEquality().hash(nodes);
-
-  @override
-  String toString() =>
-      'EdSheeran\$Query\$Node\$Artist\$ReleaseConnection(nodes: ${nodes?.length ?? 0} items)';
+  List<Object?> get props => [nodes];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -70,7 +47,8 @@ class EdSheeran$Query$Node$Artist$ReleaseConnection extends GraphQLDataClass {
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist$LifeSpan extends GraphQLDataClass {
+class EdSheeran$Query$Node$Artist$LifeSpan extends JsonSerializable
+    with EquatableMixin {
   EdSheeran$Query$Node$Artist$LifeSpan();
 
   factory EdSheeran$Query$Node$Artist$LifeSpan.fromJson(
@@ -80,18 +58,7 @@ class EdSheeran$Query$Node$Artist$LifeSpan extends GraphQLDataClass {
   DateTime? begin;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query$Node$Artist$LifeSpan) return false;
-    return begin == other.begin;
-  }
-
-  @override
-  int get hashCode => begin.hashCode;
-
-  @override
-  String toString() =>
-      'EdSheeran\$Query\$Node\$Artist\$LifeSpan(begin: $begin)';
+  List<Object?> get props => [begin];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -99,7 +66,8 @@ class EdSheeran$Query$Node$Artist$LifeSpan extends GraphQLDataClass {
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist$SpotifyArtist extends GraphQLDataClass {
+class EdSheeran$Query$Node$Artist$SpotifyArtist extends JsonSerializable
+    with EquatableMixin {
   EdSheeran$Query$Node$Artist$SpotifyArtist();
 
   factory EdSheeran$Query$Node$Artist$SpotifyArtist.fromJson(
@@ -109,18 +77,7 @@ class EdSheeran$Query$Node$Artist$SpotifyArtist extends GraphQLDataClass {
   late String href;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query$Node$Artist$SpotifyArtist) return false;
-    return href == other.href;
-  }
-
-  @override
-  int get hashCode => href.hashCode;
-
-  @override
-  String toString() =>
-      'EdSheeran\$Query\$Node\$Artist\$SpotifyArtist(href: $href)';
+  List<Object?> get props => [href];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -128,7 +85,8 @@ class EdSheeran$Query$Node$Artist$SpotifyArtist extends GraphQLDataClass {
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node {
+class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node
+    with EquatableMixin {
   EdSheeran$Query$Node$Artist();
 
   factory EdSheeran$Query$Node$Artist.fromJson(Map<String, dynamic> json) =>
@@ -145,34 +103,24 @@ class EdSheeran$Query$Node$Artist extends EdSheeran$Query$Node {
   EdSheeran$Query$Node$Artist$SpotifyArtist? spotify;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query$Node$Artist) return false;
-    return mbid == other.mbid &&
-        lifeSpan == other.lifeSpan &&
-        name == other.name &&
-        releases == other.releases &&
-        spotify == other.spotify;
-  }
-
-  @override
-  int get hashCode => Object.hash(mbid.hashCode, name.hashCode,
-      releases.hashCode, lifeSpan.hashCode, spotify.hashCode);
-
-  @override
-  String toString() =>
-      'EdSheeran\$Query\$Node\$Artist(mbid: $mbid, lifeSpan: $lifeSpan, name: $name, releases: $releases, spotify: $spotify)';
+  List<Object?> get props => [mbid, name, releases, lifeSpan, spotify];
 
   @override
   Map<String, dynamic> toJson() => _$EdSheeran$Query$Node$ArtistToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query$Node extends GraphQLDataClass {
+class EdSheeran$Query$Node extends JsonSerializable with EquatableMixin {
   EdSheeran$Query$Node();
 
-  factory EdSheeran$Query$Node.fromJson(Map<String, dynamic> json) =>
-      _$EdSheeran$Query$NodeFromJson(json);
+  factory EdSheeran$Query$Node.fromJson(Map<String, dynamic> json) {
+    switch (json['__typename'].toString()) {
+      case r'Artist':
+        return EdSheeran$Query$Node$Artist.fromJson(json);
+      default:
+    }
+    return _$EdSheeran$Query$NodeFromJson(json);
+  }
 
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -180,20 +128,7 @@ class EdSheeran$Query$Node extends GraphQLDataClass {
   late String id;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query$Node) return false;
-    return id == other.id && $$typename == other.$$typename;
-  }
-
-  @override
-  int get hashCode => Object.hash($$typename.hashCode, id.hashCode);
-
-  @override
-  String toString() =>
-      'EdSheeran\$Query\$Node(id: $id, \$\$typename: ' +
-      $$typename.toString() +
-      ')';
+  List<Object?> get props => [$$typename, id];
 
   @override
   Map<String, dynamic> toJson() {
@@ -207,7 +142,7 @@ class EdSheeran$Query$Node extends GraphQLDataClass {
 }
 
 @JsonSerializable(explicitToJson: true)
-class EdSheeran$Query extends GraphQLDataClass {
+class EdSheeran$Query extends JsonSerializable with EquatableMixin {
   EdSheeran$Query();
 
   factory EdSheeran$Query.fromJson(Map<String, dynamic> json) =>
@@ -216,17 +151,7 @@ class EdSheeran$Query extends GraphQLDataClass {
   EdSheeran$Query$Node? node;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! EdSheeran$Query) return false;
-    return node == other.node;
-  }
-
-  @override
-  int get hashCode => node.hashCode;
-
-  @override
-  String toString() => 'EdSheeran\$Query(node: $node)';
+  List<Object?> get props => [node];
 
   @override
   Map<String, dynamic> toJson() => _$EdSheeran$QueryToJson(this);

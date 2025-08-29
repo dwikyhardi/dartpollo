@@ -31,7 +31,6 @@ Future testGenerator({
       {
         'schema': 'api.schema.graphql',
         'queries_glob': 'queries/**.graphql',
-        'output': 'lib/query.graphql.dart',
         'naming_scheme': namingScheme,
         'append_type_name': appendTypeName,
       }

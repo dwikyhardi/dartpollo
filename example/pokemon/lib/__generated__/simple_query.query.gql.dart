@@ -1,15 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:dartpollo/generator/document_helpers.dart';
-import 'package:dartpollo/schema/graphql_data_class.dart';
+import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'simple_query.graphql.g.dart';
+part 'simple_query.query.gql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class SimpleQuery$Query$Pokemon extends GraphQLDataClass {
+class SimpleQuery$Query$Pokemon extends JsonSerializable with EquatableMixin {
   SimpleQuery$Query$Pokemon();
 
   factory SimpleQuery$Query$Pokemon.fromJson(Map<String, dynamic> json) =>
@@ -20,27 +18,14 @@ class SimpleQuery$Query$Pokemon extends GraphQLDataClass {
   List<String?>? types;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! SimpleQuery$Query$Pokemon) return false;
-    return number == other.number &&
-        const DeepCollectionEquality().equals(types, other.types);
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(number.hashCode, const DeepCollectionEquality().hash(types));
-
-  @override
-  String toString() =>
-      'SimpleQuery\$Query\$Pokemon(number: $number, types: ${types?.length ?? 0} items)';
+  List<Object?> get props => [number, types];
 
   @override
   Map<String, dynamic> toJson() => _$SimpleQuery$Query$PokemonToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class SimpleQuery$Query extends GraphQLDataClass {
+class SimpleQuery$Query extends JsonSerializable with EquatableMixin {
   SimpleQuery$Query();
 
   factory SimpleQuery$Query.fromJson(Map<String, dynamic> json) =>
@@ -49,17 +34,7 @@ class SimpleQuery$Query extends GraphQLDataClass {
   SimpleQuery$Query$Pokemon? pokemon;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! SimpleQuery$Query) return false;
-    return pokemon == other.pokemon;
-  }
-
-  @override
-  int get hashCode => pokemon.hashCode;
-
-  @override
-  String toString() => 'SimpleQuery\$Query(pokemon: $pokemon)';
+  List<Object?> get props => [pokemon];
 
   @override
   Map<String, dynamic> toJson() => _$SimpleQuery$QueryToJson(this);

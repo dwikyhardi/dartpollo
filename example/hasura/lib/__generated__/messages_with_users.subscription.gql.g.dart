@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'messages_with_users.graphql.dart';
+part of 'messages_with_users.subscription.gql.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

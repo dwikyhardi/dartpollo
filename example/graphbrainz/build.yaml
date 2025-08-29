@@ -8,7 +8,6 @@ targets:
           schema_mapping:
             - schema: lib/graphbrainz.schema.graphql
               queries_glob: lib/queries/ed_sheeran.query.graphql
-              output: lib/queries/ed_sheeran.query.dart
               convert_enum_to_string: true
           custom_parser_import: 'package:graphbrainz_example/coercers.dart'
           scalar_mapping:

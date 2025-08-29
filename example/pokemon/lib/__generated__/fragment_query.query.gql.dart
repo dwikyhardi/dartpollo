@@ -1,12 +1,10 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'package:collection/collection.dart';
 import 'package:dartpollo/dartpollo.dart';
-import 'package:dartpollo/generator/document_helpers.dart';
-import 'package:dartpollo/schema/graphql_data_class.dart';
+import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
-part 'fragment_query.graphql.g.dart';
+part 'fragment_query.query.gql.g.dart';
 
 mixin PokemonPartsMixin {
   String? number;
@@ -15,35 +13,23 @@ mixin PokemonPartsMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentQuery$Query$Charmander extends GraphQLDataClass
-    with PokemonPartsMixin {
+class FragmentQuery$Query$Charmander extends JsonSerializable
+    with EquatableMixin, PokemonPartsMixin {
   FragmentQuery$Query$Charmander();
 
   factory FragmentQuery$Query$Charmander.fromJson(Map<String, dynamic> json) =>
       _$FragmentQuery$Query$CharmanderFromJson(json);
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! FragmentQuery$Query$Charmander) return false;
-    return name == other.name && number == other.number && types == other.types;
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(number.hashCode, name.hashCode, types.hashCode);
-
-  @override
-  String toString() =>
-      'FragmentQuery\$Query\$Charmander(name: $name, number: $number, types: $types)';
+  List<Object?> get props => [number, name, types];
 
   @override
   Map<String, dynamic> toJson() => _$FragmentQuery$Query$CharmanderToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentQuery$Query$Pokemon$Evolutions extends GraphQLDataClass
-    with PokemonPartsMixin {
+class FragmentQuery$Query$Pokemon$Evolutions extends JsonSerializable
+    with EquatableMixin, PokemonPartsMixin {
   FragmentQuery$Query$Pokemon$Evolutions();
 
   factory FragmentQuery$Query$Pokemon$Evolutions.fromJson(
@@ -51,19 +37,7 @@ class FragmentQuery$Query$Pokemon$Evolutions extends GraphQLDataClass
       _$FragmentQuery$Query$Pokemon$EvolutionsFromJson(json);
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! FragmentQuery$Query$Pokemon$Evolutions) return false;
-    return name == other.name && number == other.number && types == other.types;
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(number.hashCode, name.hashCode, types.hashCode);
-
-  @override
-  String toString() =>
-      'FragmentQuery\$Query\$Pokemon\$Evolutions(name: $name, number: $number, types: $types)';
+  List<Object?> get props => [number, name, types];
 
   @override
   Map<String, dynamic> toJson() =>
@@ -71,8 +45,8 @@ class FragmentQuery$Query$Pokemon$Evolutions extends GraphQLDataClass
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentQuery$Query$Pokemon extends GraphQLDataClass
-    with PokemonPartsMixin {
+class FragmentQuery$Query$Pokemon extends JsonSerializable
+    with EquatableMixin, PokemonPartsMixin {
   FragmentQuery$Query$Pokemon();
 
   factory FragmentQuery$Query$Pokemon.fromJson(Map<String, dynamic> json) =>
@@ -81,30 +55,14 @@ class FragmentQuery$Query$Pokemon extends GraphQLDataClass
   List<FragmentQuery$Query$Pokemon$Evolutions?>? evolutions;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! FragmentQuery$Query$Pokemon) return false;
-    return const DeepCollectionEquality()
-            .equals(evolutions, other.evolutions) &&
-        name == other.name &&
-        number == other.number &&
-        types == other.types;
-  }
-
-  @override
-  int get hashCode => Object.hash(number.hashCode, name.hashCode,
-      types.hashCode, const DeepCollectionEquality().hash(evolutions));
-
-  @override
-  String toString() =>
-      'FragmentQuery\$Query\$Pokemon(evolutions: ${evolutions?.length ?? 0} items, name: $name, number: $number, types: $types)';
+  List<Object?> get props => [number, name, types, evolutions];
 
   @override
   Map<String, dynamic> toJson() => _$FragmentQuery$Query$PokemonToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentQuery$Query extends GraphQLDataClass {
+class FragmentQuery$Query extends JsonSerializable with EquatableMixin {
   FragmentQuery$Query();
 
   factory FragmentQuery$Query.fromJson(Map<String, dynamic> json) =>
@@ -115,33 +73,24 @@ class FragmentQuery$Query extends GraphQLDataClass {
   List<FragmentQuery$Query$Pokemon?>? pokemons;
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! FragmentQuery$Query) return false;
-    return charmander == other.charmander &&
-        const DeepCollectionEquality().equals(pokemons, other.pokemons);
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      charmander.hashCode, const DeepCollectionEquality().hash(pokemons));
-
-  @override
-  String toString() =>
-      'FragmentQuery\$Query(charmander: $charmander, pokemons: ${pokemons?.length ?? 0} items)';
+  List<Object?> get props => [charmander, pokemons];
 
   @override
   Map<String, dynamic> toJson() => _$FragmentQuery$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class FragmentQueryArguments extends GraphQLDataClass {
+class FragmentQueryArguments extends JsonSerializable with EquatableMixin {
   FragmentQueryArguments({required this.quantity});
 
+  @override
   factory FragmentQueryArguments.fromJson(Map<String, dynamic> json) =>
       _$FragmentQueryArgumentsFromJson(json);
 
   late int quantity;
+
+  @override
+  List<Object?> get props => [quantity];
 
   @override
   Map<String, dynamic> toJson() => _$FragmentQueryArgumentsToJson(this);
@@ -175,6 +124,15 @@ final FRAGMENT_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
               DocumentNodeHelpers.fragmentSpread('PokemonParts'),
             ]),
       ]),
+    ],
+  ),
+  DocumentNodeHelpers.fragmentDefinition(
+    'PokemonParts',
+    'Pokemon',
+    selections: [
+      DocumentNodeHelpers.field('number'),
+      DocumentNodeHelpers.field('name'),
+      DocumentNodeHelpers.field('types'),
     ],
   ),
 ]);

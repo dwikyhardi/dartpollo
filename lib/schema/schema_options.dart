@@ -82,7 +82,8 @@ class GeneratorOptions {
       schemaMapping: schemaMapping ?? this.schemaMapping,
       ignoreForFile: ignoreForFile ?? this.ignoreForFile,
       convertEnumToString: convertEnumToString ?? this.convertEnumToString,
-      optimizeDocumentNodes: optimizeDocumentNodes ?? this.optimizeDocumentNodes,
+      optimizeDocumentNodes:
+          optimizeDocumentNodes ?? this.optimizeDocumentNodes,
     );
   }
 }
@@ -166,11 +167,10 @@ enum NamingScheme {
 }
 
 /// Maps a GraphQL schema to queries files.
+/// Output files are automatically generated in __generated__ directories
+/// based on the queries_glob pattern and detected operation type.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class SchemaMap {
-  /// The output file of this queries glob.
-  final String? output;
-
   /// The GraphQL schema string.
   final String? schema;
 
@@ -205,7 +205,6 @@ class SchemaMap {
 
   /// Instantiates a schema mapping.
   SchemaMap({
-    this.output,
     this.schema,
     this.queriesGlob,
     this.fragmentsGlob,
@@ -223,7 +222,6 @@ class SchemaMap {
   Map<String, dynamic> toJson() => _$SchemaMapToJson(this);
 
   SchemaMap copyWith({
-    String? output,
     String? schema,
     String? queriesGlob,
     String? fragmentsGlob,
@@ -233,7 +231,6 @@ class SchemaMap {
     NamingScheme? namingScheme,
   }) {
     return SchemaMap(
-      output: output ?? this.output,
       schema: schema ?? this.schema,
       queriesGlob: queriesGlob ?? this.queriesGlob,
       fragmentsGlob: fragmentsGlob ?? this.fragmentsGlob,

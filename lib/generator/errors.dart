@@ -127,3 +127,15 @@ class MissingFragmentException implements Exception {
 Make sure files inside `fragments_glob` or the query file contains it.
 ''';
 }
+
+/// Thrown when a GraphQL file contains no operations (query, mutation, or subscription).
+class MissingOperationException implements Exception {
+  /// Thrown when a GraphQL file contains no operations.
+  const MissingOperationException();
+
+  @override
+  String toString() =>
+      '''GraphQL file contains no operations (query, mutation, or subscription).
+Make sure your GraphQL files contain at least one operation definition.
+Files with only fragments or comments cannot be processed.''';
+}

@@ -11,4 +11,4 @@ targets:
           schema_mapping:
             - schema: schema.graphql
               queries_glob: graphql/messages_with_users.graphql
-              output: lib/graphql/messages_with_users.graphql.dart
+              # output field removed - will auto-generate in __generated__/
