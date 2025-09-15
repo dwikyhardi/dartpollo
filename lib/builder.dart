@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:build/build.dart';
 import 'package:crypto/crypto.dart';
+import 'package:dartpollo/services/file_service.dart';
 import 'package:glob/glob.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
@@ -56,68 +56,9 @@ class _SchemaProcessingResult {
   });
 }
 
-/// Detects the GraphQL operation type from a file path
-/// Returns 'query', 'mutation', 'subscription', or 'model'
-String _getOperationTypeFromFile(String filePath) {
-  try {
-    final content = File(filePath).readAsStringSync();
-
-    // Simple regex to find operation type
-    final queryMatch =
-        RegExp(r'^\s*query\s+', multiLine: true).hasMatch(content);
-    final mutationMatch =
-        RegExp(r'^\s*mutation\s+', multiLine: true).hasMatch(content);
-    final subscriptionMatch =
-        RegExp(r'^\s*subscription\s+', multiLine: true).hasMatch(content);
-
-    if (queryMatch) return 'query';
-    if (mutationMatch) return 'mutation';
-    if (subscriptionMatch) return 'subscription';
-
-    return 'model';
-  } catch (e) {
-    return 'model';
-  }
-}
-
-/// Replaces the operation pattern in filename with detected operation type
-/// Example: 'file.query.graphql' with detected 'mutation' becomes 'file.mutation.graphql'
-/// If no operation pattern exists, injects the operation type before the file extension
-/// Example: 'file.graphql' with detected 'query' becomes 'file.query.graphql'
-String _replaceOperationPatternInFilename(
-    String filename, String detectedOperationType) {
-  // Pattern to match .query., .mutation., .subscription., or .model. in filename
-  // Also match optional .graphql extension after the operation type
-  final operationPattern =
-      RegExp(r'\.(query|mutation|subscription|model)(\.(graphql))?');
-
-  if (operationPattern.hasMatch(filename)) {
-    // Replace the entire matched pattern with just the operation type
-    final result =
-        filename.replaceAll(operationPattern, '.$detectedOperationType');
-    return result;
-  }
-
-  // If no pattern found, inject operation type before the file extension
-  // Handle .graphql extension specifically - remove .graphql and add operation type
-  if (filename.endsWith('.graphql')) {
-    return filename.replaceAll('.graphql', '.$detectedOperationType');
-  }
-
-  // For other extensions, inject before the last dot
-  final lastDotIndex = filename.lastIndexOf('.');
-  if (lastDotIndex != -1) {
-    return '${filename.substring(0, lastDotIndex)}.$detectedOperationType${filename.substring(lastDotIndex)}';
-  }
-
-  // If no extension, just append the operation type
-  return '$filename.$detectedOperationType';
-}
-
 /// Generate automatic output path when output is null
 /// Takes queries_glob path, detects operation type, and creates output in __generated__ folder
-String _generateAutoOutputPath(
-    String queriesGlob, String detectedOperationType) {
+String _generateAutoOutputPath(String queriesGlob) {
   final uri = Uri.parse(queriesGlob);
   final pathSegments = uri.pathSegments.toList();
 
@@ -133,14 +74,11 @@ String _generateAutoOutputPath(
   final outputSegments = ['__generated__'];
 
   // Extract filename from original queries_glob
-  final originalFilename = uri.pathSegments.last;
-
-  // Replace operation pattern in filename with detected type
-  final updatedFilename = _replaceOperationPatternInFilename(
-      originalFilename, detectedOperationType);
+  final originalFilename =
+      FileService.extractBasename(uri.pathSegments.last).split('.').first;
 
   // Add .dart extension
-  final outputFilename = '$updatedFilename.dart';
+  final outputFilename = '$originalFilename.dart';
   outputSegments.add(outputFilename);
   pathSegments.removeAt(0);
   outputSegments.insertAll(0, pathSegments);
@@ -165,9 +103,7 @@ List<String> _builderOptionsToExpectedOutputs(BuilderOptions builderOptions) {
         // Generate paths for all possible operation types since we detect at build time
         final operationTypes = ['query', 'mutation', 'subscription', 'model'];
         return operationTypes.map((operationType) {
-          final outputPath =
-              _generateAutoOutputPath(s.queriesGlob!, operationType);
-          // Don't remove lib/ prefix since _generateAutoOutputPath doesn't include it
+          final outputPath = _generateAutoOutputPath(s.queriesGlob!);
           return _addGqlExtensionToPathIfNeeded(outputPath);
         }).toList();
       })
@@ -417,9 +353,7 @@ class GraphQLQueryBuilder implements Builder {
     }
 
     // Always auto-generate output path with operation type detection
-    final firstAsset = await buildStep.findAssets(Glob(queriesGlob)).first;
-    final detectedOperationType = _getOperationTypeFromFile(firstAsset.path);
-    final output = _generateAutoOutputPath(queriesGlob, detectedOperationType);
+    final output = _generateAutoOutputPath(queriesGlob);
 
     // Apply transformations using BatchedASTProcessor for optimal performance
     final transformers = <TransformingVisitor>[];
