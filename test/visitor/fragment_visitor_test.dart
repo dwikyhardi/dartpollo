@@ -2,13 +2,22 @@ import 'package:test/test.dart';
 import 'package:gql/ast.dart';
 import 'package:dartpollo/visitor/fragment_visitor.dart';
 import 'package:dartpollo/generator/data/fragment_class_definition.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/schema/schema_options.dart';
 
 void main() {
   group('FragmentVisitor', () {
     late FragmentVisitor visitor;
+    late TypeDefinitionNodeVisitor typeDefinitionVisitor;
+    late GeneratorOptions options;
 
     setUp(() {
-      visitor = FragmentVisitor();
+      typeDefinitionVisitor = TypeDefinitionNodeVisitor();
+      options = GeneratorOptions();
+      visitor = FragmentVisitor(
+        typeDefinitionVisitor: typeDefinitionVisitor,
+        options: options,
+      );
     });
 
     test('should implement BaseVisitor interface', () {
@@ -36,6 +45,18 @@ void main() {
     });
 
     test('should visit fragment definition nodes', () {
+      // Add a test type to the type definition visitor
+      final testType = ObjectTypeDefinitionNode(
+        name: NameNode(value: 'TestType'),
+        fields: [
+          FieldDefinitionNode(
+            name: NameNode(value: 'field1'),
+            type: NamedTypeNode(name: NameNode(value: 'String')),
+          ),
+        ],
+      );
+      typeDefinitionVisitor.types['TestType'] = testType;
+
       final fragmentNode = FragmentDefinitionNode(
         name: NameNode(value: 'TestFragment'),
         typeCondition: TypeConditionNode(
@@ -48,6 +69,11 @@ void main() {
       // Should not throw when visiting
       expect(() => visitor.visitFragmentDefinitionNode(fragmentNode),
           returnsNormally);
+
+      // Should have created a fragment definition
+      expect(visitor.result, hasLength(1));
+      expect(
+          visitor.result.first.name.namePrintable, equals('TestFragmentMixin'));
     });
 
     test('should maintain immutable result', () {
@@ -59,6 +85,13 @@ void main() {
     });
 
     test('should handle document nodes', () {
+      // Add a test type to the type definition visitor
+      final testType = ObjectTypeDefinitionNode(
+        name: NameNode(value: 'TestType'),
+        fields: [],
+      );
+      typeDefinitionVisitor.types['TestType'] = testType;
+
       final document = DocumentNode(definitions: [
         FragmentDefinitionNode(
           name: NameNode(value: 'TestFragment'),

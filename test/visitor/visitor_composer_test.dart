@@ -5,6 +5,8 @@ import 'package:dartpollo/visitor/enum_visitor.dart';
 import 'package:dartpollo/visitor/class_visitor.dart';
 import 'package:dartpollo/visitor/input_visitor.dart';
 import 'package:dartpollo/visitor/fragment_visitor.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/schema/schema_options.dart';
 import 'package:dartpollo/generator/data/enum_definition.dart';
 import 'package:dartpollo/generator/data/class_definition.dart';
 import 'package:dartpollo/generator/data/fragment_class_definition.dart';
@@ -18,10 +20,29 @@ void main() {
     late FragmentVisitor fragmentVisitor;
 
     setUp(() {
+      final typeDefinitionVisitor = TypeDefinitionNodeVisitor();
+      final options = GeneratorOptions();
+
+      // Add test type for fragment visitor
+      final testType = ObjectTypeDefinitionNode(
+        name: NameNode(value: 'TestType'),
+        fields: [],
+      );
+      typeDefinitionVisitor.types['TestType'] = testType;
+
       enumVisitor = EnumVisitor();
-      classVisitor = ClassVisitor();
-      inputVisitor = InputVisitor();
-      fragmentVisitor = FragmentVisitor();
+      classVisitor = ClassVisitor(
+        typeDefinitionVisitor: typeDefinitionVisitor,
+        options: options,
+      );
+      inputVisitor = InputVisitor(
+        typeDefinitionVisitor: typeDefinitionVisitor,
+        options: options,
+      );
+      fragmentVisitor = FragmentVisitor(
+        typeDefinitionVisitor: typeDefinitionVisitor,
+        options: options,
+      );
 
       composer = VisitorComposer([
         enumVisitor,
@@ -43,7 +64,9 @@ void main() {
       final document = DocumentNode(definitions: [
         EnumTypeDefinitionNode(
           name: NameNode(value: 'TestEnum'),
-          values: [],
+          values: [
+            EnumValueDefinitionNode(name: NameNode(value: 'VALUE1')),
+          ],
         ),
         ObjectTypeDefinitionNode(
           name: NameNode(value: 'TestObject'),

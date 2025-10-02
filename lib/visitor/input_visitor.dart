@@ -1,11 +1,24 @@
 import 'package:gql/ast.dart';
 import 'base_visitor.dart';
 import '../generator/data/class_definition.dart';
+import '../generator/data/class_property.dart';
+import '../generator/graphql_helpers.dart';
+import '../visitor/type_definition_node_visitor.dart';
+import '../schema/schema_options.dart';
 
 /// Specialized visitor for handling GraphQL input object type definitions.
 /// Processes input object nodes and generates input class definitions.
 class InputVisitor extends BaseVisitor<List<ClassDefinition>> {
   final List<ClassDefinition> _inputClasses = [];
+  final TypeDefinitionNodeVisitor _typeDefinitionVisitor;
+  final GeneratorOptions _options;
+
+  /// Creates a new InputVisitor with required dependencies.
+  InputVisitor({
+    required TypeDefinitionNodeVisitor typeDefinitionVisitor,
+    required GeneratorOptions options,
+  })  : _typeDefinitionVisitor = typeDefinitionVisitor,
+        _options = options;
 
   @override
   List<ClassDefinition> get result => List.unmodifiable(_inputClasses);
@@ -22,8 +35,31 @@ class InputVisitor extends BaseVisitor<List<ClassDefinition>> {
 
   @override
   void visitInputObjectTypeDefinitionNode(InputObjectTypeDefinitionNode node) {
-    // TODO: Implement input object type definition processing
-    // This will be implemented in task 5.1
+    final className = ClassName(name: node.name.value);
+
+    // Convert GraphQL input fields to class properties
+    final properties = node.fields.map((field) {
+      final fieldName = ClassPropertyName(name: field.name.value);
+      final fieldType = buildTypeName(
+        field.type,
+        _options,
+        typeDefinitionNodeVisitor: _typeDefinitionVisitor,
+      );
+
+      return ClassProperty(
+        name: fieldName,
+        type: fieldType,
+      );
+    }).toList();
+
+    // Create input class definition
+    final classDefinition = ClassDefinition(
+      name: className,
+      properties: properties,
+      isInput: true,
+    );
+
+    _inputClasses.add(classDefinition);
     super.visitInputObjectTypeDefinitionNode(node);
   }
 }

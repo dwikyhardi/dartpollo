@@ -1,14 +1,23 @@
 import 'package:test/test.dart';
 import 'package:gql/ast.dart';
 import 'package:dartpollo/visitor/input_visitor.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/schema/schema_options.dart';
 import 'package:dartpollo/generator/data/class_definition.dart';
 
 void main() {
   group('InputVisitor', () {
     late InputVisitor visitor;
+    late TypeDefinitionNodeVisitor typeDefinitionVisitor;
+    late GeneratorOptions options;
 
     setUp(() {
-      visitor = InputVisitor();
+      typeDefinitionVisitor = TypeDefinitionNodeVisitor();
+      options = GeneratorOptions();
+      visitor = InputVisitor(
+        typeDefinitionVisitor: typeDefinitionVisitor,
+        options: options,
+      );
     });
 
     test('should implement BaseVisitor interface', () {
