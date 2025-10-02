@@ -22,8 +22,8 @@ GraphQLQueryBuilder graphQLQueryBuilder(BuilderOptions options) =>
     GraphQLQueryBuilder(options);
 
 String _addGqlExtensionToPathIfNeeded(String path) {
-  if (!path.endsWith('.gql.dart')) {
-    return path.replaceAll(RegExp(r'\.dart$'), '.gql.dart');
+  if (!path.endsWith('.graphql.dart')) {
+    return path.replaceAll(RegExp(r'\.dart$'), '.graphql.dart');
   }
   return path;
 }
@@ -392,7 +392,7 @@ class GraphQLQueryBuilder implements Builder {
       copyOptions,
     );
 
-    // No forwarder logic needed - all files use .gql.dart extension
+    // No forwarder logic needed - all files use .graphql.dart extension
 
     final result = _SchemaProcessingResult(
       outputFileId: outputFileId,
