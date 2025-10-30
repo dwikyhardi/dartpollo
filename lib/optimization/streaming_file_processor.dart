@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:developer' as dev;
 import 'dart:convert';
+import 'dart:developer' as dev;
+
 import 'package:build/build.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
@@ -37,7 +38,7 @@ class StreamingFileProcessor {
 
     // Use streaming for files larger than 1MB
     if (fileSize > 1024 * 1024) {
-      return await _processFileStreaming(
+      return _processFileStreaming(
         buildStep,
         assetId,
         chunkSize: chunkSize,
@@ -45,7 +46,7 @@ class StreamingFileProcessor {
       );
     } else {
       // Use regular processing for smaller files
-      return await _processFileRegular(buildStep, assetId);
+      return _processFileRegular(buildStep, assetId);
     }
   }
 
@@ -84,7 +85,7 @@ class StreamingFileProcessor {
     int bufferSize = defaultChunkSize,
   }) async {
     final buffer = StringBuffer();
-    int bufferLength = 0;
+    var bufferLength = 0;
 
     await for (final chunk in contentStream) {
       buffer.write(chunk);
@@ -113,8 +114,8 @@ class StreamingFileProcessor {
     return {
       'currentMemoryUsage': _currentMemoryUsage,
       'maxMemoryThreshold': maxMemoryThreshold,
-      'memoryUtilization':
-          (_currentMemoryUsage / maxMemoryThreshold * 100).toStringAsFixed(2),
+      'memoryUtilization': (_currentMemoryUsage / maxMemoryThreshold * 100)
+          .toStringAsFixed(2),
       ..._stats,
     };
   }
@@ -122,14 +123,15 @@ class StreamingFileProcessor {
   /// Reset all statistics and clear memory
   void reset() {
     _currentMemoryUsage = 0;
-    _stats.clear();
-    _stats.addAll({
-      'totalFilesProcessed': 0,
-      'totalBytesProcessed': 0,
-      'chunksProcessed': 0,
-      'peakMemoryUsage': 0,
-      'averageChunkSize': 0,
-    });
+    _stats
+      ..clear()
+      ..addAll({
+        'totalFilesProcessed': 0,
+        'totalBytesProcessed': 0,
+        'chunksProcessed': 0,
+        'peakMemoryUsage': 0,
+        'averageChunkSize': 0,
+      });
   }
 
   // Private methods
@@ -138,7 +140,7 @@ class StreamingFileProcessor {
     try {
       final content = await buildStep.readAsString(assetId);
       return utf8.encode(content).length;
-    } catch (e) {
+    } on Exception {
       // If we can't determine size, assume it's small
       return 0;
     }
@@ -161,7 +163,7 @@ class StreamingFileProcessor {
     _updateStats('totalBytesProcessed', contentBytes.length);
 
     // Process in chunks
-    for (int i = 0; i < contentBytes.length; i += chunkSize) {
+    for (var i = 0; i < contentBytes.length; i += chunkSize) {
       final endIndex = (i + chunkSize < contentBytes.length)
           ? i + chunkSize
           : contentBytes.length;
@@ -185,13 +187,16 @@ class StreamingFileProcessor {
     // Parse any remaining content
     if (contentBuffer.isNotEmpty) {
       try {
-        final remainingDoc =
-            parseString(contentBuffer.toString(), url: assetId.path);
+        final remainingDoc = parseString(
+          contentBuffer.toString(),
+          url: assetId.path,
+        );
         documents.add(remainingDoc);
-      } catch (e) {
+      } on Exception catch (e) {
         // Handle parsing errors gracefully
         dev.log(
-            'Warning: Could not parse remaining content in ${assetId.path}: $e');
+          'Warning: Could not parse remaining content in ${assetId.path}: $e',
+        );
       }
     }
 
@@ -225,9 +230,10 @@ class StreamingFileProcessor {
         documents.add(document);
 
         // Remove processed content from buffer
-        buffer.clear();
-        buffer.write(content.substring(boundary.end));
-      } catch (e) {
+        buffer
+          ..clear()
+          ..write(content.substring(boundary.end));
+      } on Exception {
         // Document is incomplete, keep in buffer
         break;
       }
@@ -240,12 +246,12 @@ class StreamingFileProcessor {
     final boundaries = <_DocumentBoundary>[];
     final lines = content.split('\n');
 
-    int currentStart = 0;
-    int currentPos = 0;
-    bool inDocument = false;
-    int braceCount = 0;
+    var currentStart = 0;
+    var currentPos = 0;
+    var inDocument = false;
+    var braceCount = 0;
 
-    for (int i = 0; i < lines.length; i++) {
+    for (var i = 0; i < lines.length; i++) {
       final line = lines[i].trim();
       currentPos += lines[i].length + 1; // +1 for newline
 
@@ -260,8 +266,9 @@ class StreamingFileProcessor {
           line.startsWith('schema')) {
         if (inDocument && braceCount == 0) {
           // End of previous document
-          boundaries.add(_DocumentBoundary(
-              currentStart, currentPos - lines[i].length - 1));
+          boundaries.add(
+            _DocumentBoundary(currentStart, currentPos - lines[i].length - 1),
+          );
         }
 
         currentStart = currentPos - lines[i].length - 1;
@@ -306,14 +313,14 @@ class StreamingFileProcessor {
     _currentMemoryUsage = _currentMemoryUsage ~/ 2; // Simulate cleanup
 
     // Add small delay to allow system cleanup
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future<void>.delayed(const Duration(milliseconds: 10));
   }
 }
 
 /// Represents a boundary of a complete GraphQL document in a file
 class _DocumentBoundary {
+  _DocumentBoundary(this.start, this.end);
+
   final int start;
   final int end;
-
-  _DocumentBoundary(this.start, this.end);
 }

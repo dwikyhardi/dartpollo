@@ -1,13 +1,15 @@
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/data/nullable.dart';
-import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:dartpollo/generator/enum_generator.dart';
+import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:dartpollo/generator/graphql_helpers.dart' as gql;
 import 'package:dartpollo/generator/helpers.dart';
 import 'package:gql/ast.dart';
 
 /// Generator for GraphQL class definitions
 class ClassGenerator {
+  const ClassGenerator._();
+
   /// Generate a class definition from a GraphQL type definition node
   static ClassDefinition generateClass({
     required TypeDefinitionNode node,
@@ -34,7 +36,7 @@ class ClassGenerator {
   static List<ClassProperty> generateProperties({
     required List<FieldDefinitionNode> fields,
     required Context context,
-    required Function(Context) onNewClassFound,
+    required void Function(Context) onNewClassFound,
   }) {
     final properties = <ClassProperty>[];
 
@@ -54,7 +56,7 @@ class ClassGenerator {
   static List<ClassProperty> generateInputProperties({
     required List<InputValueDefinitionNode> fields,
     required Context context,
-    required Function(Context) onNewClassFound,
+    required void Function(Context) onNewClassFound,
   }) {
     final properties = <ClassProperty>[];
 
@@ -74,7 +76,7 @@ class ClassGenerator {
   static ClassProperty _generateProperty({
     required FieldDefinitionNode field,
     required Context context,
-    required Function(Context) onNewClassFound,
+    required void Function(Context) onNewClassFound,
   }) {
     final fieldName = ClassPropertyName(name: field.name.value);
 
@@ -91,7 +93,7 @@ class ClassGenerator {
   static ClassProperty _generateInputProperty({
     required InputValueDefinitionNode field,
     required Context context,
-    required Function(Context) onNewClassFound,
+    required void Function(Context) onNewClassFound,
   }) {
     final fieldName = ClassPropertyName(name: field.name.value);
 
@@ -111,7 +113,7 @@ class ClassGenerator {
     required TypeNode fieldType,
     List<DirectiveNode>? fieldDirectives,
     required Context context,
-    required Function(Context) onNewClassFound,
+    required void Function(Context) onNewClassFound,
     bool markAsUsed = true,
   }) {
     // Handle __typename field
@@ -124,8 +126,10 @@ class ClassGenerator {
       );
     }
 
-    final nextType =
-        gql.getTypeByName(context.typeDefinitionNodeVisitor, fieldType);
+    final nextType = gql.getTypeByName(
+      context.typeDefinitionNodeVisitor,
+      fieldType,
+    );
 
     final aliasedContext = context.withAlias(
       nextFieldName: fieldName,
@@ -138,13 +142,15 @@ class ClassGenerator {
     final dartTypeName = gql.buildTypeName(
       fieldType,
       context.options,
-      dartType: true,
       replaceLeafWith: ClassName.fromPath(path: nextClassName),
       typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
     );
 
-    logFn(context, aliasedContext.align + 1,
-        '${aliasedContext.path}[${aliasedContext.currentType!.name.value}][${aliasedContext.currentClassName} ${aliasedContext.currentFieldName}] ${fieldAlias == null ? '' : '($fieldAlias) '}-> ${dartTypeName.namePrintable}');
+    logFn(
+      context,
+      aliasedContext.align + 1,
+      '${aliasedContext.path}[${aliasedContext.currentType!.name.value}][${aliasedContext.currentClassName} ${aliasedContext.currentFieldName}] ${fieldAlias == null ? '' : '($fieldAlias) '}-> ${dartTypeName.namePrintable}',
+    );
 
     // Handle complex types that need class generation
     if (nextType is ObjectTypeDefinitionNode ||
@@ -171,8 +177,10 @@ class ClassGenerator {
 
     // Handle custom scalars
     if (nextType is ScalarTypeDefinitionNode) {
-      final scalar =
-          gql.getSingleScalarMap(context.options, nextType.name.value);
+      final scalar = gql.getSingleScalarMap(
+        context.options,
+        nextType.name.value,
+      );
 
       if (scalar?.customParserImport != null &&
           nextType.name.value == scalar?.graphQLType) {
@@ -213,7 +221,7 @@ class ClassGenerator {
       }
     }
 
-    var annotations = <String>[];
+    final annotations = <String>[];
 
     if (jsonKeyAnnotation.isNotEmpty) {
       // Create the JSON key annotation string with consistent ordering
@@ -222,8 +230,9 @@ class ClassGenerator {
         orderedEntries.add('name: ${jsonKeyAnnotation['name']}');
       }
       if (jsonKeyAnnotation.containsKey('unknownEnumValue')) {
-        orderedEntries
-            .add('unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}');
+        orderedEntries.add(
+          'unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}',
+        );
       }
       // Add any other entries
       for (final entry in jsonKeyAnnotation.entries) {
@@ -247,14 +256,7 @@ class ClassGenerator {
   static List<String> generateClassAnnotations({
     required TypeDefinitionNode node,
     required Context context,
-  }) {
-    final annotations = <String>[];
-
-    // Add deprecation annotations if present
-    annotations.addAll(proceedDeprecated(node.directives));
-
-    return annotations;
-  }
+  }) => proceedDeprecated(node.directives);
 
   /// Validate property type resolution
   static void validatePropertyType({
@@ -263,9 +265,9 @@ class ClassGenerator {
   }) {
     try {
       gql.getTypeByName(context.typeDefinitionNodeVisitor, fieldType);
-    } catch (e) {
+    } on Exception {
       throw Exception(
-        'Failed to resolve type for field type: ${fieldType.toString()}. '
+        'Failed to resolve type for field type: $fieldType. '
         'Make sure your schema is updated and the type exists.',
       );
     }

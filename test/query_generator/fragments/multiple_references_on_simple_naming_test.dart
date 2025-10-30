@@ -13,7 +13,7 @@ import '../../helpers.dart';
 void main() {
   test(
     'On multiple reference of same fragment on simple naming',
-    () async => testGenerator(
+    () => testGenerator(
       query: r'''
           fragment myFragment on SomeObject {
             s, i
@@ -56,66 +56,64 @@ void main() {
   );
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_QueryResponse'),
       operationName: r'some_query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'SomeObject'),
-            mixins: [FragmentName(name: r'MyFragmentMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeObject'),
+          mixins: [FragmentName(name: r'MyFragmentMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeObject'),
-            mixins: [FragmentName(name: r'MyFragmentMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeObject'),
+          mixins: [FragmentName(name: r'MyFragmentMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'MoreData'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'SomeObject'),
-                  name: ClassPropertyName(name: r'someObject'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'MoreData'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'SomeObject'),
+              name: const ClassPropertyName(name: r'someObject'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'SomeObject'),
-                  name: ClassPropertyName(name: r'someObject'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'MoreData'),
-                  name: ClassPropertyName(name: r'moreData'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'SomeObject'),
+              name: const ClassPropertyName(name: r'someObject'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'MoreData'),
+              name: const ClassPropertyName(name: r'moreData'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'MyFragmentMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'int'),
-                  name: ClassPropertyName(name: r'i'),
-                  isResolveType: false)
-            ])
+          name: FragmentName(name: r'MyFragmentMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'int'),
+              name: const ClassPropertyName(name: r'i'),
+            ),
+          ],
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

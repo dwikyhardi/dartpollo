@@ -8,7 +8,7 @@ void main() {
   group('Enum duplication', () {
     test(
       'Enum duplication should be properly handeled',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         namingScheme: 'pathedWithFields',
         schema: r'''
@@ -56,81 +56,84 @@ const anotherQuery = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_Query'),
       operationName: r'custom',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'A')),
-          EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'MyEnum'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'A')),
+            EnumValueDefinition(name: EnumValueName(name: r'B')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_q'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
-                  name: ClassPropertyName(name: r'e'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_q'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'MyEnum'),
+              name: const ClassPropertyName(name: r'e'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Custom$_Query$_q'),
-                  name: ClassPropertyName(name: r'q'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Custom$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_Query$_q'),
+              name: const ClassPropertyName(name: r'q'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query'),
-  QueryDefinition(
+    ),
+    QueryDefinition(
       name: QueryName(name: r'CustomList$_Query'),
       operationName: r'customList',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'A')),
-          EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'MyEnum'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'A')),
+            EnumValueDefinition(name: EnumValueName(name: r'B')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'CustomList$_Query$_qList'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
-                  name: ClassPropertyName(name: r'e'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'CustomList$_Query$_qList'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'MyEnum'),
+              name: const ClassPropertyName(name: r'e'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'CustomList$_Query'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(name: r'CustomList$_Query$_qList'),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'qList'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'CustomList$_Query'),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(name: r'CustomList$_Query$_qList'),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'qList'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

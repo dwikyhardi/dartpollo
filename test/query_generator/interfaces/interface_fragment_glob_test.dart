@@ -7,7 +7,7 @@ void main() {
   group('Interface with fragment globs', () {
     test(
       'Should handle correctly when interfaces use external fragments',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         namingScheme: 'pathedWithFields',
         schema: graphQLSchema,
@@ -48,7 +48,7 @@ const query = r'''
 ''';
 
 // https://graphql-code-generator.com/#live-demo
-final String graphQLSchema = r'''
+const String graphQLSchema = r'''
   scalar String
   scalar ID
   
@@ -77,96 +77,97 @@ final String graphQLSchema = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_Query'),
       operationName: r'custom',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_nodeById$_user'),
-            extension: ClassName(name: r'Custom$_Query$_nodeById'),
-            mixins: [FragmentName(name: r'UserFragMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_nodeById$_user'),
+          extension: ClassName(name: r'Custom$_Query$_nodeById'),
+          mixins: [FragmentName(name: r'UserFragMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name:
-                ClassName(name: r'Custom$_Query$_nodeById$_chatMessage$_user'),
-            mixins: [FragmentName(name: r'UserFragMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_nodeById$_chatMessage$_user'),
+          mixins: [FragmentName(name: r'UserFragMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_nodeById$_chatMessage'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'message'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(
-                      name: r'Custom$_Query$_nodeById$_chatMessage$_user',
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'user'),
-                  isResolveType: false)
-            ],
-            extension: ClassName(name: r'Custom$_Query$_nodeById'),
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_nodeById$_chatMessage'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'message'),
+            ),
+            ClassProperty(
+              type: TypeName(
+                name: r'Custom$_Query$_nodeById$_chatMessage$_user',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'user'),
+            ),
+          ],
+          extension: ClassName(name: r'Custom$_Query$_nodeById'),
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_nodeById'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'__typename'),
-                  annotations: [r'''JsonKey(name: '__typename')'''],
-                  isResolveType: true)
-            ],
-            factoryPossibilities: {
-              r'User': ClassName(name: r'Custom$_Query$_nodeById$_User'),
-              r'ChatMessage':
-                  ClassName(name: r'Custom$_Query$_nodeById$_ChatMessage')
-            },
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_nodeById'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'__typename'),
+              annotations: const [r'''JsonKey(name: '__typename')'''],
+              isResolveType: true,
+            ),
+          ],
+          factoryPossibilities: {
+            r'User': ClassName(name: r'Custom$_Query$_nodeById$_User'),
+            r'ChatMessage': ClassName(
+              name: r'Custom$_Query$_nodeById$_ChatMessage',
+            ),
+          },
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Custom$_Query$_nodeById'),
-                  name: ClassPropertyName(name: r'nodeById'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_Query$_nodeById'),
+              name: const ClassPropertyName(name: r'nodeById'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'UserFragMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'username'),
-                  isResolveType: false)
-            ])
+          name: FragmentName(name: r'UserFragMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'username'),
+            ),
+          ],
+        ),
       ],
       inputs: [
         QueryInput(
-            type: DartTypeName(name: r'String', isNonNull: true),
-            name: QueryInputName(name: r'id'))
+          type: DartTypeName(name: r'String', isNonNull: true),
+          name: const QueryInputName(name: r'id'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

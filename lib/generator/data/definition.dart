@@ -4,20 +4,20 @@ import 'package:equatable/equatable.dart';
 
 /// Abstract definition of an entity.
 abstract class Definition extends Equatable with DataPrinter {
-  /// The definition name.
-  final Name name;
-
   /// Instantiate a definition.
   Definition({required this.name});
+
+  /// The definition name.
+  final Name name;
 }
 
 /// Abstract name of an entity.
 abstract class Name extends Equatable with DataPrinter {
-  /// Raw name string
-  final String name;
-
   /// Instantiate a name.
   const Name({required this.name});
+
+  /// Raw name string
+  final String name;
 
   /// Name suitable for code printing
   String get namePrintable => normalize(name);
@@ -35,9 +35,9 @@ abstract class Name extends Equatable with DataPrinter {
       reGeneric
           .allMatches(namePrintable)
           .map((e) => e.group(1))
-          .join('')
-          .replaceAll(reNull, 'Nullable')
-    ].join('');
+          .join()
+          .replaceAll(reNull, 'Nullable'),
+    ].join();
   }
 
   /// Name normalization function

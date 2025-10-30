@@ -1,9 +1,15 @@
-import 'package:path/path.dart' as p;
 import 'dart:io';
+
+import 'package:path/path.dart' as p;
 
 /// Service responsible for file operations including path manipulation,
 /// validation, and file system abstractions.
 class FileService {
+  /// Private constructor to prevent instantiation.
+  const FileService._();
+
+  static const FileService instance = FileService._();
+
   /// Extracts the basename without extension from a file path
   ///
   /// Example:

@@ -1,10 +1,10 @@
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/ephemeral_data.dart';
+import 'package:dartpollo/schema/schema_options.dart';
+import 'package:dartpollo/services/file_service.dart';
 import 'package:dartpollo/services/generation_service.dart';
 import 'package:dartpollo/services/schema_service.dart';
-import 'package:dartpollo/services/file_service.dart';
-import 'package:dartpollo/generator/data/data.dart';
-import 'package:dartpollo/schema/schema_options.dart';
 import 'package:dartpollo/visitor/canonical_visitor.dart';
-import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:gql/ast.dart';
 import 'package:test/test.dart';
 
@@ -19,92 +19,90 @@ void main() {
 
     setUp(() {
       // Basic schema setup
-      basicSchema = DocumentNode(definitions: [
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'Query'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'user'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'User'), isNonNull: false),
-              directives: [],
-              args: [
-                InputValueDefinitionNode(
-                  name: NameNode(value: 'id'),
-                  type: NamedTypeNode(
-                      name: NameNode(value: 'ID'), isNonNull: true),
-                  directives: [],
+      basicSchema = const DocumentNode(
+        definitions: [
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'Query'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'user'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'User'),
                 ),
-              ],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'User'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'id'),
-              type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-            FieldDefinitionNode(
-              name: NameNode(value: 'name'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-      ]);
+                args: [
+                  InputValueDefinitionNode(
+                    name: NameNode(value: 'id'),
+                    type: NamedTypeNode(
+                      name: NameNode(value: 'ID'),
+                      isNonNull: true,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'User'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'id'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'ID'),
+                  isNonNull: true,
+                ),
+              ),
+              FieldDefinitionNode(
+                name: NameNode(value: 'name'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'String'),
+                  isNonNull: true,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
 
       // Simple query document
-      queryDocument = DocumentNode(definitions: [
-        OperationDefinitionNode(
-          type: OperationType.query,
-          name: NameNode(value: 'GetUser'),
-          selectionSet: SelectionSetNode(selections: [
-            FieldNode(
-              name: NameNode(value: 'user'),
-              arguments: [
-                ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: StringValueNode(value: '1', isBlock: false),
+      queryDocument = const DocumentNode(
+        definitions: [
+          OperationDefinitionNode(
+            type: OperationType.query,
+            name: NameNode(value: 'GetUser'),
+            selectionSet: SelectionSetNode(
+              selections: [
+                FieldNode(
+                  name: NameNode(value: 'user'),
+                  arguments: [
+                    ArgumentNode(
+                      name: NameNode(value: 'id'),
+                      value: StringValueNode(value: '1', isBlock: false),
+                    ),
+                  ],
+                  selectionSet: SelectionSetNode(
+                    selections: [
+                      FieldNode(name: NameNode(value: 'id')),
+                      FieldNode(name: NameNode(value: 'name')),
+                    ],
+                  ),
                 ),
               ],
-              selectionSet: SelectionSetNode(selections: [
-                FieldNode(name: NameNode(value: 'id')),
-                FieldNode(name: NameNode(value: 'name')),
-              ]),
             ),
-          ]),
-          variableDefinitions: [],
-          directives: [],
-        ),
-      ]);
+          ),
+        ],
+      );
 
       basicOptions = GeneratorOptions(
         scalarMapping: [],
-        generateHelpers: true,
-        generateQueries: true,
       );
 
-      basicSchemaMap = SchemaMap(
-        namingScheme: NamingScheme.pathedWithTypes,
-        typeNameField: '__typename',
-        convertEnumToString: false,
-      );
+      basicSchemaMap = SchemaMap();
 
       // Create real services for integration testing
       schemaService = SchemaService(basicSchema);
       generationService = GenerationService(
         schemaService: schemaService,
-        fileService: FileService(),
+        fileService: FileService.instance,
       );
     });
 
@@ -112,7 +110,7 @@ void main() {
       test('should initialize with required dependencies', () {
         final service = GenerationService(
           schemaService: schemaService,
-          fileService: FileService(),
+          fileService: FileService.instance,
         );
 
         expect(service.schemaService, equals(schemaService));
@@ -145,11 +143,13 @@ void main() {
             basicSchemaMap,
             [],
           ),
-          throwsA(isA<GenerationProcessError>().having(
-            (e) => e.message,
-            'message',
-            contains('Path cannot be empty'),
-          )),
+          throwsA(
+            isA<GenerationProcessError>().having(
+              (e) => e.message,
+              'message',
+              contains('Path cannot be empty'),
+            ),
+          ),
         );
       });
 
@@ -162,11 +162,13 @@ void main() {
             basicSchemaMap,
             [],
           ),
-          throwsA(isA<GenerationProcessError>().having(
-            (e) => e.message,
-            'message',
-            contains('No GraphQL documents provided'),
-          )),
+          throwsA(
+            isA<GenerationProcessError>().having(
+              (e) => e.message,
+              'message',
+              contains('No GraphQL documents provided'),
+            ),
+          ),
         );
       });
 
@@ -221,7 +223,7 @@ void main() {
       });
 
       test('should handle document with no operations', () {
-        final emptyDocument = DocumentNode(definitions: []);
+        const emptyDocument = DocumentNode();
         final canonicalVisitor = CanonicalVisitor(
           context: Context(
             schema: basicSchema,
@@ -256,11 +258,11 @@ void main() {
     group('error handling and recovery', () {
       test('should provide detailed error context', () {
         // Create a service with invalid schema to trigger error
-        final invalidSchema = DocumentNode(definitions: []);
+        const invalidSchema = DocumentNode();
         final invalidSchemaService = SchemaService(invalidSchema);
         final invalidGenerationService = GenerationService(
           schemaService: invalidSchemaService,
-          fileService: FileService(),
+          fileService: FileService.instance,
         );
 
         expect(

@@ -8,7 +8,7 @@ void main() {
   group('On enums', () {
     test(
       'List of enums as input',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -48,66 +48,75 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'BrowseArticles$_Query'),
       operationName: r'BrowseArticles',
       classes: [
-        EnumDefinition(name: EnumName(name: r'ArticleType'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'NEWS')),
-          EnumValueDefinition(name: EnumValueName(name: r'TUTORIAL')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'ArticleType'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'NEWS')),
+            EnumValueDefinition(name: EnumValueName(name: r'TUTORIAL')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'BrowseArticles$_Query$_Article'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'title'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'ArticleType', isNonNull: true),
-                  name: ClassPropertyName(name: r'article_type'),
-                  annotations: [
-                    r'''JsonKey(name: 'article_type', unknownEnumValue: ArticleType.unknown)'''
-                  ],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'BrowseArticles$_Query$_Article'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'title'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'ArticleType', isNonNull: true),
+              name: const ClassPropertyName(name: r'article_type'),
+              annotations: const [
+                r'''JsonKey(name: 'article_type', unknownEnumValue: ArticleType.unknown)''',
+              ],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'BrowseArticles$_Query'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(
-                          name: r'BrowseArticles$_Query$_Article',
-                          isNonNull: true),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'articles'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'BrowseArticles$_Query'),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name: r'BrowseArticles$_Query$_Article',
+                  isNonNull: true,
+                ),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'articles'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
       inputs: [
         QueryInput(
-            type: ListOfTypeName(
-                typeName: TypeName(name: r'ArticleType', isNonNull: true),
-                isNonNull: false),
-            name: QueryInputName(name: r'article_type_in'),
-            annotations: [r'JsonKey(unknownEnumValue: ArticleType.unknown)'])
+          type: ListOfTypeName(
+            typeName: TypeName(name: r'ArticleType', isNonNull: true),
+            isNonNull: false,
+          ),
+          name: const QueryInputName(name: r'article_type_in'),
+          annotations: const [
+            r'JsonKey(unknownEnumValue: ArticleType.unknown)',
+          ],
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

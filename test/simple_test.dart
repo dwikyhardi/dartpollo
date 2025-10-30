@@ -7,7 +7,7 @@ void main() {
     });
 
     test('String operations test', () {
-      final str = 'Hello, Dartpollo!';
+      const str = 'Hello, Dartpollo!';
       expect(str.contains('Dartpollo'), isTrue);
       expect(str.length, equals(17));
     });

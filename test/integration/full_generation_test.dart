@@ -1,10 +1,11 @@
-import 'package:dartpollo/builder.dart';
-import 'package:dartpollo/generator/data/data.dart';
+import 'dart:developer' as dev;
+
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
+import 'package:dartpollo/builder.dart';
+import 'package:dartpollo/generator/data/data.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
-import 'dart:developer' as dev;
 
 void main() {
   group('Full Generation Integration Tests', () {
@@ -13,9 +14,10 @@ void main() {
     });
 
     group('End-to-End Generation Workflow', () {
-      test('should generate complete code for Pokemon schema with simple query',
-          () async {
-        const pokemonSchema = '''
+      test(
+        'should generate complete code for Pokemon schema with simple query',
+        () {
+          const pokemonSchema = '''
           type Query {
             pokemon(name: String): Pokemon
           }
@@ -45,7 +47,7 @@ void main() {
           }
         ''';
 
-        const query = '''
+          const query = '''
           query GetPokemon(\$name: String) {
             pokemon(name: \$name) {
               id
@@ -65,77 +67,85 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'generate_queries': true,
-          'schema_mapping': [
+          final builder = graphQLQueryBuilder(
+            const BuilderOptions({
+              'generate_helpers': true,
+              'generate_queries': true,
+              'schema_mapping': [
+                {
+                  'schema': 'pokemon.schema.graphql',
+                  'queries_glob': 'queries/**.graphql',
+                  'output': 'lib/pokemon.graphql.dart',
+                  'naming_scheme': 'pathedWithTypes',
+                },
+              ],
+            }),
+          );
+
+          LibraryDefinition? capturedDefinition;
+          builder.onBuild = expectAsync1((definition) {
+            capturedDefinition = definition;
+          });
+
+          testBuilder(
+            builder,
             {
-              'schema': 'pokemon.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/pokemon.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+              'a|pokemon.schema.graphql': pokemonSchema,
+              'a|queries/get_pokemon.graphql': query,
+            },
+            outputs: {
+              'a|lib/pokemon.graphql.dart': anything,
+            },
+            onLog: (log) {
+              if (log.level >= Level.SEVERE) {
+                dev.log(log.message, level: log.level.value, name: 'ERROR');
+              }
+            },
+          );
 
-        LibraryDefinition? capturedDefinition;
-        builder.onBuild = expectAsync1((definition) {
-          capturedDefinition = definition;
-        }, count: 1);
+          // Validate the generated library definition
+          expect(capturedDefinition, isNotNull);
+          expect(capturedDefinition!.queries, hasLength(1));
 
-        await testBuilder(
-          builder,
-          {
-            'a|pokemon.schema.graphql': pokemonSchema,
-            'a|queries/get_pokemon.graphql': query,
-          },
-          outputs: {
-            'a|lib/pokemon.graphql.dart': anything,
-          },
-          onLog: (log) {
-            if (log.level >= Level.SEVERE) {
-              dev.log(log.message, level: log.level.value, name: 'ERROR');
-            }
-          },
-        );
+          final queryDef = capturedDefinition!.queries.first;
+          expect(queryDef.operationName, equals('GetPokemon'));
+          expect(queryDef.classes, isNotEmpty);
 
-        // Validate the generated library definition
-        expect(capturedDefinition, isNotNull);
-        expect(capturedDefinition!.queries, hasLength(1));
+          // Verify main Pokemon class is generated
+          final pokemonClass = queryDef.classes
+              .whereType<ClassDefinition>()
+              .firstWhere(
+                (c) =>
+                    c.name.name.contains('Pokemon') &&
+                    !c.name.name.contains('Dimension') &&
+                    !c.name.name.contains('Attack'),
+              );
+          expect(
+            pokemonClass.properties,
+            hasLength(5),
+          ); // id, name, types, weight, attacks
 
-        final queryDef = capturedDefinition!.queries.first;
-        expect(queryDef.operationName, equals('GetPokemon'));
-        expect(queryDef.classes, isNotEmpty);
+          // Verify nested classes are generated
+          final dimensionClass = queryDef.classes
+              .whereType<ClassDefinition>()
+              .firstWhere(
+                (c) => c.name.name.contains('PokemonDimension'),
+              );
+          expect(dimensionClass.properties, hasLength(2)); // minimum, maximum
 
-        // Verify main Pokemon class is generated
-        final pokemonClass =
-            queryDef.classes.whereType<ClassDefinition>().firstWhere(
-                  (c) =>
-                      c.name.name.contains('Pokemon') &&
-                      !c.name.name.contains('Dimension') &&
-                      !c.name.name.contains('Attack'),
-                );
-        expect(pokemonClass.properties,
-            hasLength(5)); // id, name, types, weight, attacks
-
-        // Verify nested classes are generated
-        final dimensionClass =
-            queryDef.classes.whereType<ClassDefinition>().firstWhere(
-                  (c) => c.name.name.contains('PokemonDimension'),
-                );
-        expect(dimensionClass.properties, hasLength(2)); // minimum, maximum
-
-        final attackClass =
-            queryDef.classes.whereType<ClassDefinition>().firstWhere(
-                  (c) => c.name.name.endsWith('Attack'),
-                );
-        expect(attackClass.properties, hasLength(2)); // name, damage
-      });
+          final attackClass = queryDef.classes
+              .whereType<ClassDefinition>()
+              .firstWhere(
+                (c) => c.name.name.endsWith('Attack'),
+              );
+          expect(attackClass.properties, hasLength(2)); // name, damage
+        },
+      );
 
       test(
-          'should generate complete code for Hasura schema with complex relationships',
-          () async {
-        const hasuraSchema = '''
+        'should generate complete code for Hasura schema with complex relationships',
+        () {
+          const hasuraSchema = '''
           type Query {
             profile(where: ProfileBoolExp): [Profile!]!
             messages(where: MessagesBoolExp): [Messages!]!
@@ -177,7 +187,7 @@ void main() {
           }
         ''';
 
-        const query = '''
+          const query = '''
           query GetMessagesWithUsers(\$profileFilter: ProfileBoolExp, \$messageFilter: MessagesBoolExp) {
             profile(where: \$profileFilter) {
               id
@@ -191,72 +201,75 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'generate_queries': true,
-          'schema_mapping': [
+          final builder = graphQLQueryBuilder(
+            const BuilderOptions({
+              'generate_helpers': true,
+              'generate_queries': true,
+              'schema_mapping': [
+                {
+                  'schema': 'hasura.schema.graphql',
+                  'queries_glob': 'queries/**.graphql',
+                  'output': 'lib/hasura.graphql.dart',
+                  'naming_scheme': 'pathedWithTypes',
+                },
+              ],
+            }),
+          );
+
+          LibraryDefinition? capturedDefinition;
+          builder.onBuild = expectAsync1((definition) {
+            capturedDefinition = definition;
+          });
+
+          testBuilder(
+            builder,
             {
-              'schema': 'hasura.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/hasura.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+              'a|hasura.schema.graphql': hasuraSchema,
+              'a|queries/get_messages.graphql': query,
+            },
+            outputs: {
+              'a|lib/hasura.graphql.dart': anything,
+            },
+            onLog: (log) {
+              if (log.level >= Level.SEVERE) {
+                dev.log(log.message, level: log.level.value, name: 'ERROR');
+              }
+            },
+          );
 
-        LibraryDefinition? capturedDefinition;
-        builder.onBuild = expectAsync1((definition) {
-          capturedDefinition = definition;
-        }, count: 1);
+          // Validate the generated library definition
+          expect(capturedDefinition, isNotNull);
+          expect(capturedDefinition!.queries, hasLength(1));
 
-        await testBuilder(
-          builder,
-          {
-            'a|hasura.schema.graphql': hasuraSchema,
-            'a|queries/get_messages.graphql': query,
-          },
-          outputs: {
-            'a|lib/hasura.graphql.dart': anything,
-          },
-          onLog: (log) {
-            if (log.level >= Level.SEVERE) {
-              dev.log(log.message, level: log.level.value, name: 'ERROR');
-            }
-          },
-        );
+          final queryDef = capturedDefinition!.queries.first;
+          expect(queryDef.operationName, equals('GetMessagesWithUsers'));
+          expect(queryDef.classes, isNotEmpty);
+          expect(queryDef.inputs, isNotEmpty);
 
-        // Validate the generated library definition
-        expect(capturedDefinition, isNotNull);
-        expect(capturedDefinition!.queries, hasLength(1));
+          // Debug: Print all generated input names
+          dev.log('[DEBUG_LOG] Generated inputs:');
+          for (final input in queryDef.inputs) {
+            dev.log('[DEBUG_LOG] - ${input.name.name}');
+          }
 
-        final queryDef = capturedDefinition!.queries.first;
-        expect(queryDef.operationName, equals('GetMessagesWithUsers'));
-        expect(queryDef.classes, isNotEmpty);
-        expect(queryDef.inputs, isNotEmpty);
+          // Verify input classes are generated - use safer search patterns
+          final profileBoolExpInputs = queryDef.inputs
+              .where(
+                (i) => i.name.name.contains('profileFilter'),
+              )
+              .toList();
+          expect(profileBoolExpInputs, isNotEmpty);
 
-        // Debug: Print all generated input names
-        dev.log('[DEBUG_LOG] Generated inputs:');
-        for (final input in queryDef.inputs) {
-          dev.log('[DEBUG_LOG] - ${input.name.name}');
-        }
+          final messagesBoolExpInputs = queryDef.inputs
+              .where(
+                (i) => i.name.name.contains('messageFilter'),
+              )
+              .toList();
+          expect(messagesBoolExpInputs, isNotEmpty);
+        },
+      );
 
-        // Verify input classes are generated - use safer search patterns
-        final profileBoolExpInputs = queryDef.inputs
-            .where(
-              (i) => i.name.name.contains('profileFilter'),
-            )
-            .toList();
-        expect(profileBoolExpInputs, isNotEmpty);
-
-        final messagesBoolExpInputs = queryDef.inputs
-            .where(
-              (i) => i.name.name.contains('messageFilter'),
-            )
-            .toList();
-        expect(messagesBoolExpInputs, isNotEmpty);
-      });
-
-      test('should handle enum generation correctly', () async {
+      test('should handle enum generation correctly', () {
         const schemaWithEnums = '''
           type Query {
             pokemon(type: PokemonType): Pokemon
@@ -294,25 +307,27 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': false,
-          'generate_queries': false,
-          'schema_mapping': [
-            {
-              'schema': 'pokemon_enum.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/pokemon_enum.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final builder = graphQLQueryBuilder(
+          const BuilderOptions({
+            'generate_helpers': false,
+            'generate_queries': false,
+            'schema_mapping': [
+              {
+                'schema': 'pokemon_enum.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/pokemon_enum.graphql.dart',
+                'naming_scheme': 'pathedWithTypes',
+              },
+            ],
+          }),
+        );
 
         LibraryDefinition? capturedDefinition;
         builder.onBuild = expectAsync1((definition) {
           capturedDefinition = definition;
-        }, count: 1);
+        });
 
-        await testBuilder(
+        testBuilder(
           builder,
           {
             'a|pokemon_enum.schema.graphql': schemaWithEnums,
@@ -331,8 +346,9 @@ void main() {
         expect(queryDef.classes, isNotEmpty);
 
         // Check that enum properties are correctly typed
-        final pokemonClass =
-            queryDef.classes.whereType<ClassDefinition>().first;
+        final pokemonClass = queryDef.classes
+            .whereType<ClassDefinition>()
+            .first;
         final typeProperty = pokemonClass.properties.firstWhere(
           (p) => p.name.name == 'type',
         );
@@ -344,7 +360,7 @@ void main() {
         expect(statusProperty.type.name, contains('PokemonStatus'));
       });
 
-      test('should handle fragment processing correctly', () async {
+      test('should handle fragment processing correctly', () {
         const schemaWithFragments = '''
           type Query {
             user: User
@@ -395,25 +411,27 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': false,
-          'generate_queries': false,
-          'schema_mapping': [
-            {
-              'schema': 'user.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/user.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final builder = graphQLQueryBuilder(
+          const BuilderOptions({
+            'generate_helpers': false,
+            'generate_queries': false,
+            'schema_mapping': [
+              {
+                'schema': 'user.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/user.graphql.dart',
+                'naming_scheme': 'pathedWithTypes',
+              },
+            ],
+          }),
+        );
 
         LibraryDefinition? capturedDefinition;
         builder.onBuild = expectAsync1((definition) {
           capturedDefinition = definition;
-        }, count: 1);
+        });
 
-        await testBuilder(
+        testBuilder(
           builder,
           {
             'a|user.schema.graphql': schemaWithFragments,
@@ -435,7 +453,8 @@ void main() {
         dev.log('[DEBUG_LOG] Generated classes for fragment test:');
         for (final cls in queryDef.classes.whereType<ClassDefinition>()) {
           dev.log(
-              '[DEBUG_LOG] - ${cls.name.name} (${cls.properties.length} properties)');
+            '[DEBUG_LOG] - ${cls.name.name} (${cls.properties.length} properties)',
+          );
         }
 
         // Verify that fragment fields are included in the main class - use safer search patterns
@@ -481,7 +500,7 @@ void main() {
     });
 
     group('Error Handling Integration', () {
-      test('should handle schema validation errors gracefully', () async {
+      test('should handle schema validation errors gracefully', () {
         const invalidSchema = '''
           type Query {
             user: NonExistentType
@@ -496,15 +515,17 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'schema_mapping': [
-            {
-              'schema': 'invalid.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/invalid.graphql.dart',
-            }
-          ],
-        }));
+        final builder = graphQLQueryBuilder(
+          const BuilderOptions({
+            'schema_mapping': [
+              {
+                'schema': 'invalid.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/invalid.graphql.dart',
+              },
+            ],
+          }),
+        );
 
         // This should fail gracefully
         expect(
@@ -520,7 +541,7 @@ void main() {
         );
       });
 
-      test('should handle query validation errors gracefully', () async {
+      test('should handle query validation errors gracefully', () {
         const validSchema = '''
           type Query {
             user: User
@@ -541,15 +562,17 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'schema_mapping': [
-            {
-              'schema': 'valid.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query_error.graphql.dart',
-            }
-          ],
-        }));
+        final builder = graphQLQueryBuilder(
+          const BuilderOptions({
+            'schema_mapping': [
+              {
+                'schema': 'valid.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/query_error.graphql.dart',
+              },
+            ],
+          }),
+        );
 
         // This should fail gracefully
         expect(
@@ -567,21 +590,21 @@ void main() {
     });
 
     group('Performance and Regression Tests', () {
-      test('should handle large schemas efficiently', () async {
+      test('should handle large schemas efficiently', () {
         // Generate a large schema programmatically
-        final largeSchemaBuffer = StringBuffer();
-        largeSchemaBuffer.writeln('type Query {');
+        final largeSchemaBuffer = StringBuffer()..writeln('type Query {');
 
-        for (int i = 0; i < 50; i++) {
+        for (var i = 0; i < 50; i++) {
           largeSchemaBuffer.writeln('  entity$i: Entity$i');
         }
         largeSchemaBuffer.writeln('}');
 
-        for (int i = 0; i < 50; i++) {
-          largeSchemaBuffer.writeln('type Entity$i {');
-          largeSchemaBuffer.writeln('  id: ID!');
-          largeSchemaBuffer.writeln('  name: String');
-          largeSchemaBuffer.writeln('  value$i: Int');
+        for (var i = 0; i < 50; i++) {
+          largeSchemaBuffer
+            ..writeln('type Entity$i {')
+            ..writeln('  id: ID!')
+            ..writeln('  name: String')
+            ..writeln('  value$i: Int');
           if (i > 0) {
             largeSchemaBuffer.writeln('  related: Entity${i - 1}');
           }
@@ -607,26 +630,28 @@ void main() {
           }
         ''';
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': false,
-          'generate_queries': false,
-          'schema_mapping': [
-            {
-              'schema': 'large.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/large.graphql.dart',
-            }
-          ],
-        }));
+        final builder = graphQLQueryBuilder(
+          const BuilderOptions({
+            'generate_helpers': false,
+            'generate_queries': false,
+            'schema_mapping': [
+              {
+                'schema': 'large.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/large.graphql.dart',
+              },
+            ],
+          }),
+        );
 
         final stopwatch = Stopwatch()..start();
 
         LibraryDefinition? capturedDefinition;
         builder.onBuild = expectAsync1((definition) {
           capturedDefinition = definition;
-        }, count: 1);
+        });
 
-        await testBuilder(
+        testBuilder(
           builder,
           {
             'a|large.schema.graphql': largeSchemaBuffer.toString(),
@@ -641,16 +666,19 @@ void main() {
 
         // Performance assertion - should complete within reasonable time
         expect(
-            stopwatch.elapsedMilliseconds, lessThan(10000)); // 10 seconds max
+          stopwatch.elapsedMilliseconds,
+          lessThan(10000),
+        ); // 10 seconds max
 
         // Validate that generation still works correctly
         expect(capturedDefinition, isNotNull);
         expect(capturedDefinition!.queries, hasLength(1));
       });
 
-      test('should generate identical output for same input (deterministic)',
-          () async {
-        const schema = '''
+      test(
+        'should generate identical output for same input (deterministic)',
+        () {
+          const schema = '''
           type Query {
             user: User
           }
@@ -662,7 +690,7 @@ void main() {
           }
         ''';
 
-        const query = '''
+          const query = '''
           query GetUser {
             user {
               id
@@ -672,84 +700,91 @@ void main() {
           }
         ''';
 
-        final builderOptions = BuilderOptions({
-          'generate_helpers': false,
-          'generate_queries': false,
-          'schema_mapping': [
+          const builderOptions = BuilderOptions({
+            'generate_helpers': false,
+            'generate_queries': false,
+            'schema_mapping': [
+              {
+                'schema': 'deterministic.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/deterministic.graphql.dart',
+              },
+            ],
+          });
+
+          // Run generation twice
+          LibraryDefinition? firstResult;
+          LibraryDefinition? secondResult;
+
+          final firstBuilder = graphQLQueryBuilder(builderOptions)
+            ..onBuild = expectAsync1((definition) {
+              firstResult = definition;
+            });
+
+          testBuilder(
+            firstBuilder,
             {
-              'schema': 'deterministic.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/deterministic.graphql.dart',
-            }
-          ],
-        });
+              'a|deterministic.schema.graphql': schema,
+              'a|queries/deterministic.graphql': query,
+            },
+            outputs: {
+              'a|lib/deterministic.graphql.dart': anything,
+            },
+          );
 
-        // Run generation twice
-        LibraryDefinition? firstResult;
-        LibraryDefinition? secondResult;
+          final secondBuilder = graphQLQueryBuilder(builderOptions)
+            ..onBuild = expectAsync1((definition) {
+              secondResult = definition;
+            });
 
-        final firstBuilder = graphQLQueryBuilder(builderOptions);
-        firstBuilder.onBuild = expectAsync1((definition) {
-          firstResult = definition;
-        }, count: 1);
+          testBuilder(
+            secondBuilder,
+            {
+              'a|deterministic.schema.graphql': schema,
+              'a|queries/deterministic.graphql': query,
+            },
+            outputs: {
+              'a|lib/deterministic.graphql.dart': anything,
+            },
+          );
 
-        await testBuilder(
-          firstBuilder,
-          {
-            'a|deterministic.schema.graphql': schema,
-            'a|queries/deterministic.graphql': query,
-          },
-          outputs: {
-            'a|lib/deterministic.graphql.dart': anything,
-          },
-        );
+          // Results should be identical
+          expect(firstResult, isNotNull);
+          expect(secondResult, isNotNull);
+          expect(
+            firstResult!.queries.length,
+            equals(secondResult!.queries.length),
+          );
 
-        final secondBuilder = graphQLQueryBuilder(builderOptions);
-        secondBuilder.onBuild = expectAsync1((definition) {
-          secondResult = definition;
-        }, count: 1);
+          final firstQuery = firstResult!.queries.first;
+          final secondQuery = secondResult!.queries.first;
 
-        await testBuilder(
-          secondBuilder,
-          {
-            'a|deterministic.schema.graphql': schema,
-            'a|queries/deterministic.graphql': query,
-          },
-          outputs: {
-            'a|lib/deterministic.graphql.dart': anything,
-          },
-        );
+          expect(firstQuery.operationName, equals(secondQuery.operationName));
+          expect(firstQuery.classes.length, equals(secondQuery.classes.length));
 
-        // Results should be identical
-        expect(firstResult, isNotNull);
-        expect(secondResult, isNotNull);
-        expect(
-            firstResult!.queries.length, equals(secondResult!.queries.length));
+          final firstClasses = firstQuery.classes
+              .whereType<ClassDefinition>()
+              .toList();
+          final secondClasses = secondQuery.classes
+              .whereType<ClassDefinition>()
+              .toList();
 
-        final firstQuery = firstResult!.queries.first;
-        final secondQuery = secondResult!.queries.first;
+          for (var i = 0; i < firstClasses.length; i++) {
+            final firstClass = firstClasses[i];
+            final secondClass = secondClasses[i];
 
-        expect(firstQuery.operationName, equals(secondQuery.operationName));
-        expect(firstQuery.classes.length, equals(secondQuery.classes.length));
-
-        final firstClasses =
-            firstQuery.classes.whereType<ClassDefinition>().toList();
-        final secondClasses =
-            secondQuery.classes.whereType<ClassDefinition>().toList();
-
-        for (int i = 0; i < firstClasses.length; i++) {
-          final firstClass = firstClasses[i];
-          final secondClass = secondClasses[i];
-
-          expect(firstClass.name.name, equals(secondClass.name.name));
-          expect(firstClass.properties.length,
-              equals(secondClass.properties.length));
-        }
-      });
+            expect(firstClass.name.name, equals(secondClass.name.name));
+            expect(
+              firstClass.properties.length,
+              equals(secondClass.properties.length),
+            );
+          }
+        },
+      );
     });
 
     group('Backward Compatibility Tests', () {
-      test('should maintain compatibility with existing API', () async {
+      test('should maintain compatibility with existing API', () {
         const schema = '''
           type Query {
             user: User
@@ -771,23 +806,25 @@ void main() {
         ''';
 
         // Test with old-style configuration
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'schema_mapping': [
-            {
-              'schema': 'compat.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/compat.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final builder = graphQLQueryBuilder(
+          const BuilderOptions({
+            'schema_mapping': [
+              {
+                'schema': 'compat.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'output': 'lib/compat.graphql.dart',
+                'naming_scheme': 'pathedWithTypes',
+              },
+            ],
+          }),
+        );
 
         LibraryDefinition? capturedDefinition;
         builder.onBuild = expectAsync1((definition) {
           capturedDefinition = definition;
-        }, count: 1);
+        });
 
-        await testBuilder(
+        testBuilder(
           builder,
           {
             'a|compat.schema.graphql': schema,
@@ -810,7 +847,8 @@ void main() {
         dev.log('[DEBUG_LOG] Generated classes for compatibility test:');
         for (final cls in queryDef.classes.whereType<ClassDefinition>()) {
           dev.log(
-              '[DEBUG_LOG] - ${cls.name.name} (${cls.properties.length} properties)');
+            '[DEBUG_LOG] - ${cls.name.name} (${cls.properties.length} properties)',
+          );
         }
 
         final userClasses = queryDef.classes

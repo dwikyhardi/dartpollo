@@ -1,8 +1,8 @@
-import 'package:dartpollo/generator/fragment_processor.dart';
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/ephemeral_data.dart';
-import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/generator/fragment_processor.dart';
 import 'package:dartpollo/schema/schema_options.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
 import 'package:test/test.dart';
@@ -16,15 +16,19 @@ void main() {
       });
 
       test('should return empty set when selectionSet has no fragments', () {
-        final selectionSet = parseString('''
+        final selectionSet =
+            parseString('''
           {
             field1
             field2
           }
-        ''').definitions.first as OperationDefinitionNode;
+        ''').definitions.first
+                as OperationDefinitionNode;
 
-        final result =
-            FragmentProcessor.extractFragments(selectionSet.selectionSet, []);
+        final result = FragmentProcessor.extractFragments(
+          selectionSet.selectionSet,
+          [],
+        );
         expect(result, isEmpty);
       });
 
@@ -42,13 +46,17 @@ void main() {
           }
         ''');
 
-        final fragment =
-            document.definitions.whereType<FragmentDefinitionNode>().first;
-        final operation =
-            document.definitions.whereType<OperationDefinitionNode>().first;
+        final fragment = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .first;
+        final operation = document.definitions
+            .whereType<OperationDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.extractFragments(
-            operation.selectionSet, [fragment]);
+          operation.selectionSet,
+          [fragment],
+        );
 
         expect(result, hasLength(1));
         expect(result.first.name.value, equals('TestFragment'));
@@ -73,13 +81,17 @@ void main() {
           }
         ''');
 
-        final fragments =
-            document.definitions.whereType<FragmentDefinitionNode>().toList();
-        final operation =
-            document.definitions.whereType<OperationDefinitionNode>().first;
+        final fragments = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .toList();
+        final operation = document.definitions
+            .whereType<OperationDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.extractFragments(
-            operation.selectionSet, fragments);
+          operation.selectionSet,
+          fragments,
+        );
 
         expect(result, hasLength(2));
         final fragmentNames = result.map((f) => f.name.value).toSet();
@@ -102,13 +114,17 @@ void main() {
           }
         ''');
 
-        final fragment =
-            document.definitions.whereType<FragmentDefinitionNode>().first;
-        final operation =
-            document.definitions.whereType<OperationDefinitionNode>().first;
+        final fragment = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .first;
+        final operation = document.definitions
+            .whereType<OperationDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.extractFragments(
-            operation.selectionSet, [fragment]);
+          operation.selectionSet,
+          [fragment],
+        );
 
         expect(result, hasLength(1));
         expect(result.first.name.value, equals('TestFragment'));
@@ -130,13 +146,17 @@ void main() {
           }
         ''');
 
-        final fragment =
-            document.definitions.whereType<FragmentDefinitionNode>().first;
-        final operation =
-            document.definitions.whereType<OperationDefinitionNode>().first;
+        final fragment = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .first;
+        final operation = document.definitions
+            .whereType<OperationDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.extractFragments(
-            operation.selectionSet, [fragment]);
+          operation.selectionSet,
+          [fragment],
+        );
 
         expect(result, hasLength(1));
         expect(result.first.name.value, equals('UserFragment'));
@@ -162,13 +182,17 @@ void main() {
           }
         ''');
 
-        final fragments =
-            document.definitions.whereType<FragmentDefinitionNode>().toList();
-        final operation =
-            document.definitions.whereType<OperationDefinitionNode>().first;
+        final fragments = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .toList();
+        final operation = document.definitions
+            .whereType<OperationDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.extractFragments(
-            operation.selectionSet, fragments);
+          operation.selectionSet,
+          fragments,
+        );
 
         expect(result, hasLength(2));
         final fragmentNames = result.map((f) => f.name.value).toSet();
@@ -176,9 +200,9 @@ void main() {
       });
 
       test(
-          'should handle fragments that reference non-existent fragments gracefully',
-          () {
-        final document = parseString('''
+        'should handle fragments that reference non-existent fragments gracefully',
+        () {
+          final document = parseString('''
           query {
             user {
               ...NonExistentFragment
@@ -186,15 +210,18 @@ void main() {
           }
         ''');
 
-        final operation =
-            document.definitions.whereType<OperationDefinitionNode>().first;
+          final operation = document.definitions
+              .whereType<OperationDefinitionNode>()
+              .first;
 
-        final result = FragmentProcessor.extractFragments(
-            operation.selectionSet, [] // No fragments available
-            );
+          final result = FragmentProcessor.extractFragments(
+            operation.selectionSet,
+            [], // No fragments available
+          );
 
-        expect(result, isEmpty);
-      });
+          expect(result, isEmpty);
+        },
+      );
     });
 
     group('processFragments', () {
@@ -216,9 +243,7 @@ void main() {
           schema: schema,
           typeDefinitionNodeVisitor: typeVisitor,
           options: GeneratorOptions(),
-          schemaMap: SchemaMap(
-            namingScheme: NamingScheme.pathedWithTypes,
-          ),
+          schemaMap: SchemaMap(),
           path: [],
           currentType: null,
           currentFieldName: null,
@@ -244,8 +269,9 @@ void main() {
           }
         ''');
 
-        final fragment =
-            document.definitions.whereType<FragmentDefinitionNode>().first;
+        final fragment = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.processFragments([fragment], context);
 
@@ -266,8 +292,9 @@ void main() {
           }
         ''');
 
-        final fragments =
-            document.definitions.whereType<FragmentDefinitionNode>().toList();
+        final fragments = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .toList();
 
         final result = FragmentProcessor.processFragments(fragments, context);
 
@@ -284,8 +311,9 @@ void main() {
           }
         ''');
 
-        final fragment =
-            document.definitions.whereType<FragmentDefinitionNode>().first;
+        final fragment = document.definitions
+            .whereType<FragmentDefinitionNode>()
+            .first;
 
         final result = FragmentProcessor.processFragments([fragment], context);
 

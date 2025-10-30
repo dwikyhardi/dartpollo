@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
+import 'package:dartpollo/client.dart' show DartpolloClient;
+import 'package:dartpollo/dartpollo.dart' show DartpolloClient;
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';

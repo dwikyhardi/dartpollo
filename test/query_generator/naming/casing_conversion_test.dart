@@ -8,7 +8,7 @@ void main() {
   group('On types/fields names', () {
     test(
       'Casing will be converted accordingly (and JsonKey names willb e populated accordingly)',
-      () async => testGenerator(
+      () => testGenerator(
         query: r'''
           query some_query($filter: Input!) {
             query(filter: $filter) {
@@ -89,106 +89,115 @@ void main() {
   });
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_Query'),
       operationName: r'some_query',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'camelCase')),
-          EnumValueDefinition(name: EnumValueName(name: r'PascalCase')),
-          EnumValueDefinition(name: EnumValueName(name: r'snake_case')),
-          EnumValueDefinition(
-              name: EnumValueName(name: r'SCREAMING_SNAKE_CASE')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'MyEnum'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'camelCase')),
+            EnumValueDefinition(name: EnumValueName(name: r'PascalCase')),
+            EnumValueDefinition(name: EnumValueName(name: r'snake_case')),
+            EnumValueDefinition(
+              name: EnumValueName(name: r'SCREAMING_SNAKE_CASE'),
+            ),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'CamelCaseType'),
-                  name: ClassPropertyName(name: r'camelCaseField'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'PascalCaseType'),
-                  name: ClassPropertyName(name: r'PascalCaseField'),
-                  annotations: [r'''JsonKey(name: 'PascalCaseField')'''],
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'SnakeCaseType'),
-                  name: ClassPropertyName(name: r'snake_case_field'),
-                  annotations: [r'''JsonKey(name: 'snake_case_field')'''],
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'ScreamingSnakeCaseType'),
-                  name: ClassPropertyName(name: r'SCREAMING_SNAKE_CASE_FIELD'),
-                  annotations: [
-                    r'''JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')'''
-                  ],
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
-                  name: ClassPropertyName(name: r'e'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeObject'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'CamelCaseType'),
+              name: const ClassPropertyName(name: r'camelCaseField'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'PascalCaseType'),
+              name: const ClassPropertyName(name: r'PascalCaseField'),
+              annotations: const [r'''JsonKey(name: 'PascalCaseField')'''],
+            ),
+            ClassProperty(
+              type: TypeName(name: r'SnakeCaseType'),
+              name: const ClassPropertyName(name: r'snake_case_field'),
+              annotations: const [r'''JsonKey(name: 'snake_case_field')'''],
+            ),
+            ClassProperty(
+              type: TypeName(name: r'ScreamingSnakeCaseType'),
+              name: const ClassPropertyName(
+                name: r'SCREAMING_SNAKE_CASE_FIELD',
+              ),
+              annotations: const [
+                r'''JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')''',
+              ],
+            ),
+            ClassProperty(
+              type: TypeName(name: r'MyEnum'),
+              name: const ClassPropertyName(name: r'e'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'SomeObject'),
-                  name: ClassPropertyName(name: r'query'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'SomeObject'),
+              name: const ClassPropertyName(name: r'query'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Input'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'camelCaseTypeInput'),
-                  name: ClassPropertyName(name: r'camelCaseField'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'PascalCaseTypeInput'),
-                  name: ClassPropertyName(name: r'PascalCaseField'),
-                  annotations: [r'''JsonKey(name: 'PascalCaseField')'''],
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'snake_case_type_input'),
-                  name: ClassPropertyName(name: r'snake_case_field'),
-                  annotations: [r'''JsonKey(name: 'snake_case_field')'''],
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'SCREAMING_SNAKE_CASE_TYPE_INPUT'),
-                  name: ClassPropertyName(name: r'SCREAMING_SNAKE_CASE_FIELD'),
-                  annotations: [
-                    r'''JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')'''
-                  ],
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
-                  name: ClassPropertyName(name: r'e'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true)
+          name: ClassName(name: r'Input'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'camelCaseTypeInput'),
+              name: const ClassPropertyName(name: r'camelCaseField'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'PascalCaseTypeInput'),
+              name: const ClassPropertyName(name: r'PascalCaseField'),
+              annotations: const [r'''JsonKey(name: 'PascalCaseField')'''],
+            ),
+            ClassProperty(
+              type: TypeName(name: r'snake_case_type_input'),
+              name: const ClassPropertyName(name: r'snake_case_field'),
+              annotations: const [r'''JsonKey(name: 'snake_case_field')'''],
+            ),
+            ClassProperty(
+              type: TypeName(name: r'SCREAMING_SNAKE_CASE_TYPE_INPUT'),
+              name: const ClassPropertyName(
+                name: r'SCREAMING_SNAKE_CASE_FIELD',
+              ),
+              annotations: const [
+                r'''JsonKey(name: 'SCREAMING_SNAKE_CASE_FIELD')''',
+              ],
+            ),
+            ClassProperty(
+              type: TypeName(name: r'MyEnum'),
+              name: const ClassPropertyName(name: r'e'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
       ],
       inputs: [
         QueryInput(
-            type: TypeName(name: r'Input', isNonNull: true),
-            name: QueryInputName(name: r'filter'))
+          type: TypeName(name: r'Input', isNonNull: true),
+          name: const QueryInputName(name: r'filter'),
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

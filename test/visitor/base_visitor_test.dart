@@ -1,6 +1,6 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
 import 'package:dartpollo/visitor/base_visitor.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 // Test implementation of BaseVisitor for testing purposes
 class TestVisitor extends BaseVisitor<List<String>> {
@@ -41,7 +41,7 @@ void main() {
 
     test('should implement reset functionality', () {
       // Add some data
-      visitor.visitFieldNode(FieldNode(name: NameNode(value: 'test')));
+      visitor.visitFieldNode(const FieldNode(name: NameNode(value: 'test')));
       expect(visitor.result, isNotEmpty);
 
       // Reset should clear the data
@@ -50,9 +50,9 @@ void main() {
     });
 
     test('should implement canHandle method', () {
-      final documentNode = DocumentNode(definitions: []);
-      final fieldNode = FieldNode(name: NameNode(value: 'test'));
-      final nameNode = NameNode(value: 'test');
+      const documentNode = DocumentNode();
+      const fieldNode = FieldNode(name: NameNode(value: 'test'));
+      const nameNode = NameNode(value: 'test');
 
       expect(visitor.canHandle(documentNode), isTrue);
       expect(visitor.canHandle(fieldNode), isTrue);
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('should process nodes when visiting', () {
-      final fieldNode = FieldNode(name: NameNode(value: 'testField'));
+      const fieldNode = FieldNode(name: NameNode(value: 'testField'));
 
       visitor.visitFieldNode(fieldNode);
 
@@ -68,7 +68,7 @@ void main() {
     });
 
     test('should maintain immutable result', () {
-      visitor.visitFieldNode(FieldNode(name: NameNode(value: 'test')));
+      visitor.visitFieldNode(const FieldNode(name: NameNode(value: 'test')));
 
       final result1 = visitor.result;
       final result2 = visitor.result;

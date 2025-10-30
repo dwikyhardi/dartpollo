@@ -6,16 +6,16 @@ import '../../helpers.dart';
 void main() {
   group('On query generation', () {
     test(
-        'Non-nullability on inputs (considering lists)',
-        () async => testGenerator(
-            query: r'''
+      'Non-nullability on inputs (considering lists)',
+      () => testGenerator(
+        query: r'''
         query some_query($i: Int, $inn: Int!, $li: [Int], $linn: [Int!], $lnni: [Int]!, $lnninn: [Int!]!, $matrix: [[Int]], $matrixnn: [[Int!]!]!) {
           someQuery(i: $i, inn: $inn, li: $li, linn: $linn, lnni: $lnni, lnninn: $lnninn, matrix: $matrix, matrixnn: $matrixnn) {
             s
           }
         }
       ''',
-            schema: r'''
+        schema: r'''
         type Query {
           someQuery(i: Int, inn: Int!, li: [Int], linn: [Int!], lnni: [Int]!, lnninn: [Int!]!, matrix: [[Int]], matrixnn: [[Int!]!]!): SomeObject
         }
@@ -24,85 +24,93 @@ void main() {
           s: String
         }
       ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'SomeQuery$_Query'),
-                  operationName: r'some_query',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(name: r'SomeQuery$_Query$_SomeObject'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r's'),
-                              isResolveType: false)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'SomeQuery$_Query'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(
-                                  name: r'SomeQuery$_Query$_SomeObject'),
-                              name: ClassPropertyName(name: r'someQuery'),
-                              isResolveType: false)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false)
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'SomeQuery$_Query'),
+              operationName: r'some_query',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(name: r'SomeQuery$_Query$_SomeObject'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r's'),
+                    ),
                   ],
-                  inputs: [
-                    QueryInput(
-                        type: DartTypeName(name: r'int'),
-                        name: QueryInputName(name: r'i')),
-                    QueryInput(
-                        type: DartTypeName(name: r'int', isNonNull: true),
-                        name: QueryInputName(name: r'inn')),
-                    QueryInput(
-                        type: ListOfTypeName(
-                            typeName: DartTypeName(name: r'int'),
-                            isNonNull: false),
-                        name: QueryInputName(name: r'li')),
-                    QueryInput(
-                        type: ListOfTypeName(
-                            typeName:
-                                DartTypeName(name: r'int', isNonNull: true),
-                            isNonNull: false),
-                        name: QueryInputName(name: r'linn')),
-                    QueryInput(
-                        type: ListOfTypeName(
-                            typeName: DartTypeName(name: r'int'),
-                            isNonNull: true),
-                        name: QueryInputName(name: r'lnni')),
-                    QueryInput(
-                        type: ListOfTypeName(
-                            typeName:
-                                DartTypeName(name: r'int', isNonNull: true),
-                            isNonNull: true),
-                        name: QueryInputName(name: r'lnninn')),
-                    QueryInput(
-                        type: ListOfTypeName(
-                            typeName: ListOfTypeName(
-                                typeName: DartTypeName(name: r'int'),
-                                isNonNull: false),
-                            isNonNull: false),
-                        name: QueryInputName(name: r'matrix')),
-                    QueryInput(
-                        type: ListOfTypeName(
-                            typeName: ListOfTypeName(
-                                typeName:
-                                    DartTypeName(name: r'int', isNonNull: true),
-                                isNonNull: true),
-                            isNonNull: true),
-                        name: QueryInputName(name: r'matrixnn'))
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'SomeQuery$_Query'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'SomeQuery$_Query$_SomeObject'),
+                      name: const ClassPropertyName(name: r'someQuery'),
+                    ),
                   ],
-                  generateHelpers: true,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+              ],
+              inputs: [
+                QueryInput(
+                  type: DartTypeName(name: r'int'),
+                  name: const QueryInputName(name: r'i'),
+                ),
+                QueryInput(
+                  type: DartTypeName(name: r'int', isNonNull: true),
+                  name: const QueryInputName(name: r'inn'),
+                ),
+                QueryInput(
+                  type: ListOfTypeName(
+                    typeName: DartTypeName(name: r'int'),
+                    isNonNull: false,
+                  ),
+                  name: const QueryInputName(name: r'li'),
+                ),
+                QueryInput(
+                  type: ListOfTypeName(
+                    typeName: DartTypeName(name: r'int', isNonNull: true),
+                    isNonNull: false,
+                  ),
+                  name: const QueryInputName(name: r'linn'),
+                ),
+                QueryInput(
+                  type: ListOfTypeName(
+                    typeName: DartTypeName(name: r'int'),
+                  ),
+                  name: const QueryInputName(name: r'lnni'),
+                ),
+                QueryInput(
+                  type: ListOfTypeName(
+                    typeName: DartTypeName(name: r'int', isNonNull: true),
+                  ),
+                  name: const QueryInputName(name: r'lnninn'),
+                ),
+                QueryInput(
+                  type: ListOfTypeName(
+                    typeName: ListOfTypeName(
+                      typeName: DartTypeName(name: r'int'),
+                      isNonNull: false,
+                    ),
+                    isNonNull: false,
+                  ),
+                  name: const QueryInputName(name: r'matrix'),
+                ),
+                QueryInput(
+                  type: ListOfTypeName(
+                    typeName: ListOfTypeName(
+                      typeName: DartTypeName(name: r'int', isNonNull: true),
+                    ),
+                  ),
+                  name: const QueryInputName(name: r'matrixnn'),
+                ),
+              ],
+              generateHelpers: true,
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:dartpollo/dartpollo.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -355,6 +363,8 @@ class SomeQueryQuery extends GraphQLQuery<SomeQuery$Query, SomeQueryArguments> {
       SomeQuery$Query.fromJson(json);
 }
 ''',
-            generateHelpers: true));
+        generateHelpers: true,
+      ),
+    );
   });
 }

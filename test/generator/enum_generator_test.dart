@@ -15,14 +15,10 @@ void main() {
     late SchemaMap mockSchemaMap;
 
     setUp(() {
-      mockSchema = DocumentNode(definitions: []);
+      mockSchema = const DocumentNode();
       mockTypeVisitor = TypeDefinitionNodeVisitor();
       mockOptions = GeneratorOptions();
-      mockSchemaMap = SchemaMap(
-        namingScheme: NamingScheme.pathedWithTypes,
-        typeNameField: '__typename',
-        convertEnumToString: false,
-      );
+      mockSchemaMap = SchemaMap();
 
       mockContext = Context(
         schema: mockSchema,
@@ -45,8 +41,10 @@ void main() {
     group('unknownEnumValue', () {
       test('should have correct name', () {
         expect(EnumGenerator.unknownEnumValue.name.name, equals('UNKNOWN'));
-        expect(EnumGenerator.unknownEnumValue.name.namePrintable,
-            equals('unknown'));
+        expect(
+          EnumGenerator.unknownEnumValue.name.namePrintable,
+          equals('unknown'),
+        );
       });
 
       test('should have empty annotations', () {
@@ -56,19 +54,16 @@ void main() {
 
     group('generateEnum', () {
       test('should generate enum with basic values', () {
-        final enumNode = EnumTypeDefinitionNode(
+        const enumNode = EnumTypeDefinitionNode(
           name: NameNode(value: 'Status'),
           values: [
             EnumValueDefinitionNode(
               name: NameNode(value: 'ACTIVE'),
-              directives: [],
             ),
             EnumValueDefinitionNode(
               name: NameNode(value: 'INACTIVE'),
-              directives: [],
             ),
           ],
-          directives: [],
         );
 
         final result = EnumGenerator.generateEnum(enumNode, mockContext);
@@ -84,12 +79,11 @@ void main() {
       });
 
       test('should generate enum with deprecated values', () {
-        final enumNode = EnumTypeDefinitionNode(
+        const enumNode = EnumTypeDefinitionNode(
           name: NameNode(value: 'Status'),
           values: [
             EnumValueDefinitionNode(
               name: NameNode(value: 'ACTIVE'),
-              directives: [],
             ),
             EnumValueDefinitionNode(
               name: NameNode(value: 'DEPRECATED_VALUE'),
@@ -100,31 +94,31 @@ void main() {
                     ArgumentNode(
                       name: NameNode(value: 'reason'),
                       value: StringValueNode(
-                          value: 'Use ACTIVE instead', isBlock: false),
+                        value: 'Use ACTIVE instead',
+                        isBlock: false,
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
           ],
-          directives: [],
         );
 
         final result = EnumGenerator.generateEnum(enumNode, mockContext);
 
         expect(result.values.length, equals(3)); // 2 values + UNKNOWN
 
-        final deprecatedValue =
-            result.values.firstWhere((v) => v.name.name == 'DEPRECATED_VALUE');
+        final deprecatedValue = result.values.firstWhere(
+          (v) => v.name.name == 'DEPRECATED_VALUE',
+        );
         expect(deprecatedValue.annotations, isNotEmpty);
         expect(deprecatedValue.annotations.first, contains('Deprecated'));
       });
 
       test('should generate enum with empty values', () {
-        final enumNode = EnumTypeDefinitionNode(
+        const enumNode = EnumTypeDefinitionNode(
           name: NameNode(value: 'EmptyEnum'),
-          values: [],
-          directives: [],
         );
 
         final result = EnumGenerator.generateEnum(enumNode, mockContext);
@@ -138,18 +132,18 @@ void main() {
     group('generateEnumValues', () {
       test('should generate values with correct names', () {
         final valueNodes = [
-          EnumValueDefinitionNode(
+          const EnumValueDefinitionNode(
             name: NameNode(value: 'FIRST_VALUE'),
-            directives: [],
           ),
-          EnumValueDefinitionNode(
+          const EnumValueDefinitionNode(
             name: NameNode(value: 'SECOND_VALUE'),
-            directives: [],
           ),
         ];
 
-        final result =
-            EnumGenerator.generateEnumValues(valueNodes, mockContext);
+        final result = EnumGenerator.generateEnumValues(
+          valueNodes,
+          mockContext,
+        );
 
         expect(result.length, equals(3)); // 2 values + UNKNOWN
         expect(result[0].name.name, equals('FIRST_VALUE'));
@@ -161,11 +155,10 @@ void main() {
 
       test('should handle deprecated enum values', () {
         final valueNodes = [
-          EnumValueDefinitionNode(
+          const EnumValueDefinitionNode(
             name: NameNode(value: 'NORMAL_VALUE'),
-            directives: [],
           ),
-          EnumValueDefinitionNode(
+          const EnumValueDefinitionNode(
             name: NameNode(value: 'OLD_VALUE'),
             directives: [
               DirectiveNode(
@@ -174,7 +167,9 @@ void main() {
                   ArgumentNode(
                     name: NameNode(value: 'reason'),
                     value: StringValueNode(
-                        value: 'Use NORMAL_VALUE instead', isBlock: false),
+                      value: 'Use NORMAL_VALUE instead',
+                      isBlock: false,
+                    ),
                   ),
                 ],
               ),
@@ -182,17 +177,21 @@ void main() {
           ),
         ];
 
-        final result =
-            EnumGenerator.generateEnumValues(valueNodes, mockContext);
+        final result = EnumGenerator.generateEnumValues(
+          valueNodes,
+          mockContext,
+        );
 
         expect(result.length, equals(3)); // 2 values + UNKNOWN
 
-        final normalValue =
-            result.firstWhere((v) => v.name.name == 'NORMAL_VALUE');
+        final normalValue = result.firstWhere(
+          (v) => v.name.name == 'NORMAL_VALUE',
+        );
         expect(normalValue.annotations, isEmpty);
 
-        final deprecatedValue =
-            result.firstWhere((v) => v.name.name == 'OLD_VALUE');
+        final deprecatedValue = result.firstWhere(
+          (v) => v.name.name == 'OLD_VALUE',
+        );
         expect(deprecatedValue.annotations, isNotEmpty);
         expect(deprecatedValue.annotations.first, contains('Deprecated'));
       });
@@ -200,8 +199,10 @@ void main() {
       test('should always add unknown enum value', () {
         final valueNodes = <EnumValueDefinitionNode>[];
 
-        final result =
-            EnumGenerator.generateEnumValues(valueNodes, mockContext);
+        final result = EnumGenerator.generateEnumValues(
+          valueNodes,
+          mockContext,
+        );
 
         expect(result.length, equals(1));
         expect(result.first.name.name, equals('UNKNOWN'));
@@ -210,9 +211,9 @@ void main() {
 
     group('handleEnumToStringConversion', () {
       test('should convert single enum to String type', () {
-        final fieldType = NamedTypeNode(name: NameNode(value: 'Status'));
+        const fieldType = NamedTypeNode(name: NameNode(value: 'Status'));
         final dartTypeName = TypeName(name: 'Status', isNonNull: true);
-        final name = ClassPropertyName(name: 'status');
+        const name = ClassPropertyName(name: 'status');
         final jsonKeyAnnotation = <String, String>{};
 
         final result = EnumGenerator.handleEnumToStringConversion(
@@ -229,9 +230,9 @@ void main() {
       });
 
       test('should convert single enum to String with JsonKey annotation', () {
-        final fieldType = NamedTypeNode(name: NameNode(value: 'Status'));
+        const fieldType = NamedTypeNode(name: NameNode(value: 'Status'));
         final dartTypeName = TypeName(name: 'Status', isNonNull: true);
-        final name = ClassPropertyName(name: 'userStatus');
+        const name = ClassPropertyName(name: 'userStatus');
         final jsonKeyAnnotation = {'name': "'status'"};
 
         final result = EnumGenerator.handleEnumToStringConversion(
@@ -247,16 +248,16 @@ void main() {
       });
 
       test('should convert list of enums to List<String>', () {
-        final fieldType = ListTypeNode(
-          type:
-              NamedTypeNode(name: NameNode(value: 'Status'), isNonNull: false),
+        const fieldType = ListTypeNode(
+          type: NamedTypeNode(
+            name: NameNode(value: 'Status'),
+          ),
           isNonNull: true,
         );
         final dartTypeName = ListOfTypeName(
-          typeName: TypeName(name: 'Status', isNonNull: false),
-          isNonNull: true,
+          typeName: TypeName(name: 'Status'),
         );
-        final name = ClassPropertyName(name: 'statuses');
+        const name = ClassPropertyName(name: 'statuses');
         final jsonKeyAnnotation = <String, String>{};
 
         final result = EnumGenerator.handleEnumToStringConversion(
@@ -274,63 +275,68 @@ void main() {
       });
 
       test(
-          'should convert list of enums with JsonKey annotation when names differ',
-          () {
-        final fieldType = ListTypeNode(
-          type:
-              NamedTypeNode(name: NameNode(value: 'Status'), isNonNull: false),
-          isNonNull: true,
-        );
-        final dartTypeName = ListOfTypeName(
-          typeName: TypeName(name: 'Status', isNonNull: false),
-          isNonNull: true,
-        );
-        // Create a name where the printable name differs from the raw name
-        final name = ClassPropertyName(
-            name: 'user_statuses'); // This will be converted to userStatuses
-        final jsonKeyAnnotation = <String, String>{};
+        'should convert list of enums with JsonKey annotation when names differ',
+        () {
+          const fieldType = ListTypeNode(
+            type: NamedTypeNode(
+              name: NameNode(value: 'Status'),
+            ),
+            isNonNull: true,
+          );
+          final dartTypeName = ListOfTypeName(
+            typeName: TypeName(name: 'Status'),
+          );
+          // Create a name where the printable name differs from the raw name
+          const name = ClassPropertyName(
+            name: 'user_statuses',
+          ); // This will be converted to userStatuses
+          final jsonKeyAnnotation = <String, String>{};
 
-        final result = EnumGenerator.handleEnumToStringConversion(
-          fieldType: fieldType,
-          dartTypeName: dartTypeName,
-          name: name,
-          jsonKeyAnnotation: jsonKeyAnnotation,
-        );
+          final result = EnumGenerator.handleEnumToStringConversion(
+            fieldType: fieldType,
+            dartTypeName: dartTypeName,
+            name: name,
+            jsonKeyAnnotation: jsonKeyAnnotation,
+          );
 
-        expect(result.annotations.length, equals(1));
-        expect(result.annotations.first,
-            equals('JsonKey(name: \'user_statuses\')'));
-      });
+          expect(result.annotations.length, equals(1));
+          expect(
+            result.annotations.first,
+            equals('JsonKey(name: \'user_statuses\')'),
+          );
+        },
+      );
 
       test(
-          'should convert list of enums without JsonKey annotation when names match',
-          () {
-        final fieldType = ListTypeNode(
-          type:
-              NamedTypeNode(name: NameNode(value: 'Status'), isNonNull: false),
-          isNonNull: true,
-        );
-        final dartTypeName = ListOfTypeName(
-          typeName: TypeName(name: 'Status', isNonNull: false),
-          isNonNull: true,
-        );
-        final name = ClassPropertyName(name: 'statuses');
-        final jsonKeyAnnotation = <String, String>{};
+        'should convert list of enums without JsonKey annotation when names match',
+        () {
+          const fieldType = ListTypeNode(
+            type: NamedTypeNode(
+              name: NameNode(value: 'Status'),
+            ),
+            isNonNull: true,
+          );
+          final dartTypeName = ListOfTypeName(
+            typeName: TypeName(name: 'Status'),
+          );
+          const name = ClassPropertyName(name: 'statuses');
+          final jsonKeyAnnotation = <String, String>{};
 
-        final result = EnumGenerator.handleEnumToStringConversion(
-          fieldType: fieldType,
-          dartTypeName: dartTypeName,
-          name: name,
-          jsonKeyAnnotation: jsonKeyAnnotation,
-        );
+          final result = EnumGenerator.handleEnumToStringConversion(
+            fieldType: fieldType,
+            dartTypeName: dartTypeName,
+            name: name,
+            jsonKeyAnnotation: jsonKeyAnnotation,
+          );
 
-        expect(result.annotations, isEmpty);
-      });
+          expect(result.annotations, isEmpty);
+        },
+      );
     });
 
     group('addUnknownEnumValueAnnotation', () {
       test('should add unknown enum value annotation for single enum', () {
-        final fieldType = NamedTypeNode(name: NameNode(value: 'Status'));
+        const fieldType = NamedTypeNode(name: NameNode(value: 'Status'));
         final dartTypeName = TypeName(name: 'Status', isNonNull: true);
         final jsonKeyAnnotation = <String, String>{};
 
@@ -341,20 +347,20 @@ void main() {
         );
 
         expect(
-            jsonKeyAnnotation['unknownEnumValue'],
-            equals(
-                'Status.${EnumGenerator.unknownEnumValue.name.namePrintable}'));
+          jsonKeyAnnotation['unknownEnumValue'],
+          equals('Status.${EnumGenerator.unknownEnumValue.name.namePrintable}'),
+        );
       });
 
       test('should add unknown enum value annotation for list of enums', () {
-        final fieldType = ListTypeNode(
-          type:
-              NamedTypeNode(name: NameNode(value: 'Status'), isNonNull: false),
+        const fieldType = ListTypeNode(
+          type: NamedTypeNode(
+            name: NameNode(value: 'Status'),
+          ),
           isNonNull: true,
         );
         final dartTypeName = ListOfTypeName(
-          typeName: TypeName(name: 'Status', isNonNull: false),
-          isNonNull: true,
+          typeName: TypeName(name: 'Status'),
         );
         final jsonKeyAnnotation = <String, String>{};
 
@@ -365,14 +371,14 @@ void main() {
         );
 
         expect(
-            jsonKeyAnnotation['unknownEnumValue'],
-            equals(
-                'Status.${EnumGenerator.unknownEnumValue.name.namePrintable}'));
+          jsonKeyAnnotation['unknownEnumValue'],
+          equals('Status.${EnumGenerator.unknownEnumValue.name.namePrintable}'),
+        );
       });
 
       test('should handle non-list types gracefully', () {
-        final fieldType = NamedTypeNode(name: NameNode(value: 'CustomEnum'));
-        final dartTypeName = TypeName(name: 'CustomEnum', isNonNull: false);
+        const fieldType = NamedTypeNode(name: NameNode(value: 'CustomEnum'));
+        final dartTypeName = TypeName(name: 'CustomEnum');
         final jsonKeyAnnotation = <String, String>{};
 
         EnumGenerator.addUnknownEnumValueAnnotation(
@@ -382,23 +388,23 @@ void main() {
         );
 
         expect(
-            jsonKeyAnnotation['unknownEnumValue'],
-            equals(
-                'CustomEnum.${EnumGenerator.unknownEnumValue.name.namePrintable}'));
+          jsonKeyAnnotation['unknownEnumValue'],
+          equals(
+            'CustomEnum.${EnumGenerator.unknownEnumValue.name.namePrintable}',
+          ),
+        );
       });
     });
 
     group('error cases and edge conditions', () {
       test('should handle enum with special characters in name', () {
-        final enumNode = EnumTypeDefinitionNode(
+        const enumNode = EnumTypeDefinitionNode(
           name: NameNode(value: 'Status_With_Underscores'),
           values: [
             EnumValueDefinitionNode(
               name: NameNode(value: 'VALUE_WITH_UNDERSCORES'),
-              directives: [],
             ),
           ],
-          directives: [],
         );
 
         final result = EnumGenerator.generateEnum(enumNode, mockContext);
@@ -408,7 +414,7 @@ void main() {
       });
 
       test('should handle enum values with complex directive structures', () {
-        final enumNode = EnumTypeDefinitionNode(
+        const enumNode = EnumTypeDefinitionNode(
           name: NameNode(value: 'ComplexEnum'),
           values: [
             EnumValueDefinitionNode(
@@ -420,40 +426,41 @@ void main() {
                     ArgumentNode(
                       name: NameNode(value: 'reason'),
                       value: StringValueNode(
-                          value: 'Complex reason with "quotes"',
-                          isBlock: false),
+                        value: 'Complex reason with "quotes"',
+                        isBlock: false,
+                      ),
                     ),
                   ],
                 ),
                 DirectiveNode(
                   name: NameNode(value: 'customDirective'),
-                  arguments: [],
                 ),
               ],
             ),
           ],
-          directives: [],
         );
 
         final result = EnumGenerator.generateEnum(enumNode, mockContext);
 
         expect(result.values.length, equals(2)); // 1 value + UNKNOWN
-        final complexValue =
-            result.values.firstWhere((v) => v.name.name == 'COMPLEX_VALUE');
+        final complexValue = result.values.firstWhere(
+          (v) => v.name.name == 'COMPLEX_VALUE',
+        );
         expect(complexValue.annotations, isNotEmpty);
       });
 
       test('should handle nullable list types in enum conversion', () {
-        final fieldType = ListTypeNode(
-          type:
-              NamedTypeNode(name: NameNode(value: 'Status'), isNonNull: false),
+        const fieldType = ListTypeNode(
+          type: NamedTypeNode(
+            name: NameNode(value: 'Status'),
+          ),
           isNonNull: false,
         );
         final dartTypeName = ListOfTypeName(
-          typeName: TypeName(name: 'Status', isNonNull: false),
+          typeName: TypeName(name: 'Status'),
           isNonNull: false, // Nullable list
         );
-        final name = ClassPropertyName(name: 'optionalStatuses');
+        const name = ClassPropertyName(name: 'optionalStatuses');
         final jsonKeyAnnotation = <String, String>{};
 
         final result = EnumGenerator.handleEnumToStringConversion(

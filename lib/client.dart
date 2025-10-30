@@ -14,9 +14,6 @@ import './schema/graphql_response.dart';
 ///
 /// A [Link] is used as the network interface.
 class DartpolloClient {
-  HttpLink? _httpLink;
-  final Link _link;
-
   /// Instantiate an [DartpolloClient].
   ///
   /// [DedupeLink] and [HttpLink] are included.
@@ -39,6 +36,8 @@ class DartpolloClient {
 
   /// Create an [DartpolloClient] from [Link].
   DartpolloClient.fromLink(this._link);
+  HttpLink? _httpLink;
+  final Link _link;
 
   /// Executes a [GraphQLQuery], returning a typed response.
   Future<GraphQLResponse<T>> execute<T, U extends JsonSerializable>(
@@ -77,11 +76,17 @@ class DartpolloClient {
       context: context,
     );
 
-    return _link.request(request).map((response) => GraphQLResponse<T>(
-          data: response.data == null ? null : query.parse(response.data ?? {}),
-          errors: response.errors,
-          context: response.context,
-        ));
+    return _link
+        .request(request)
+        .map(
+          (response) => GraphQLResponse<T>(
+            data: response.data == null
+                ? null
+                : query.parse(response.data ?? {}),
+            errors: response.errors,
+            context: response.context,
+          ),
+        );
   }
 
   /// Close the inline [http.Client].

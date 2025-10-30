@@ -1,7 +1,8 @@
 import 'package:gql/ast.dart';
-import 'base_visitor.dart';
+
 import '../generator/data/enum_definition.dart';
 import '../generator/data/enum_value_definition.dart';
+import 'base_visitor.dart';
 
 /// Specialized visitor for handling GraphQL enum type definitions.
 /// Processes enum nodes and generates enum definitions.

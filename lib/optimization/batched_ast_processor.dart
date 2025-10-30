@@ -5,17 +5,17 @@ import '../transformer/add_typename_transformer.dart';
 
 /// Exception thrown when AppendTypename processing fails
 class AppendTypenameProcessingError extends Error {
-  final String message;
-  final String? documentName;
-  final String? fragmentName;
-  final Object? originalError;
-
   AppendTypenameProcessingError(
     this.message, {
     this.documentName,
     this.fragmentName,
     this.originalError,
   });
+
+  final String message;
+  final String? documentName;
+  final String? fragmentName;
+  final Object? originalError;
 
   @override
   String toString() {
@@ -35,17 +35,17 @@ class AppendTypenameProcessingError extends Error {
 
 /// Exception thrown when transformation results are inconsistent
 class TransformationInconsistencyError extends Error {
-  final String message;
-  final String? expectedResult;
-  final String? actualResult;
-  final String? documentName;
-
   TransformationInconsistencyError(
     this.message, {
     this.expectedResult,
     this.actualResult,
     this.documentName,
   });
+
+  final String message;
+  final String? expectedResult;
+  final String? actualResult;
+  final String? documentName;
 
   @override
   String toString() {
@@ -62,17 +62,17 @@ class TransformationInconsistencyError extends Error {
 
 /// Exception thrown when batch processing fails
 class BatchProcessingError extends Error {
-  final String message;
-  final int? batchSize;
-  final List<String>? failedDocuments;
-  final Object? originalError;
-
   BatchProcessingError(
     this.message, {
     this.batchSize,
     this.failedDocuments,
     this.originalError,
   });
+
+  final String message;
+  final int? batchSize;
+  final List<String>? failedDocuments;
+  final Object? originalError;
 
   @override
   String toString() {
@@ -92,20 +92,20 @@ class BatchProcessingError extends Error {
 
 /// Exception thrown when validation fails during batch processing
 class BatchValidationError extends Error {
-  final String message;
-  final String validationType;
-  final Map<String, dynamic>? validationDetails;
-
   BatchValidationError(
     this.message,
     this.validationType, {
     this.validationDetails,
   });
 
+  final String message;
+  final String validationType;
+  final Map<String, dynamic>? validationDetails;
+
   @override
   String toString() {
-    final buffer = StringBuffer('BatchValidationError: $message');
-    buffer.write(' (Validation type: $validationType)');
+    final buffer = StringBuffer('BatchValidationError: $message')
+      ..write(' (Validation type: $validationType)');
     if (validationDetails != null && validationDetails!.isNotEmpty) {
       buffer.write(' (Details: $validationDetails)');
     }
@@ -154,15 +154,16 @@ class _PerformanceMetrics {
       'validationFailures': validationFailures,
       'recoveryAttempts': recoveryAttempts,
       'successfulRecoveries': successfulRecoveries,
-      'recoverySuccessRate':
-          recoveryAttempts > 0 ? successfulRecoveries / recoveryAttempts : 0.0,
+      'recoverySuccessRate': recoveryAttempts > 0
+          ? successfulRecoveries / recoveryAttempts
+          : 0.0,
       'totalProcessingTimeMs': totalProcessingTime.inMilliseconds,
       'totalValidationTimeMs': totalValidationTime.inMilliseconds,
       'averageProcessingTimeMs': totalBatches > 0
           ? totalProcessingTime.inMilliseconds / totalBatches
           : 0.0,
       'errorCount': errorLog.length,
-      'transformerUsage': Map.from(transformerUsage),
+      'transformerUsage': Map<String, int>.from(transformerUsage),
     };
   }
 }
@@ -204,10 +205,13 @@ class BatchedASTProcessor {
     final processingStart = DateTime.now();
 
     try {
-      _logDebug('Starting processBatch', context: {
-        'documentCount': documents.length,
-        'transformerCount': transformers.length,
-      });
+      _logDebug(
+        'Starting processBatch',
+        context: {
+          'documentCount': documents.length,
+          'transformerCount': transformers.length,
+        },
+      );
 
       // Validate input parameters first, before early returns
       _validateBatchInput(documents, transformers);
@@ -231,19 +235,25 @@ class BatchedASTProcessor {
       // Check if we have cached results for this batch
       if (_batchCache.containsKey(batchKey)) {
         _metrics.cacheHits++;
-        _logDebug('Cache hit for batch', context: {
-          'batchKey': batchKey,
-          'documentCount': documents.length,
-        });
+        _logDebug(
+          'Cache hit for batch',
+          context: {
+            'batchKey': batchKey,
+            'documentCount': documents.length,
+          },
+        );
         return _batchCache[batchKey]!;
       }
 
       _metrics.cacheMisses++;
-      _logDebug('Cache miss for batch, processing...', context: {
-        'batchKey': batchKey,
-        'documentCount': documents.length,
-        'transformerCount': transformers.length,
-      });
+      _logDebug(
+        'Cache miss for batch, processing...',
+        context: {
+          'batchKey': batchKey,
+          'documentCount': documents.length,
+          'transformerCount': transformers.length,
+        },
+      );
 
       List<DocumentNode> results;
 
@@ -253,8 +263,10 @@ class BatchedASTProcessor {
       if (hasAppendTypename) {
         // Use specialized processing path when AppendTypename is present
         // Ensure proper sequencing when AppendTypename is combined with other transformers
-        results =
-            await _processBatchWithAppendTypename(documents, transformers);
+        results = await _processBatchWithAppendTypename(
+          documents,
+          transformers,
+        );
       } else if (enableLazyEvaluation &&
           _shouldDeferTransformation(transformers)) {
         // Queue for lazy evaluation
@@ -267,18 +279,26 @@ class BatchedASTProcessor {
       // Cache the results
       _batchCache[batchKey] = results;
 
-      _logDebug('Batch processing completed successfully', context: {
-        'processedDocuments': results.length,
-        'processingTimeMs':
-            DateTime.now().difference(processingStart).inMilliseconds,
-      });
+      _logDebug(
+        'Batch processing completed successfully',
+        context: {
+          'processedDocuments': results.length,
+          'processingTimeMs': DateTime.now()
+              .difference(processingStart)
+              .inMilliseconds,
+        },
+      );
 
       return results;
     } catch (error) {
-      _logError('Batch processing failed', error, context: {
-        'documentCount': documents.length,
-        'transformerCount': transformers.length,
-      });
+      _logError(
+        'Batch processing failed',
+        error,
+        context: {
+          'documentCount': documents.length,
+          'transformerCount': transformers.length,
+        },
+      );
 
       // Re-throw validation errors immediately - they should not be recovered from
       if (error is BatchValidationError) {
@@ -288,7 +308,7 @@ class BatchedASTProcessor {
       // Attempt recovery for other types of errors
       try {
         return await _attemptBatchRecovery(documents, transformers, error);
-      } catch (recoveryError) {
+      } on Exception catch (recoveryError) {
         _logError('Batch recovery failed', recoveryError);
 
         // Re-throw original error with additional context
@@ -303,8 +323,9 @@ class BatchedASTProcessor {
         }
       }
     } finally {
-      _metrics.totalProcessingTime +=
-          DateTime.now().difference(processingStart);
+      _metrics.totalProcessingTime += DateTime.now().difference(
+        processingStart,
+      );
     }
   }
 
@@ -321,14 +342,17 @@ class BatchedASTProcessor {
       // Update metrics
       _metrics.totalFragments += fragments.length;
 
-      _logDebug('Starting fragment batch processing', context: {
-        'fragmentCount': fragments.length,
-        'transformerCount': transformers.length,
-      });
+      _logDebug(
+        'Starting fragment batch processing',
+        context: {
+          'fragmentCount': fragments.length,
+          'transformerCount': transformers.length,
+        },
+      );
 
       // Validate fragments
       if (enableValidation) {
-        for (int i = 0; i < fragments.length; i++) {
+        for (var i = 0; i < fragments.length; i++) {
           final fragment = fragments[i];
           if (fragment.name.value.isEmpty) {
             throw BatchValidationError(
@@ -346,7 +370,9 @@ class BatchedASTProcessor {
       if (hasAppendTypename) {
         // Use specialized fragment processing for AppendTypename
         return await _processFragmentsBatchWithAppendTypename(
-            fragments, transformers);
+          fragments,
+          transformers,
+        );
       }
 
       // Convert fragments to documents for batch processing
@@ -361,18 +387,26 @@ class BatchedASTProcessor {
           .expand((doc) => doc.definitions.whereType<FragmentDefinitionNode>())
           .toList();
 
-      _logDebug('Fragment batch processing completed successfully', context: {
-        'processedFragments': results.length,
-        'processingTimeMs':
-            DateTime.now().difference(processingStart).inMilliseconds,
-      });
+      _logDebug(
+        'Fragment batch processing completed successfully',
+        context: {
+          'processedFragments': results.length,
+          'processingTimeMs': DateTime.now()
+              .difference(processingStart)
+              .inMilliseconds,
+        },
+      );
 
       return results;
     } catch (error) {
-      _logError('Fragment batch processing failed', error, context: {
-        'fragmentCount': fragments.length,
-        'transformerCount': transformers.length,
-      });
+      _logError(
+        'Fragment batch processing failed',
+        error,
+        context: {
+          'fragmentCount': fragments.length,
+          'transformerCount': transformers.length,
+        },
+      );
 
       // Re-throw validation errors immediately - they should not be recovered from
       if (error is BatchValidationError) {
@@ -382,7 +416,7 @@ class BatchedASTProcessor {
       // Attempt recovery for other types of errors
       try {
         return await _attemptFragmentRecovery(fragments, transformers, error);
-      } catch (recoveryError) {
+      } on Exception catch (recoveryError) {
         _logError('Fragment recovery failed', recoveryError);
 
         // Re-throw original error with additional context
@@ -397,8 +431,9 @@ class BatchedASTProcessor {
         }
       }
     } finally {
-      _metrics.totalProcessingTime +=
-          DateTime.now().difference(processingStart);
+      _metrics.totalProcessingTime += DateTime.now().difference(
+        processingStart,
+      );
     }
   }
 
@@ -411,8 +446,9 @@ class BatchedASTProcessor {
     final groupedTransformations = <String, List<_DeferredTransformation>>{};
 
     for (final deferred in _deferredQueue) {
-      final key =
-          deferred.transformers.map((t) => t.runtimeType.toString()).join(',');
+      final key = deferred.transformers
+          .map((t) => t.runtimeType.toString())
+          .join(',');
       groupedTransformations.putIfAbsent(key, () => []).add(deferred);
     }
 
@@ -468,16 +504,22 @@ class BatchedASTProcessor {
   }
 
   /// Log error information and update metrics
-  void _logError(String message, Object? error,
-      {Map<String, dynamic>? context}) {
+  void _logError(
+    String message,
+    Object? error, {
+    Map<String, dynamic>? context,
+  }) {
     final timestamp = DateTime.now().toIso8601String();
     final contextStr = context != null ? ' Context: $context' : '';
     final errorStr = error != null ? ' Error: $error' : '';
     final logMessage = '[$timestamp] ERROR: $message$contextStr$errorStr';
 
     _metrics.errorLog.add(logMessage);
-    developer.log(logMessage,
-        name: 'BatchedASTProcessor', level: 1000); // Error level
+    developer.log(
+      logMessage,
+      name: 'BatchedASTProcessor',
+      level: 1000,
+    ); // Error level
   }
 
   /// Validate batch processing input parameters
@@ -491,10 +533,13 @@ class BatchedASTProcessor {
     }
 
     final validationStart = DateTime.now();
-    _logDebug('Starting batch input validation', context: {
-      'documentCount': documents.length,
-      'transformerCount': transformers.length,
-    });
+    _logDebug(
+      'Starting batch input validation',
+      context: {
+        'documentCount': documents.length,
+        'transformerCount': transformers.length,
+      },
+    );
 
     try {
       if (documents.isEmpty) {
@@ -513,7 +558,7 @@ class BatchedASTProcessor {
       }
 
       // Validate document structure
-      for (int i = 0; i < documents.length; i++) {
+      for (var i = 0; i < documents.length; i++) {
         final doc = documents[i];
         if (doc.definitions.isEmpty) {
           throw BatchValidationError(
@@ -524,8 +569,10 @@ class BatchedASTProcessor {
         }
 
         // Check for valid operation types
-        final hasValidOperations = doc.definitions.any((def) =>
-            def is OperationDefinitionNode || def is FragmentDefinitionNode);
+        final hasValidOperations = doc.definitions.any(
+          (def) =>
+              def is OperationDefinitionNode || def is FragmentDefinitionNode,
+        );
 
         if (!hasValidOperations) {
           throw BatchValidationError(
@@ -537,8 +584,9 @@ class BatchedASTProcessor {
       }
 
       // Validate transformer compatibility
-      final appendTypenameCount =
-          transformers.whereType<AppendTypename>().length;
+      final appendTypenameCount = transformers
+          .whereType<AppendTypename>()
+          .length;
       if (appendTypenameCount > 1) {
         throw BatchValidationError(
           'Multiple AppendTypename transformers detected ($appendTypenameCount)',
@@ -547,18 +595,22 @@ class BatchedASTProcessor {
         );
       }
 
-      _logDebug('Batch input validation passed', context: {
-        'documentCount': documents.length,
-        'transformerCount': transformers.length,
-        'hasAppendTypename': appendTypenameCount > 0,
-      });
+      _logDebug(
+        'Batch input validation passed',
+        context: {
+          'documentCount': documents.length,
+          'transformerCount': transformers.length,
+          'hasAppendTypename': appendTypenameCount > 0,
+        },
+      );
     } catch (e) {
       _metrics.validationFailures++;
       _logError('Batch input validation failed', e);
       rethrow;
     } finally {
-      _metrics.totalValidationTime +=
-          DateTime.now().difference(validationStart);
+      _metrics.totalValidationTime += DateTime.now().difference(
+        validationStart,
+      );
     }
   }
 
@@ -606,20 +658,28 @@ class BatchedASTProcessor {
         );
       }
 
-      _logDebug('Transformation correctness validation passed', context: {
-        'documentName': documentName,
-        'originalDefinitions': original.definitions.length,
-        'transformedDefinitions': transformed.definitions.length,
-      });
+      _logDebug(
+        'Transformation correctness validation passed',
+        context: {
+          'documentName': documentName,
+          'originalDefinitions': original.definitions.length,
+          'transformedDefinitions': transformed.definitions.length,
+        },
+      );
     } catch (e) {
       _metrics.validationFailures++;
-      _logError('Transformation correctness validation failed', e, context: {
-        'documentName': documentName,
-      });
+      _logError(
+        'Transformation correctness validation failed',
+        e,
+        context: {
+          'documentName': documentName,
+        },
+      );
       rethrow;
     } finally {
-      _metrics.totalValidationTime +=
-          DateTime.now().difference(validationStart);
+      _metrics.totalValidationTime += DateTime.now().difference(
+        validationStart,
+      );
     }
   }
 
@@ -633,7 +693,7 @@ class BatchedASTProcessor {
     final typeNameField = transformer.typeName;
 
     // Check each operation definition for typename field
-    for (int i = 0; i < transformed.definitions.length; i++) {
+    for (var i = 0; i < transformed.definitions.length; i++) {
       final definition = transformed.definitions[i];
 
       if (definition is OperationDefinitionNode) {
@@ -667,7 +727,9 @@ class BatchedASTProcessor {
 
   /// Check if a selection set contains the typename field
   bool _hasTypenameFieldInSelectionSet(
-      SelectionSetNode selectionSet, String typeNameField) {
+    SelectionSetNode selectionSet,
+    String typeNameField,
+  ) {
     return selectionSet.selections.any((selection) {
       if (selection is FieldNode) {
         return selection.name.value == typeNameField;
@@ -684,16 +746,20 @@ class BatchedASTProcessor {
   ) async {
     _metrics.recoveryAttempts++;
 
-    _logError('Attempting batch recovery', error, context: {
-      'documentCount': documents.length,
-      'transformerCount': transformers.length,
-    });
+    _logError(
+      'Attempting batch recovery',
+      error,
+      context: {
+        'documentCount': documents.length,
+        'transformerCount': transformers.length,
+      },
+    );
 
     try {
       // Strategy 1: Process documents individually as fallback
       final results = <DocumentNode>[];
 
-      for (int i = 0; i < documents.length; i++) {
+      for (var i = 0; i < documents.length; i++) {
         try {
           final doc = documents[i];
           var transformed = doc;
@@ -703,12 +769,14 @@ class BatchedASTProcessor {
           }
 
           results.add(transformed);
-        } catch (individualError) {
-          _logError('Individual document processing failed during recovery',
-              individualError,
-              context: {
-                'documentIndex': i,
-              });
+        } on Exception catch (individualError) {
+          _logError(
+            'Individual document processing failed during recovery',
+            individualError,
+            context: {
+              'documentIndex': i,
+            },
+          );
 
           // Use original document as fallback
           results.add(documents[i]);
@@ -716,12 +784,15 @@ class BatchedASTProcessor {
       }
 
       _metrics.successfulRecoveries++;
-      _logDebug('Batch recovery successful', context: {
-        'recoveredDocuments': results.length,
-      });
+      _logDebug(
+        'Batch recovery successful',
+        context: {
+          'recoveredDocuments': results.length,
+        },
+      );
 
       return results;
-    } catch (recoveryError) {
+    } on Exception catch (recoveryError) {
       _logError('Batch recovery failed', recoveryError);
 
       // Final fallback: return original documents
@@ -738,35 +809,43 @@ class BatchedASTProcessor {
   ) async {
     _metrics.recoveryAttempts++;
 
-    _logError('Attempting fragment recovery', error, context: {
-      'fragmentCount': fragments.length,
-      'transformerCount': transformers.length,
-    });
+    _logError(
+      'Attempting fragment recovery',
+      error,
+      context: {
+        'fragmentCount': fragments.length,
+        'transformerCount': transformers.length,
+      },
+    );
 
     try {
       // Strategy 1: Process fragments individually as fallback
       final results = <FragmentDefinitionNode>[];
 
-      for (int i = 0; i < fragments.length; i++) {
+      for (var i = 0; i < fragments.length; i++) {
         try {
           final fragment = fragments[i];
           var transformed = fragment;
 
           for (final transformer in transformers) {
             if (_canTransformerHandleFragment(transformer)) {
-              transformed =
-                  _applyTransformerToFragment(transformed, transformer);
+              transformed = _applyTransformerToFragment(
+                transformed,
+                transformer,
+              );
             }
           }
 
           results.add(transformed);
-        } catch (individualError) {
-          _logError('Individual fragment processing failed during recovery',
-              individualError,
-              context: {
-                'fragmentIndex': i,
-                'fragmentName': fragments[i].name.value,
-              });
+        } on Exception catch (individualError) {
+          _logError(
+            'Individual fragment processing failed during recovery',
+            individualError,
+            context: {
+              'fragmentIndex': i,
+              'fragmentName': fragments[i].name.value,
+            },
+          );
 
           // Use original fragment as fallback
           results.add(fragments[i]);
@@ -774,12 +853,15 @@ class BatchedASTProcessor {
       }
 
       _metrics.successfulRecoveries++;
-      _logDebug('Fragment recovery successful', context: {
-        'recoveredFragments': results.length,
-      });
+      _logDebug(
+        'Fragment recovery successful',
+        context: {
+          'recoveredFragments': results.length,
+        },
+      );
 
       return results;
-    } catch (recoveryError) {
+    } on Exception catch (recoveryError) {
       _logError('Fragment recovery failed', recoveryError);
 
       // Final fallback: return original fragments
@@ -797,7 +879,8 @@ class BatchedASTProcessor {
 
   /// Get the AppendTypename transformer from the list
   AppendTypename? _getAppendTypenameTransformer(
-      List<TransformingVisitor> transformers) {
+    List<TransformingVisitor> transformers,
+  ) {
     return transformers.whereType<AppendTypename>().firstOrNull;
   }
 
@@ -808,21 +891,26 @@ class BatchedASTProcessor {
     List<DocumentNode> documents,
     List<TransformingVisitor> transformers,
   ) async {
-    _logDebug('Processing batch with AppendTypename', context: {
-      'documentCount': documents.length,
-      'transformerCount': transformers.length,
-    });
+    _logDebug(
+      'Processing batch with AppendTypename',
+      context: {
+        'documentCount': documents.length,
+        'transformerCount': transformers.length,
+      },
+    );
 
     final results = <DocumentNode>[];
     final failedDocuments = <String>[];
 
     // Separate AppendTypename transformers from others for proper sequencing
-    final appendTypenameTransformers =
-        transformers.whereType<AppendTypename>().toList();
-    final otherTransformers =
-        transformers.where((t) => t is! AppendTypename).toList();
+    final appendTypenameTransformers = transformers
+        .whereType<AppendTypename>()
+        .toList();
+    final otherTransformers = transformers
+        .where((t) => t is! AppendTypename)
+        .toList();
 
-    for (int i = 0; i < documents.length; i++) {
+    for (var i = 0; i < documents.length; i++) {
       final doc = documents[i];
       final documentName = 'document_$i';
 
@@ -872,17 +960,24 @@ class BatchedASTProcessor {
 
         // Validate transformation result
         _validateTransformationCorrectness(
-            doc, transformed, transformers, documentName);
+          doc,
+          transformed,
+          transformers,
+          documentName,
+        );
 
         _appendTypenameCache[cacheKey] = transformed;
         results.add(transformed);
-      } catch (e) {
+      } on Exception catch (e) {
         failedDocuments.add(documentName);
-        _logError('Failed to process document with AppendTypename', e,
-            context: {
-              'documentName': documentName,
-              'documentIndex': i,
-            });
+        _logError(
+          'Failed to process document with AppendTypename',
+          e,
+          context: {
+            'documentName': documentName,
+            'documentIndex': i,
+          },
+        );
 
         // For individual document failures, add original document and continue
         // This allows partial batch success
@@ -891,11 +986,14 @@ class BatchedASTProcessor {
     }
 
     if (failedDocuments.isNotEmpty) {
-      _logError('Some documents failed AppendTypename processing', null,
-          context: {
-            'failedDocuments': failedDocuments,
-            'totalDocuments': documents.length,
-          });
+      _logError(
+        'Some documents failed AppendTypename processing',
+        null,
+        context: {
+          'failedDocuments': failedDocuments,
+          'totalDocuments': documents.length,
+        },
+      );
     }
 
     return results;
@@ -908,21 +1006,26 @@ class BatchedASTProcessor {
     List<FragmentDefinitionNode> fragments,
     List<TransformingVisitor> transformers,
   ) async {
-    _logDebug('Processing fragments batch with AppendTypename', context: {
-      'fragmentCount': fragments.length,
-      'transformerCount': transformers.length,
-    });
+    _logDebug(
+      'Processing fragments batch with AppendTypename',
+      context: {
+        'fragmentCount': fragments.length,
+        'transformerCount': transformers.length,
+      },
+    );
 
     final results = <FragmentDefinitionNode>[];
     final failedFragments = <String>[];
 
     // Separate AppendTypename transformers from others for proper sequencing
-    final appendTypenameTransformers =
-        transformers.whereType<AppendTypename>().toList();
-    final otherTransformers =
-        transformers.where((t) => t is! AppendTypename).toList();
+    final appendTypenameTransformers = transformers
+        .whereType<AppendTypename>()
+        .toList();
+    final otherTransformers = transformers
+        .where((t) => t is! AppendTypename)
+        .toList();
 
-    for (int i = 0; i < fragments.length; i++) {
+    for (var i = 0; i < fragments.length; i++) {
       final fragment = fragments[i];
       final fragmentName = fragment.name.value;
 
@@ -948,8 +1051,10 @@ class BatchedASTProcessor {
           // Only apply transformers that can handle fragments
           if (_canTransformerHandleFragment(transformer)) {
             try {
-              transformed =
-                  _applyTransformerToFragment(transformed, transformer);
+              transformed = _applyTransformerToFragment(
+                transformed,
+                transformer,
+              );
             } catch (e) {
               throw AppendTypenameProcessingError(
                 'Failed to apply transformer ${transformer.runtimeType} to fragment',
@@ -976,18 +1081,24 @@ class BatchedASTProcessor {
         // Validate fragment transformation result
         if (enableValidation) {
           _validateFragmentTransformationResult(
-              fragment, transformed, transformers);
+            fragment,
+            transformed,
+            transformers,
+          );
         }
 
         _fragmentAppendTypenameCache[cacheKey] = transformed;
         results.add(transformed);
-      } catch (e) {
+      } on Exception catch (e) {
         failedFragments.add(fragmentName);
-        _logError('Failed to process fragment with AppendTypename', e,
-            context: {
-              'fragmentName': fragmentName,
-              'fragmentIndex': i,
-            });
+        _logError(
+          'Failed to process fragment with AppendTypename',
+          e,
+          context: {
+            'fragmentName': fragmentName,
+            'fragmentIndex': i,
+          },
+        );
 
         // For individual fragment failures, add original fragment and continue
         // This allows partial batch success
@@ -996,11 +1107,14 @@ class BatchedASTProcessor {
     }
 
     if (failedFragments.isNotEmpty) {
-      _logError('Some fragments failed AppendTypename processing', null,
-          context: {
-            'failedFragments': failedFragments,
-            'totalFragments': fragments.length,
-          });
+      _logError(
+        'Some fragments failed AppendTypename processing',
+        null,
+        context: {
+          'failedFragments': failedFragments,
+          'totalFragments': fragments.length,
+        },
+      );
     }
 
     return results;
@@ -1008,9 +1122,10 @@ class BatchedASTProcessor {
 
   /// Generate a cache key for a fragment
   String _generateFragmentKey(FragmentDefinitionNode fragment) {
-    final buffer = StringBuffer();
-    buffer.write(
-        'frag:${fragment.name.value}:${fragment.typeCondition.on.name.value}:');
+    final buffer = StringBuffer()
+      ..write(
+        'frag:${fragment.name.value}:${fragment.typeCondition.on.name.value}:',
+      );
     _appendSelectionSetToBuffer(buffer, fragment.selectionSet);
     return buffer.toString().hashCode.toString();
   }
@@ -1061,18 +1176,21 @@ class BatchedASTProcessor {
 
       if (transformedFragments.isEmpty) {
         throw AppendTypenameProcessingError(
-            'Transformer ${transformer.runtimeType} removed fragment during transformation');
+          'Transformer ${transformer.runtimeType} removed fragment during transformation',
+        );
       }
 
       if (transformedFragments.length > 1) {
         throw AppendTypenameProcessingError(
-            'Transformer ${transformer.runtimeType} created multiple fragments from single fragment');
+          'Transformer ${transformer.runtimeType} created multiple fragments from single fragment',
+        );
       }
 
       return transformedFragments.first;
     } catch (e) {
       throw AppendTypenameProcessingError(
-          'Failed to apply transformer ${transformer.runtimeType} to fragment: $e');
+        'Failed to apply transformer ${transformer.runtimeType} to fragment: $e',
+      );
     }
   }
 
@@ -1086,21 +1204,25 @@ class BatchedASTProcessor {
     // Ensure fragment name is preserved
     if (original.name.value != transformed.name.value) {
       throw TransformationInconsistencyError(
-          'Fragment name changed during transformation: ${original.name.value} -> ${transformed.name.value}');
+        'Fragment name changed during transformation: ${original.name.value} -> ${transformed.name.value}',
+      );
     }
 
     // Ensure type condition is preserved
     if (original.typeCondition.on.name.value !=
         transformed.typeCondition.on.name.value) {
       throw TransformationInconsistencyError(
-          'Fragment type condition changed during transformation: ${original.typeCondition.on.name.value} -> ${transformed.typeCondition.on.name.value}');
+        'Fragment type condition changed during transformation: ${original.typeCondition.on.name.value} -> ${transformed.typeCondition.on.name.value}',
+      );
     }
 
     // Validate AppendTypename-specific changes
     final appendTypename = _getAppendTypenameTransformer(transformers);
     if (appendTypename != null) {
       _validateFragmentTypenameFieldsAdded(
-          transformed, appendTypename.typeName);
+        transformed,
+        appendTypename.typeName,
+      );
     }
   }
 
@@ -1116,7 +1238,8 @@ class BatchedASTProcessor {
 
     if (!hasTypenameField) {
       throw AppendTypenameProcessingError(
-          'Expected typename field "$typeNameField" not found in fragment "${fragment.name.value}"');
+        'Expected typename field "$typeNameField" not found in fragment "${fragment.name.value}"',
+      );
     }
   }
 
@@ -1210,8 +1333,9 @@ class BatchedASTProcessor {
     List<TransformingVisitor> transformers,
   ) {
     final docHashes = documents.map(_generateDocumentKey).join(',');
-    final transformerTypes =
-        transformers.map((t) => t.runtimeType.toString()).join(',');
+    final transformerTypes = transformers
+        .map((t) => t.runtimeType.toString())
+        .join(',');
     return '$docHashes|$transformerTypes';
   }
 
@@ -1222,11 +1346,13 @@ class BatchedASTProcessor {
     for (final definition in document.definitions) {
       if (definition is OperationDefinitionNode) {
         buffer.write(
-            'op:${definition.type}:${definition.name?.value ?? 'unnamed'}:');
+          'op:${definition.type}:${definition.name?.value ?? 'unnamed'}:',
+        );
         _appendSelectionSetToBuffer(buffer, definition.selectionSet);
       } else if (definition is FragmentDefinitionNode) {
         buffer.write(
-            'frag:${definition.name.value}:${definition.typeCondition.on.name.value}:');
+          'frag:${definition.name.value}:${definition.typeCondition.on.name.value}:',
+        );
         _appendSelectionSetToBuffer(buffer, definition.selectionSet);
       } else {
         buffer.write('def:${definition.runtimeType}:');
@@ -1238,7 +1364,9 @@ class BatchedASTProcessor {
 
   /// Helper method to append selection set content to buffer for key generation
   void _appendSelectionSetToBuffer(
-      StringBuffer buffer, SelectionSetNode selectionSet) {
+    StringBuffer buffer,
+    SelectionSetNode selectionSet,
+  ) {
     for (final selection in selectionSet.selections) {
       if (selection is FieldNode) {
         buffer.write('field:${selection.name.value}');
@@ -1254,7 +1382,8 @@ class BatchedASTProcessor {
         buffer.write('spread:${selection.name.value};');
       } else if (selection is InlineFragmentNode) {
         buffer.write(
-            'inline:${selection.typeCondition?.on.name.value ?? 'any'}:');
+          'inline:${selection.typeCondition?.on.name.value ?? 'any'}:',
+        );
         _appendSelectionSetToBuffer(buffer, selection.selectionSet);
         buffer.write(';');
       }
@@ -1263,17 +1392,21 @@ class BatchedASTProcessor {
 
   /// Apply a transformer to a document using the visitor pattern
   DocumentNode _applyTransformerToDocument(
-      DocumentNode document, TransformingVisitor transformer) {
+    DocumentNode document,
+    TransformingVisitor transformer,
+  ) {
     // Create a new document with transformed definitions
     final transformedDefinitions = <DefinitionNode>[];
 
     for (final definition in document.definitions) {
       if (definition is OperationDefinitionNode) {
-        transformedDefinitions
-            .add(transformer.visitOperationDefinitionNode(definition));
+        transformedDefinitions.add(
+          transformer.visitOperationDefinitionNode(definition),
+        );
       } else if (definition is FragmentDefinitionNode) {
-        transformedDefinitions
-            .add(transformer.visitFragmentDefinitionNode(definition));
+        transformedDefinitions.add(
+          transformer.visitFragmentDefinitionNode(definition),
+        );
       } else {
         transformedDefinitions.add(definition);
       }
@@ -1288,13 +1421,13 @@ class BatchedASTProcessor {
 
 /// Represents a transformation that has been deferred for lazy evaluation
 class _DeferredTransformation {
-  final DocumentNode document;
-  final List<TransformingVisitor> transformers;
-  final DocumentNode placeholder;
-
   _DeferredTransformation({
     required this.document,
     required this.transformers,
     required this.placeholder,
   });
+
+  final DocumentNode document;
+  final List<TransformingVisitor> transformers;
+  final DocumentNode placeholder;
 }

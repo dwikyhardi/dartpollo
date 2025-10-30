@@ -7,7 +7,7 @@ void main() {
   group('On nnbd', () {
     test(
       'On field selection',
-      () async => testGenerator(
+      () => testGenerator(
         query: 'query { nonNullAndSelected, nullableAndSelected }',
         schema: r'''
         type Query {
@@ -19,14 +19,13 @@ void main() {
       ''',
         libraryDefinition: libraryDefinition,
         generatedFile: output,
-        generateHelpers: false,
       ),
     );
   });
 
   test(
     'On lists and nullability',
-    () async => testGenerator(
+    () => testGenerator(
       query: 'query { i, inn, li, linn, lnni, lnninn, matrix, matrixnn }',
       schema: r'''
         type Query {
@@ -42,36 +41,35 @@ void main() {
       ''',
       libraryDefinition: listsLibraryDefinition,
       generatedFile: listsOutput,
-      generateHelpers: false,
     ),
   );
 }
 
-final libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Query$_Query'),
       operationName: r'query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Query$_Query'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'nonNullAndSelected'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'nullableAndSelected'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Query$_Query'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'nonNullAndSelected'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'nullableAndSelected'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const output = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -98,69 +96,75 @@ class Query$Query extends JsonSerializable with EquatableMixin {
 }
 ''';
 
-final listsLibraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final listsLibraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Query$_Query'),
       operationName: r'query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Query$_Query'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'int'),
-                  name: ClassPropertyName(name: r'i'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'int', isNonNull: true),
-                  name: ClassPropertyName(name: r'inn'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: DartTypeName(name: r'int'), isNonNull: false),
-                  name: ClassPropertyName(name: r'li'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: DartTypeName(name: r'int', isNonNull: true),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'linn'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: DartTypeName(name: r'int'), isNonNull: true),
-                  name: ClassPropertyName(name: r'lnni'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: DartTypeName(name: r'int', isNonNull: true),
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'lnninn'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: ListOfTypeName(
-                          typeName: DartTypeName(name: r'int'),
-                          isNonNull: false),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'matrix'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: ListOfTypeName(
-                          typeName: DartTypeName(name: r'int', isNonNull: true),
-                          isNonNull: true),
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'matrixnn'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Query$_Query'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'int'),
+              name: const ClassPropertyName(name: r'i'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'int', isNonNull: true),
+              name: const ClassPropertyName(name: r'inn'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: DartTypeName(name: r'int'),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'li'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: DartTypeName(name: r'int', isNonNull: true),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'linn'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: DartTypeName(name: r'int'),
+              ),
+              name: const ClassPropertyName(name: r'lnni'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: DartTypeName(name: r'int', isNonNull: true),
+              ),
+              name: const ClassPropertyName(name: r'lnninn'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: ListOfTypeName(
+                  typeName: DartTypeName(name: r'int'),
+                  isNonNull: false,
+                ),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'matrix'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: ListOfTypeName(
+                  typeName: DartTypeName(name: r'int', isNonNull: true),
+                ),
+              ),
+              name: const ClassPropertyName(name: r'matrixnn'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const listsOutput = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

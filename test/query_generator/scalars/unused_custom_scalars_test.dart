@@ -7,7 +7,7 @@ void main() {
   group('On unused custom scalars', () {
     test(
       'They will not throw if not configured and unused',
-      () async => testGenerator(
+      () => testGenerator(
         query: 'query query { a }',
         schema: r'''
             scalar MyUuid
@@ -37,27 +37,27 @@ void main() {
   });
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Query$_SomeObject'),
       operationName: r'query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Query$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'a'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Query$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'a'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

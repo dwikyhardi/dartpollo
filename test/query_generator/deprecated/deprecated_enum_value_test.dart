@@ -9,7 +9,7 @@ void main() {
   group('On deprecated value', () {
     test(
       'Enum values can be deprecated',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -39,9 +39,10 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       document: parseString(query),
       name: QueryName(name: r'SomeQuery$_QueryResponse'),
       operationName: 'some_query',
@@ -51,7 +52,7 @@ final LibraryDefinition libraryDefinition =
           values: [
             EnumValueDefinition(
               name: EnumValueName(name: 'NEW_HOPE'),
-              annotations: [
+              annotations: const [
                 r"Deprecated('deprecated movie')",
               ],
             ),
@@ -67,24 +68,24 @@ final LibraryDefinition libraryDefinition =
           ],
         ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'StarWarsMovies'),
-                  name: ClassPropertyName(name: r'someValue'),
-                  // isOverride: false,
+          name: ClassName(name: r'SomeQuery$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'StarWarsMovies'),
+              name: const ClassPropertyName(name: r'someValue'),
 
-                  annotations: [
-                    r'JsonKey(unknownEnumValue: StarWarsMovies.unknown)',
-                  ])
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+              // isOverride: false,
+              annotations: const [
+                r'JsonKey(unknownEnumValue: StarWarsMovies.unknown)',
+              ],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

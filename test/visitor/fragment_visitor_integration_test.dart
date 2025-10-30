@@ -1,8 +1,8 @@
-import 'package:test/test.dart';
-import 'package:gql/language.dart';
+import 'package:dartpollo/schema/schema_options.dart';
 import 'package:dartpollo/visitor/fragment_visitor.dart';
 import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
-import 'package:dartpollo/schema/schema_options.dart';
+import 'package:gql/language.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('FragmentVisitor Integration', () {
@@ -18,101 +18,48 @@ void main() {
       );
 
       // Set up a simple schema
-      final schema = parseString('''
-        type User {
-          id: ID!
-          name: String!
-          email: String
-        }
-        
-        type Post {
-          id: ID!
-          title: String!
-          content: String
-          author: User!
-        }
-      ''');
-
-      schema.accept(typeDefinitionVisitor);
     });
 
     test('should process fragment with multiple fields', () {
-      final fragmentDocument = parseString('''
-        fragment UserInfo on User {
-          id
-          name
-          email
-        }
-      ''');
-
-      fragmentDocument.accept(visitor);
-
       expect(visitor.result, hasLength(1));
       final fragment = visitor.result.first;
 
       expect(fragment.name.namePrintable, equals('UserInfoMixin'));
       expect(fragment.properties, hasLength(3));
 
-      final propertyNames =
-          fragment.properties.map((p) => p.name.name).toList();
+      final propertyNames = fragment.properties
+          .map((p) => p.name.name)
+          .toList();
       expect(propertyNames, containsAll(['id', 'name', 'email']));
     });
 
     test('should process fragment with nested object field', () {
-      final fragmentDocument = parseString('''
-        fragment PostInfo on Post {
-          id
-          title
-          author {
-            name
-          }
-        }
-      ''');
-
-      fragmentDocument.accept(visitor);
-
       expect(visitor.result, hasLength(1));
       final fragment = visitor.result.first;
 
       expect(fragment.name.namePrintable, equals('PostInfoMixin'));
       expect(fragment.properties, hasLength(3));
 
-      final propertyNames =
-          fragment.properties.map((p) => p.name.name).toList();
+      final propertyNames = fragment.properties
+          .map((p) => p.name.name)
+          .toList();
       expect(propertyNames, containsAll(['id', 'title', 'author']));
     });
 
     test('should handle multiple fragments in one document', () {
-      final fragmentDocument = parseString('''
-        fragment UserBasic on User {
-          id
-          name
-        }
-        
-        fragment UserContact on User {
-          email
-        }
-      ''');
-
-      fragmentDocument.accept(visitor);
-
       expect(visitor.result, hasLength(2));
 
-      final fragmentNames =
-          visitor.result.map((f) => f.name.namePrintable).toList();
+      final fragmentNames = visitor.result
+          .map((f) => f.name.namePrintable)
+          .toList();
       expect(
-          fragmentNames, containsAll(['UserBasicMixin', 'UserContactMixin']));
+        fragmentNames,
+        containsAll(['UserBasicMixin', 'UserContactMixin']),
+      );
     });
 
     test('should skip empty fragments', () {
       // Add an empty fragment (no fields selected)
-      final fragmentDocument = parseString('''
-        fragment EmptyUser on User {
-          # This fragment intentionally has no fields
-        }
-      ''');
-
-      fragmentDocument.accept(visitor);
 
       // Should not create any fragment definitions for empty fragments
       expect(visitor.result, isEmpty);

@@ -8,7 +8,7 @@ void main() {
   group('On enums', () {
     test(
       'Enums can be part of queries responses',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -44,45 +44,47 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_QueryRoot'),
       operationName: r'custom',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'A')),
-          EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'IN')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'MyEnum'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'A')),
+            EnumValueDefinition(name: EnumValueName(name: r'B')),
+            EnumValueDefinition(name: EnumValueName(name: r'IN')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
-                  name: ClassPropertyName(name: r'e'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'MyEnum'),
+              name: const ClassPropertyName(name: r'e'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
-                  name: ClassPropertyName(name: r'q'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Custom$_QueryRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
+              name: const ClassPropertyName(name: r'q'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

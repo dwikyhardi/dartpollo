@@ -7,7 +7,7 @@ void main() {
   group('Simple naming', () {
     test(
       'Casing will be converted accordingly (and JsonKey names will be populated accordingly)',
-      () async => testGenerator(
+      () => testGenerator(
         query: r'''
           query ClientEventsData {
             clientEvents {
@@ -52,52 +52,50 @@ void main() {
   });
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'ClientEventsData$_Query'),
       operationName: r'ClientEventsData',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'ClientEventItem'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'int', isNonNull: true),
-                  name: ClassPropertyName(name: r'type'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'ClientEventItem'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'int', isNonNull: true),
+              name: const ClassPropertyName(name: r'type'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'ClientEventPage'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName:
-                          TypeName(name: r'ClientEventItem', isNonNull: true),
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'items'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'ClientEventPage'),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(name: r'ClientEventItem', isNonNull: true),
+              ),
+              name: const ClassPropertyName(name: r'items'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'ClientEventsData$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'ClientEventPage', isNonNull: true),
-                  name: ClassPropertyName(name: r'clientEvents'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'ClientEventsData$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'ClientEventPage', isNonNull: true),
+              name: const ClassPropertyName(name: r'clientEvents'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

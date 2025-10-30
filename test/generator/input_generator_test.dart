@@ -45,16 +45,12 @@ void main() {
         scalarMapping: [
           ScalarMap(
             graphQLType: 'JSON',
-            dartType: DartType(name: 'Map<String, dynamic>'),
+            dartType: const DartType(name: 'Map<String, dynamic>'),
           ),
         ],
       );
 
-      mockSchemaMap = SchemaMap(
-        namingScheme: NamingScheme.pathedWithTypes,
-        typeNameField: '__typename',
-        convertEnumToString: false,
-      );
+      mockSchemaMap = SchemaMap();
 
       mockContext = Context(
         schema: mockSchema,
@@ -77,70 +73,87 @@ void main() {
     group('generateInputClass', () {
       test('should generate input class definition from input object type', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
-        final classDefinition =
-            InputGenerator.generateInputClass(inputType, mockContext);
+        final classDefinition = InputGenerator.generateInputClass(
+          inputType,
+          mockContext,
+        );
 
         expect(classDefinition.name.name, equals('UserInput'));
         expect(classDefinition.isInput, isTrue);
         expect(classDefinition.properties.length, equals(5));
 
         // Check that properties are generated correctly
-        final nameProperty =
-            classDefinition.properties.firstWhere((p) => p.name.name == 'name');
+        final nameProperty = classDefinition.properties.firstWhere(
+          (p) => p.name.name == 'name',
+        );
         expect(nameProperty.type.name, equals('String'));
         expect(nameProperty.type.isNonNull, isTrue);
 
-        final emailProperty = classDefinition.properties
-            .firstWhere((p) => p.name.name == 'email');
+        final emailProperty = classDefinition.properties.firstWhere(
+          (p) => p.name.name == 'email',
+        );
         expect(emailProperty.type.name, equals('String'));
         expect(emailProperty.type.isNonNull, isFalse);
 
-        final ageProperty =
-            classDefinition.properties.firstWhere((p) => p.name.name == 'age');
+        final ageProperty = classDefinition.properties.firstWhere(
+          (p) => p.name.name == 'age',
+        );
         expect(ageProperty.type.name, equals('int'));
         expect(ageProperty.type.isNonNull, isFalse);
 
-        final roleProperty =
-            classDefinition.properties.firstWhere((p) => p.name.name == 'role');
+        final roleProperty = classDefinition.properties.firstWhere(
+          (p) => p.name.name == 'role',
+        );
         expect(roleProperty.type.name, equals('UserRole'));
         expect(roleProperty.type.isNonNull, isFalse);
 
-        final tagsProperty =
-            classDefinition.properties.firstWhere((p) => p.name.name == 'tags');
+        final tagsProperty = classDefinition.properties.firstWhere(
+          (p) => p.name.name == 'tags',
+        );
         expect(tagsProperty.type.namePrintable, equals('List<String?>?'));
         expect(tagsProperty.type.isNonNull, isFalse);
       });
 
       test('should mark used enums when generating input class', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
         InputGenerator.generateInputClass(inputType, mockContext);
 
         expect(mockContext.usedEnums.any((e) => e.name == 'UserRole'), isTrue);
       });
 
-      test('should mark used input objects when generating nested input class',
-          () {
-        final inputType = typeVisitor.getByName('NestedInput')
-            as InputObjectTypeDefinitionNode;
+      test(
+        'should mark used input objects when generating nested input class',
+        () {
+          final inputType =
+              typeVisitor.getByName('NestedInput')!
+                  as InputObjectTypeDefinitionNode;
 
-        InputGenerator.generateInputClass(inputType, mockContext);
+          InputGenerator.generateInputClass(inputType, mockContext);
 
-        expect(mockContext.usedInputObjects.any((e) => e.name == 'UserInput'),
-            isTrue);
-      });
+          expect(
+            mockContext.usedInputObjects.any((e) => e.name == 'UserInput'),
+            isTrue,
+          );
+        },
+      );
     });
 
     group('generateInputProperties', () {
       test('should generate properties from input field definitions', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
         final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          inputType.fields,
+          mockContext,
+        );
 
         expect(properties.length, equals(5));
         expect(properties.any((p) => p.name.name == 'name'), isTrue);
@@ -152,71 +165,94 @@ void main() {
 
       test('should handle non-null types correctly', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
         final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          inputType.fields,
+          mockContext,
+        );
 
-        final nameProperty =
-            properties.firstWhere((p) => p.name.name == 'name');
+        final nameProperty = properties.firstWhere(
+          (p) => p.name.name == 'name',
+        );
         expect(nameProperty.type.isNonNull, isTrue);
 
-        final emailProperty =
-            properties.firstWhere((p) => p.name.name == 'email');
+        final emailProperty = properties.firstWhere(
+          (p) => p.name.name == 'email',
+        );
         expect(emailProperty.type.isNonNull, isFalse);
       });
 
       test('should handle list types correctly', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
         final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          inputType.fields,
+          mockContext,
+        );
 
-        final tagsProperty =
-            properties.firstWhere((p) => p.name.name == 'tags');
+        final tagsProperty = properties.firstWhere(
+          (p) => p.name.name == 'tags',
+        );
         expect(tagsProperty.type.namePrintable, equals('List<String?>?'));
         expect(tagsProperty.type.isNonNull, isFalse);
       });
 
       test('should add unknown enum value annotation for enum properties', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
         final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          inputType.fields,
+          mockContext,
+        );
 
-        final roleProperty =
-            properties.firstWhere((p) => p.name.name == 'role');
+        final roleProperty = properties.firstWhere(
+          (p) => p.name.name == 'role',
+        );
         expect(
-            roleProperty.annotations.any((a) => a.contains('unknownEnumValue')),
-            isTrue);
+          roleProperty.annotations.any((a) => a.contains('unknownEnumValue')),
+          isTrue,
+        );
         expect(
-            roleProperty.annotations.any((a) => a.contains('UserRole.unknown')),
-            isTrue);
+          roleProperty.annotations.any((a) => a.contains('UserRole.unknown')),
+          isTrue,
+        );
       });
 
       test('should handle custom scalar types', () {
-        final inputType = typeVisitor.getByName('NestedInput')
-            as InputObjectTypeDefinitionNode;
+        final inputType =
+            typeVisitor.getByName('NestedInput')!
+                as InputObjectTypeDefinitionNode;
 
         final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          inputType.fields,
+          mockContext,
+        );
 
-        final metadataProperty =
-            properties.firstWhere((p) => p.name.name == 'metadata');
+        final metadataProperty = properties.firstWhere(
+          (p) => p.name.name == 'metadata',
+        );
         expect(metadataProperty.type.name, equals('Map<String, dynamic>'));
       });
 
       test('should handle nested input object types', () {
-        final inputType = typeVisitor.getByName('NestedInput')
-            as InputObjectTypeDefinitionNode;
+        final inputType =
+            typeVisitor.getByName('NestedInput')!
+                as InputObjectTypeDefinitionNode;
 
         final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          inputType.fields,
+          mockContext,
+        );
 
-        final userProperty =
-            properties.firstWhere((p) => p.name.name == 'user');
+        final userProperty = properties.firstWhere(
+          (p) => p.name.name == 'user',
+        );
         expect(userProperty.type.name, equals('UserInput'));
         expect(userProperty.type.isNonNull, isFalse);
       });
@@ -225,7 +261,8 @@ void main() {
     group('input validation and type relationships', () {
       test('should track used enums correctly', () {
         final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+            typeVisitor.getByName('UserInput')!
+                as InputObjectTypeDefinitionNode;
 
         InputGenerator.generateInputProperties(inputType.fields, mockContext);
 
@@ -234,8 +271,9 @@ void main() {
       });
 
       test('should track used input objects correctly', () {
-        final inputType = typeVisitor.getByName('NestedInput')
-            as InputObjectTypeDefinitionNode;
+        final inputType =
+            typeVisitor.getByName('NestedInput')!
+                as InputObjectTypeDefinitionNode;
 
         InputGenerator.generateInputProperties(inputType.fields, mockContext);
 
@@ -273,8 +311,9 @@ void main() {
           log: false,
         );
 
-        final inputType = specialTypeVisitor.getByName('SpecialInput')
-            as InputObjectTypeDefinitionNode;
+        final inputType =
+            specialTypeVisitor.getByName('SpecialInput')!
+                as InputObjectTypeDefinitionNode;
         final properties = InputGenerator.generateInputProperties(
           inputType.fields,
           specialContext,
@@ -283,70 +322,84 @@ void main() {
         final specialProperty = properties.first;
         expect(specialProperty.name.name, equals('special_field'));
         expect(specialProperty.name.namePrintable, equals('specialField'));
-        expect(specialProperty.annotations.any((a) => a.contains('JsonKey')),
-            isTrue);
         expect(
-            specialProperty.annotations
-                .any((a) => a.contains('name: \'special_field\'')),
-            isTrue);
+          specialProperty.annotations.any((a) => a.contains('JsonKey')),
+          isTrue,
+        );
+        expect(
+          specialProperty.annotations.any(
+            (a) => a.contains('name: \'special_field\''),
+          ),
+          isTrue,
+        );
       });
 
       test(
-          'should not add JsonKey annotation when field name matches property name',
-          () {
-        final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+        'should not add JsonKey annotation when field name matches property name',
+        () {
+          final inputType =
+              typeVisitor.getByName('UserInput')!
+                  as InputObjectTypeDefinitionNode;
 
-        final properties = InputGenerator.generateInputProperties(
-            inputType.fields, mockContext);
+          final properties = InputGenerator.generateInputProperties(
+            inputType.fields,
+            mockContext,
+          );
 
-        final nameProperty =
-            properties.firstWhere((p) => p.name.name == 'name');
-        final hasJsonKeyForName =
-            nameProperty.annotations.any((a) => a.contains('name:'));
-        expect(hasJsonKeyForName, isFalse);
-      });
+          final nameProperty = properties.firstWhere(
+            (p) => p.name.name == 'name',
+          );
+          final hasJsonKeyForName = nameProperty.annotations.any(
+            (a) => a.contains('name:'),
+          );
+          expect(hasJsonKeyForName, isFalse);
+        },
+      );
     });
 
     group('convertEnumToString handling', () {
       test(
-          'should not add unknown enum value annotation when convertEnumToString is true',
-          () {
-        final enumToStringSchemaMap = SchemaMap(
-          namingScheme: NamingScheme.pathedWithTypes,
-          typeNameField: '__typename',
-          convertEnumToString: true,
-        );
+        'should not add unknown enum value annotation when convertEnumToString is true',
+        () {
+          final enumToStringSchemaMap = SchemaMap(
+            convertEnumToString: true,
+          );
 
-        final enumToStringContext = Context(
-          schema: mockSchema,
-          typeDefinitionNodeVisitor: typeVisitor,
-          options: mockOptions,
-          schemaMap: enumToStringSchemaMap,
-          path: [],
-          currentType: null,
-          currentFieldName: null,
-          currentClassName: null,
-          generatedClasses: [],
-          inputsClasses: [],
-          fragments: [],
-          usedEnums: {},
-          usedInputObjects: {},
-          log: false,
-        );
+          final enumToStringContext = Context(
+            schema: mockSchema,
+            typeDefinitionNodeVisitor: typeVisitor,
+            options: mockOptions,
+            schemaMap: enumToStringSchemaMap,
+            path: [],
+            currentType: null,
+            currentFieldName: null,
+            currentClassName: null,
+            generatedClasses: [],
+            inputsClasses: [],
+            fragments: [],
+            usedEnums: {},
+            usedInputObjects: {},
+            log: false,
+          );
 
-        final inputType =
-            typeVisitor.getByName('UserInput') as InputObjectTypeDefinitionNode;
+          final inputType =
+              typeVisitor.getByName('UserInput')!
+                  as InputObjectTypeDefinitionNode;
 
-        final properties = InputGenerator.generateInputProperties(
-            inputType.fields, enumToStringContext);
+          final properties = InputGenerator.generateInputProperties(
+            inputType.fields,
+            enumToStringContext,
+          );
 
-        final roleProperty =
-            properties.firstWhere((p) => p.name.name == 'role');
-        expect(
+          final roleProperty = properties.firstWhere(
+            (p) => p.name.name == 'role',
+          );
+          expect(
             roleProperty.annotations.any((a) => a.contains('unknownEnumValue')),
-            isFalse);
-      });
+            isFalse,
+          );
+        },
+      );
     });
   });
 }

@@ -7,7 +7,7 @@ void main() {
   group('On types not used by interfaces', () {
     test(
       'Those other types are not considered nor generated',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: graphQLSchema,
         libraryDefinition: libraryDefinition,
@@ -66,76 +66,77 @@ const graphQLSchema = '''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_Query'),
       operationName: r'custom',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_Node$_User'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'username'),
-                  isResolveType: false)
-            ],
-            extension: ClassName(name: r'Custom$_Query$_Node'),
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_Node$_User'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'username'),
+            ),
+          ],
+          extension: ClassName(name: r'Custom$_Query$_Node'),
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_Node$_ChatMessage'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'message'),
-                  isResolveType: false)
-            ],
-            extension: ClassName(name: r'Custom$_Query$_Node'),
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_Node$_ChatMessage'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'message'),
+            ),
+          ],
+          extension: ClassName(name: r'Custom$_Query$_Node'),
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query$_Node'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'__typename'),
-                  annotations: [r'''JsonKey(name: '__typename')'''],
-                  isResolveType: true)
-            ],
-            factoryPossibilities: {
-              r'User': ClassName(name: r'Custom$_Query$_Node$_User'),
-              r'ChatMessage':
-                  ClassName(name: r'Custom$_Query$_Node$_ChatMessage')
-            },
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_Query$_Node'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'__typename'),
+              annotations: const [r'''JsonKey(name: '__typename')'''],
+              isResolveType: true,
+            ),
+          ],
+          factoryPossibilities: {
+            r'User': ClassName(name: r'Custom$_Query$_Node$_User'),
+            r'ChatMessage': ClassName(
+              name: r'Custom$_Query$_Node$_ChatMessage',
+            ),
+          },
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Custom$_Query$_Node'),
-                  name: ClassPropertyName(name: r'nodeById'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Custom$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_Query$_Node'),
+              name: const ClassPropertyName(name: r'nodeById'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
       inputs: [
         QueryInput(
-            type: DartTypeName(name: r'String', isNonNull: true),
-            name: QueryInputName(name: r'id'))
+          type: DartTypeName(name: r'String', isNonNull: true),
+          name: const QueryInputName(name: r'id'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

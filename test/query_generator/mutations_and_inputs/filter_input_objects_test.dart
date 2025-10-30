@@ -7,7 +7,7 @@ void main() {
   group('On complex input objects', () {
     test(
       'Unused input objects will be filtered out',
-      () async => testGenerator(
+      () => testGenerator(
         query: r'''
           query some_query($input: Input!) {
             o(input: $input) {
@@ -52,65 +52,66 @@ void main() {
   });
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_QueryRoot'),
       operationName: r'some_query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryRoot$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryRoot$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryRoot'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'SomeQuery$_QueryRoot$_SomeObject'),
-                  name: ClassPropertyName(name: r'o'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'SomeQuery$_QueryRoot$_SomeObject'),
+              name: const ClassPropertyName(name: r'o'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Input'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'SubInput'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true),
+          name: ClassName(name: r'Input'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'SubInput'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SubInput'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true)
+          name: ClassName(name: r'SubInput'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
       ],
       inputs: [
         QueryInput(
-            type: TypeName(name: r'Input', isNonNull: true),
-            name: QueryInputName(name: r'input'))
+          type: TypeName(name: r'Input', isNonNull: true),
+          name: const QueryInputName(name: r'input'),
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

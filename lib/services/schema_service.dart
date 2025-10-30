@@ -1,7 +1,8 @@
 import 'package:gql/ast.dart';
-import '../visitor/type_definition_node_visitor.dart';
-import '../schema/schema_options.dart';
+
 import '../generator/graphql_helpers.dart' as gql;
+import '../schema/schema_options.dart';
+import '../visitor/type_definition_node_visitor.dart';
 
 /// Service responsible for schema operations including parsing, validation,
 /// and type lookup functionality.
@@ -16,12 +17,6 @@ import '../generator/graphql_helpers.dart' as gql;
 /// The service is designed to be immutable after construction, with the schema
 /// and type visitor being initialized once and reused throughout the generation process.
 class SchemaService {
-  /// The GraphQL schema document containing all type definitions
-  final DocumentNode schema;
-
-  /// Visitor that indexes all type definitions for fast lookup
-  final TypeDefinitionNodeVisitor typeVisitor;
-
   /// Creates a new SchemaService and initializes the type visitor.
   ///
   /// The constructor automatically processes the schema by accepting the
@@ -32,6 +27,12 @@ class SchemaService {
   SchemaService(this.schema) : typeVisitor = TypeDefinitionNodeVisitor() {
     schema.accept(typeVisitor);
   }
+
+  /// The GraphQL schema document containing all type definitions
+  final DocumentNode schema;
+
+  /// Visitor that indexes all type definitions for fast lookup
+  final TypeDefinitionNodeVisitor typeVisitor;
 
   /// Retrieves a type definition by name from the schema.
   ///
@@ -98,9 +99,7 @@ class SchemaService {
     }
 
     // Validate that all referenced types exist
-    for (final type in nonDefaultTypes) {
-      _validateTypeReferences(type);
-    }
+    nonDefaultTypes.forEach(_validateTypeReferences);
   }
 
   /// Validates that all type references in a type definition exist in the schema
@@ -114,7 +113,8 @@ class SchemaService {
       for (final interface in type.interfaces) {
         if (getTypeByName(interface.name.value) == null) {
           throw Exception(
-              'Interface ${interface.name.value} referenced by ${type.name.value} not found in schema');
+            'Interface ${interface.name.value} referenced by ${type.name.value} not found in schema',
+          );
         }
       }
     } else if (type is InterfaceTypeDefinitionNode) {
@@ -132,7 +132,8 @@ class SchemaService {
       for (final memberType in type.types) {
         if (getTypeByName(memberType.name.value) == null) {
           throw Exception(
-              'Union member type ${memberType.name.value} in ${type.name.value} not found in schema');
+            'Union member type ${memberType.name.value} in ${type.name.value} not found in schema',
+          );
         }
       }
     }

@@ -1,24 +1,24 @@
 import 'package:gql/ast.dart';
-import 'base_visitor.dart';
+
 import '../generator/data/class_definition.dart';
 import '../generator/data/class_property.dart';
 import '../generator/graphql_helpers.dart';
-import '../visitor/type_definition_node_visitor.dart';
 import '../schema/schema_options.dart';
+import '../visitor/type_definition_node_visitor.dart';
+import 'base_visitor.dart';
 
 /// Specialized visitor for handling GraphQL input object type definitions.
 /// Processes input object nodes and generates input class definitions.
 class InputVisitor extends BaseVisitor<List<ClassDefinition>> {
-  final List<ClassDefinition> _inputClasses = [];
-  final TypeDefinitionNodeVisitor _typeDefinitionVisitor;
-  final GeneratorOptions _options;
-
   /// Creates a new InputVisitor with required dependencies.
   InputVisitor({
     required TypeDefinitionNodeVisitor typeDefinitionVisitor,
     required GeneratorOptions options,
-  })  : _typeDefinitionVisitor = typeDefinitionVisitor,
-        _options = options;
+  }) : _typeDefinitionVisitor = typeDefinitionVisitor,
+       _options = options;
+  final List<ClassDefinition> _inputClasses = [];
+  final TypeDefinitionNodeVisitor _typeDefinitionVisitor;
+  final GeneratorOptions _options;
 
   @override
   List<ClassDefinition> get result => List.unmodifiable(_inputClasses);

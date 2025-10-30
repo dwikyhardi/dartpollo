@@ -7,7 +7,7 @@ void main() {
   group('On fragments multiple', () {
     test(
       'Fragments will have their own classes multiple',
-      () async => testGenerator(
+      () => testGenerator(
         namingScheme: 'pathedWithFields',
         query: r'''
           fragment Dst on Destination {
@@ -95,153 +95,159 @@ void main() {
   });
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'VoyagesData$_Query'),
       operationName: r'VoyagesData',
       classes: [
         ClassDefinition(
-            name: ClassName(
-                name: r'VoyagesData$_Query$_voyages$_voyages$_voyage$_arrival'),
-            mixins: [FragmentName(name: r'DstMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(
+            name: r'VoyagesData$_Query$_voyages$_voyages$_voyage$_arrival',
+          ),
+          mixins: [FragmentName(name: r'DstMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(
+          name: ClassName(
+            name: r'VoyagesData$_Query$_voyages$_voyages$_voyage$_departure',
+          ),
+          mixins: [FragmentName(name: r'DepartureMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(
+            name: r'VoyagesData$_Query$_voyages$_voyages$_voyage',
+          ),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'DateTime', isNonNull: true),
+              name: const ClassPropertyName(name: r'dateFrom'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'DateTime'),
+              name: const ClassPropertyName(name: r'dateTo'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'voyageNumber'),
+            ),
+            ClassProperty(
+              type: TypeName(
+                name: r'VoyagesData$_Query$_voyages$_voyages$_voyage$_arrival',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'arrival'),
+            ),
+            ClassProperty(
+              type: TypeName(
                 name:
-                    r'VoyagesData$_Query$_voyages$_voyages$_voyage$_departure'),
-            mixins: [FragmentName(name: r'DepartureMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+                    r'VoyagesData$_Query$_voyages$_voyages$_voyage$_departure',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'departure'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(
-                name: r'VoyagesData$_Query$_voyages$_voyages$_voyage'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'DateTime', isNonNull: true),
-                  name: ClassPropertyName(name: r'dateFrom'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'DateTime'),
-                  name: ClassPropertyName(name: r'dateTo'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'voyageNumber'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(
-                      name:
-                          r'VoyagesData$_Query$_voyages$_voyages$_voyage$_arrival',
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'arrival'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(
-                      name:
-                          r'VoyagesData$_Query$_voyages$_voyages$_voyage$_departure',
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'departure'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'VoyagesData$_Query$_voyages$_voyages'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'int', isNonNull: true),
+              name: const ClassPropertyName(name: r'numberOfReports'),
+            ),
+            ClassProperty(
+              type: TypeName(
+                name: r'VoyagesData$_Query$_voyages$_voyages$_voyage',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'voyage'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'VoyagesData$_Query$_voyages$_voyages'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'int', isNonNull: true),
-                  name: ClassPropertyName(name: r'numberOfReports'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(
-                      name: r'VoyagesData$_Query$_voyages$_voyages$_voyage',
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'voyage'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'VoyagesData$_Query$_voyages'),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name: r'VoyagesData$_Query$_voyages$_voyages',
+                  isNonNull: true,
+                ),
+              ),
+              name: const ClassPropertyName(name: r'voyages'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'VoyagesData$_Query$_voyages'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(
-                          name: r'VoyagesData$_Query$_voyages$_voyages',
-                          isNonNull: true),
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'voyages'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
-        ClassDefinition(
-            name: ClassName(name: r'VoyagesData$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(
-                      name: r'VoyagesData$_Query$_voyages', isNonNull: true),
-                  name: ClassPropertyName(name: r'voyages'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'VoyagesData$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(
+                name: r'VoyagesData$_Query$_voyages',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'voyages'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'DstMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'name'),
-                  isResolveType: false)
-            ]),
+          name: FragmentName(name: r'DstMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'name'),
+            ),
+          ],
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'DepartureMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false)
-            ]),
+          name: FragmentName(name: r'DepartureMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'PaginationInput'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'int', isNonNull: true),
-                  name: ClassPropertyName(name: r'limit'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'int', isNonNull: true),
-                  name: ClassPropertyName(name: r'offset'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true)
+          name: ClassName(name: r'PaginationInput'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'int', isNonNull: true),
+              name: const ClassPropertyName(name: r'limit'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'int', isNonNull: true),
+              name: const ClassPropertyName(name: r'offset'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
       ],
       inputs: [
         QueryInput(
-            type: TypeName(name: r'PaginationInput', isNonNull: true),
-            name: QueryInputName(name: r'input'))
+          type: TypeName(name: r'PaginationInput', isNonNull: true),
+          name: const QueryInputName(name: r'input'),
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

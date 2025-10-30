@@ -7,7 +7,7 @@ void main() {
   group('On fragment spreads on other fragments', () {
     test(
       'Properties will be merged',
-      () async => testGenerator(
+      () => testGenerator(
         query: queryString,
         schema: r'''
           schema {
@@ -61,74 +61,75 @@ const queryString = '''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Query$_Query'),
       operationName: r'query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Query$_Query$_Pokemon'),
-            mixins: [
-              FragmentName(name: r'PokemonMixin'),
-              FragmentName(name: r'PokemonPartsMixin')
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Query$_Query$_Pokemon'),
+          mixins: [
+            FragmentName(name: r'PokemonMixin'),
+            FragmentName(name: r'PokemonPartsMixin'),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Query$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Query$_Query$_Pokemon'),
-                  name: ClassPropertyName(name: r'pokemon'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Query$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Query$_Query$_Pokemon'),
+              name: const ClassPropertyName(name: r'pokemon'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'PokemonMixin$_Pokemon'),
-            mixins: [FragmentName(name: r'PokemonNameMixin')],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'PokemonMixin$_Pokemon'),
+          mixins: [FragmentName(name: r'PokemonNameMixin')],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'PokemonMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'PokemonMixin$_Pokemon'),
-                  name: ClassPropertyName(name: r'evolution'),
-                  isResolveType: false)
-            ]),
+          name: FragmentName(name: r'PokemonMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'PokemonMixin$_Pokemon'),
+              name: const ClassPropertyName(name: r'evolution'),
+            ),
+          ],
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'PokemonNameMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'name'),
-                  isResolveType: false)
-            ]),
+          name: FragmentName(name: r'PokemonNameMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'name'),
+            ),
+          ],
+        ),
         FragmentClassDefinition(
-            name: FragmentName(name: r'PokemonPartsMixin'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'number'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'name'),
-                  isResolveType: false)
-            ])
+          name: FragmentName(name: r'PokemonPartsMixin'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'number'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'name'),
+            ),
+          ],
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

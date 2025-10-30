@@ -1,11 +1,17 @@
 # https://github.com/dart-lang/lints#migrating-from-packagepedantic
-include: package:lints/recommended.yaml
+include: package:pedantic_mono/analysis_options.yaml
 
 analyzer:
   exclude:
-    - example/**/*.dart
+    - "example/**/*.dart"
+    - "**/*.g.dart"
+    - "**/*.graphql.dart"
+    - "**/*.freezed.dart"
+    - "**/*.config.dart"
+    - "**/*.mocks.dart"
   language:
     strict-casts: true
+
 linter:
   rules:
     overridden_fields: false
@@ -18,3 +24,7 @@ linter:
     unnecessary_lambdas: true
     unnecessary_late: true
     unnecessary_parenthesis: true
+    avoid_redundant_argument_values: true
+    lines_longer_than_80_chars: false
+    always_put_control_body_on_new_line: false
+    comment_references: false

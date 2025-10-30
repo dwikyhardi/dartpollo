@@ -1,13 +1,27 @@
+import 'package:dartpollo/dartpollo.dart' show GraphQLQuery;
 import 'package:dartpollo/generator/data/class_definition.dart';
 import 'package:dartpollo/generator/data/definition.dart';
 import 'package:dartpollo/generator/data/query_input.dart';
 import 'package:dartpollo/generator/data_printer.dart';
 import 'package:dartpollo/generator/helpers.dart';
+import 'package:dartpollo/schema/graphql_query.dart' show GraphQLQuery;
 import 'package:gql/ast.dart';
 import 'package:recase/recase.dart';
 
 /// Define a GraphQL query and its dependencies.
 class QueryDefinition extends Definition with DataPrinter {
+  /// Instantiate a query definition.
+  QueryDefinition({
+    required super.name,
+    required this.operationName,
+    this.document = const DocumentNode(),
+    this.classes = const [],
+    this.inputs = const [],
+    this.generateHelpers = false,
+    this.generateQueries = false,
+    this.suffix = 'Query',
+  }) : assert(hasValue(operationName));
+
   /// graphql operation name for helper classes
   final String operationName;
 
@@ -29,18 +43,6 @@ class QueryDefinition extends Definition with DataPrinter {
   /// The suffix of generated [GraphQLQuery] classes.
   final String suffix;
 
-  /// Instantiate a query definition.
-  QueryDefinition({
-    required super.name,
-    required this.operationName,
-    this.document = const DocumentNode(),
-    this.classes = const [],
-    this.inputs = const [],
-    this.generateHelpers = false,
-    this.generateQueries = false,
-    this.suffix = 'Query',
-  }) : assert(hasValue(operationName));
-
   /// class name for helper classes
   String? get className => ClassName(name: operationName).namePrintable;
 
@@ -53,13 +55,13 @@ class QueryDefinition extends Definition with DataPrinter {
 
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-        'operationName': operationName,
-        'classes': classes,
-        'inputs': inputs,
-        'generateHelpers': generateHelpers,
-        'suffix': suffix,
-      };
+    'name': name,
+    'operationName': operationName,
+    'classes': classes,
+    'inputs': inputs,
+    'generateHelpers': generateHelpers,
+    'suffix': suffix,
+  };
 }
 
 /// Query name
@@ -74,8 +76,8 @@ class QueryName extends Name with DataPrinter {
 
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   String normalize(String name) {

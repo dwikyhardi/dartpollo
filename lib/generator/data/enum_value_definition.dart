@@ -4,23 +4,22 @@ import 'package:recase/recase.dart';
 
 /// Enum value
 class EnumValueDefinition extends Definition with DataPrinter {
+  /// Instantiate an enum value
+  EnumValueDefinition({
+    required this.name,
+    this.annotations = const [],
+  }) : super(name: name);
   @override
   final EnumValueName name;
 
   /// Some other custom annotation.
   final List<String> annotations;
 
-  /// Instantiate an enum value
-  EnumValueDefinition({
-    required this.name,
-    this.annotations = const [],
-  }) : super(name: name);
-
   @override
   Map<String, Object> get namedProps => {
-        'name': name,
-        'annotations': annotations,
-      };
+    'name': name,
+    'annotations': annotations,
+  };
 }
 
 /// Enum value name
@@ -30,8 +29,8 @@ class EnumValueName extends Name with DataPrinter {
 
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   String normalize(String name) {

@@ -8,7 +8,7 @@ void main() {
   group('On subscription', () {
     test(
       'Should process subscription',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -77,55 +77,62 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'NewUserSub$_Subscription'),
       operationName: r'NewUserSub',
       classes: [
-        EnumDefinition(name: EnumName(name: r'UserType'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'UserManager')),
-          EnumValueDefinition(name: EnumValueName(name: r'UserTechLead')),
-          EnumValueDefinition(name: EnumValueName(name: r'UserDev')),
-          EnumValueDefinition(name: EnumValueName(name: r'UserQA')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'UserType'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'UserManager')),
+            EnumValueDefinition(name: EnumValueName(name: r'UserTechLead')),
+            EnumValueDefinition(name: EnumValueName(name: r'UserDev')),
+            EnumValueDefinition(name: EnumValueName(name: r'UserQA')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'NewUserSub$_Subscription$_User'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'firstName'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'lastName'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'UserType', isNonNull: true),
-                  name: ClassPropertyName(name: r'userType'),
-                  annotations: [r'JsonKey(unknownEnumValue: UserType.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'NewUserSub$_Subscription$_User'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'firstName'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'lastName'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'UserType', isNonNull: true),
+              name: const ClassPropertyName(name: r'userType'),
+              annotations: const [
+                r'JsonKey(unknownEnumValue: UserType.unknown)',
+              ],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'NewUserSub$_Subscription'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(
-                      name: r'NewUserSub$_Subscription$_User', isNonNull: true),
-                  name: ClassPropertyName(name: r'newUser'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'NewUserSub$_Subscription'),
+          properties: [
+            ClassProperty(
+              type: TypeName(
+                name: r'NewUserSub$_Subscription$_User',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'newUser'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Subscription')
-]);
+      suffix: r'Subscription',
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

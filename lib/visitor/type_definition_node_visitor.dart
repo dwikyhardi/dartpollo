@@ -2,11 +2,14 @@ import 'package:gql/ast.dart';
 
 List<MapEntry<String, TypeDefinitionNode>> _defaultScalars =
     ['Boolean', 'Float', 'ID', 'Int', 'String']
-        .map((e) => MapEntry(
+        .map(
+          (e) => MapEntry(
             e,
             ScalarTypeDefinitionNode(
               name: NameNode(value: e),
-            )))
+            ),
+          ),
+        )
         .toList();
 
 /// Visits all type definition nodes recursively

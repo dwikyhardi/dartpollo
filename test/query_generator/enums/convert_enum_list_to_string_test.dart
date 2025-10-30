@@ -7,7 +7,7 @@ void main() {
   group('On enum lists with convertEnumToString', () {
     test(
       'Lists of enums can be converted to lists of strings in query responses',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -38,7 +38,7 @@ void main() {
               'output': 'lib/query.graphql.dart',
               'naming_scheme': 'pathedWithTypes',
               'convert_enum_to_string': true,
-            }
+            },
           ],
         },
       ),
@@ -54,41 +54,40 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_QueryRoot'),
       operationName: r'custom',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                    typeName: TypeName(name: r'String', isNonNull: false),
-                    isNonNull: false,
-                  ),
-                  name: ClassPropertyName(name: r'e'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(name: r'String'),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'e'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
-                  name: ClassPropertyName(name: r'q'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Custom$_QueryRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
+              name: const ClassPropertyName(name: r'q'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

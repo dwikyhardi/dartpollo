@@ -1,9 +1,9 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
+import 'package:dartpollo/generator/data/class_definition.dart';
+import 'package:dartpollo/schema/schema_options.dart';
 import 'package:dartpollo/visitor/input_visitor.dart';
 import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
-import 'package:dartpollo/schema/schema_options.dart';
-import 'package:dartpollo/generator/data/class_definition.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('InputVisitor', () {
@@ -31,19 +31,18 @@ void main() {
     });
 
     test('should handle input object type definition nodes', () {
-      final inputNode = InputObjectTypeDefinitionNode(
+      const inputNode = InputObjectTypeDefinitionNode(
         name: NameNode(value: 'TestInput'),
-        fields: [],
       );
-      final documentNode = DocumentNode(definitions: []);
+      const documentNode = DocumentNode();
 
       expect(visitor.canHandle(inputNode), isTrue);
       expect(visitor.canHandle(documentNode), isTrue);
-      expect(visitor.canHandle(NameNode(value: 'test')), isFalse);
+      expect(visitor.canHandle(const NameNode(value: 'test')), isFalse);
     });
 
     test('should visit input object type definition nodes', () {
-      final inputNode = InputObjectTypeDefinitionNode(
+      const inputNode = InputObjectTypeDefinitionNode(
         name: NameNode(value: 'TestInput'),
         fields: [
           InputValueDefinitionNode(
@@ -54,8 +53,10 @@ void main() {
       );
 
       // Should not throw when visiting
-      expect(() => visitor.visitInputObjectTypeDefinitionNode(inputNode),
-          returnsNormally);
+      expect(
+        () => visitor.visitInputObjectTypeDefinitionNode(inputNode),
+        returnsNormally,
+      );
     });
 
     test('should maintain immutable result', () {
@@ -67,12 +68,13 @@ void main() {
     });
 
     test('should handle document nodes', () {
-      final document = DocumentNode(definitions: [
-        InputObjectTypeDefinitionNode(
-          name: NameNode(value: 'TestInput'),
-          fields: [],
-        ),
-      ]);
+      const document = DocumentNode(
+        definitions: [
+          InputObjectTypeDefinitionNode(
+            name: NameNode(value: 'TestInput'),
+          ),
+        ],
+      );
 
       expect(visitor.canHandle(document), isTrue);
       expect(() => document.accept(visitor), returnsNormally);

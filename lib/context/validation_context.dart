@@ -1,12 +1,9 @@
 /// Context for collecting and managing validation errors and warnings
 /// during the generation process.
 class ValidationContext {
+  ValidationContext() : _errors = [], _warnings = [];
   final List<String> _errors;
   final List<String> _warnings;
-
-  ValidationContext()
-      : _errors = [],
-        _warnings = [];
 
   /// Gets a read-only view of errors
   List<String> get errors => List.unmodifiable(_errors);
@@ -34,7 +31,9 @@ class ValidationContext {
   void throwIfErrors() {
     if (hasErrors) {
       throw ValidationException(
-          'Validation failed with ${_errors.length} errors', _errors);
+        'Validation failed with ${_errors.length} errors',
+        _errors,
+      );
     }
   }
 
@@ -85,7 +84,7 @@ class ValidationContext {
 
     if (hasErrors) {
       buffer.writeln('Errors ($errorCount):');
-      for (int i = 0; i < _errors.length; i++) {
+      for (var i = 0; i < _errors.length; i++) {
         buffer.writeln('  ${i + 1}. ${_errors[i]}');
       }
     }
@@ -93,7 +92,7 @@ class ValidationContext {
     if (hasWarnings) {
       if (hasErrors) buffer.writeln();
       buffer.writeln('Warnings ($warningCount):');
-      for (int i = 0; i < _warnings.length; i++) {
+      for (var i = 0; i < _warnings.length; i++) {
         buffer.writeln('  ${i + 1}. ${_warnings[i]}');
       }
     }
@@ -108,10 +107,9 @@ class ValidationContext {
 
 /// Exception thrown when validation fails
 class ValidationException implements Exception {
+  ValidationException(this.message, this.errors);
   final String message;
   final List<String> errors;
-
-  ValidationException(this.message, this.errors);
 
   @override
   String toString() {

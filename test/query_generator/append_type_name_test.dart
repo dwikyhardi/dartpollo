@@ -6,18 +6,18 @@ import '../helpers.dart';
 void main() {
   group('On query generation', () {
     test(
-        'Appends typename',
-        () async => testGenerator(
-            appendTypeName: true,
-            namingScheme: 'pathedWithFields',
-            query: r'''
+      'Appends typename',
+      () => testGenerator(
+        appendTypeName: true,
+        namingScheme: 'pathedWithFields',
+        query: r'''
               query custom {
                 q {
                   e
                 }
               }
             ''',
-            schema: r'''
+        schema: r'''
             schema {
               query: QueryRoot
             }
@@ -30,49 +30,50 @@ void main() {
               e: String
             }
             ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'Custom$_QueryRoot'),
-                  operationName: r'custom',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot$_q'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'e'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(name: r'Custom$_QueryRoot$_q'),
-                              name: ClassPropertyName(name: r'q'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false)
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'Custom$_QueryRoot'),
+              operationName: r'custom',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot$_q'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'e'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
                   ],
-                  generateHelpers: false,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'Custom$_QueryRoot$_q'),
+                      name: const ClassPropertyName(name: r'q'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -115,14 +116,15 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$Custom$QueryRootToJson(this);
 }
 ''',
-            generateHelpers: false));
+      ),
+    );
 
     test(
-        'Do not appends typename if it exist',
-        () async => testGenerator(
-            appendTypeName: true,
-            namingScheme: 'pathedWithFields',
-            query: r'''
+      'Do not appends typename if it exist',
+      () => testGenerator(
+        appendTypeName: true,
+        namingScheme: 'pathedWithFields',
+        query: r'''
               query custom {
                 q {
                   e
@@ -131,7 +133,7 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
                 __typename
               }
             ''',
-            schema: r'''
+        schema: r'''
             schema {
               query: QueryRoot
             }
@@ -144,49 +146,50 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
               e: String
             }
             ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'Custom$_QueryRoot'),
-                  operationName: r'custom',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot$_q'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'e'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(name: r'Custom$_QueryRoot$_q'),
-                              name: ClassPropertyName(name: r'q'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false)
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'Custom$_QueryRoot'),
+              operationName: r'custom',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot$_q'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'e'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
                   ],
-                  generateHelpers: false,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'Custom$_QueryRoot$_q'),
+                      name: const ClassPropertyName(name: r'q'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -229,14 +232,15 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$Custom$QueryRootToJson(this);
 }
 ''',
-            generateHelpers: false));
+      ),
+    );
 
     test(
-        'Appends typename on fragment',
-        () async => testGenerator(
-            appendTypeName: true,
-            namingScheme: 'pathedWithFields',
-            query: r'''
+      'Appends typename on fragment',
+      () => testGenerator(
+        appendTypeName: true,
+        namingScheme: 'pathedWithFields',
+        query: r'''
               query custom {
                 q {
                   ...QueryResponse
@@ -247,7 +251,7 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
                 e
               }
             ''',
-            schema: r'''
+        schema: r'''
             schema {
               query: QueryRoot
             }
@@ -260,59 +264,62 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
               e: String
             }
             ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'Custom$_QueryRoot'),
-                  operationName: r'custom',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot$_q'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        mixins: [FragmentName(name: r'QueryResponseMixin')],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(name: r'Custom$_QueryRoot$_q'),
-                              name: ClassPropertyName(name: r'q'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    FragmentClassDefinition(
-                        name: FragmentName(name: r'QueryResponseMixin'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'e'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ])
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'Custom$_QueryRoot'),
+              operationName: r'custom',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot$_q'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
                   ],
-                  generateHelpers: false,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  mixins: [FragmentName(name: r'QueryResponseMixin')],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'Custom$_QueryRoot$_q'),
+                      name: const ClassPropertyName(name: r'q'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                FragmentClassDefinition(
+                  name: FragmentName(name: r'QueryResponseMixin'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'e'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -360,14 +367,15 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$Custom$QueryRootToJson(this);
 }
 ''',
-            generateHelpers: false));
+      ),
+    );
 
     test(
-        'Appends typename on union',
-        () async => testGenerator(
-            appendTypeName: true,
-            namingScheme: 'pathedWithFields',
-            query: r'''
+      'Appends typename on union',
+      () => testGenerator(
+        appendTypeName: true,
+        namingScheme: 'pathedWithFields',
+        query: r'''
               query custom {
                 q {
                   ... on TypeA { 
@@ -379,7 +387,7 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
                 }
               }
             ''',
-            schema: r'''
+        schema: r'''
             schema {
               query: QueryRoot
             }
@@ -398,84 +406,84 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
               b: Int
             }
             ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'Custom$_QueryRoot'),
-                  operationName: r'custom',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot$_q$_typeA'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'int'),
-                              name: ClassPropertyName(name: r'a'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        extension: ClassName(name: r'Custom$_QueryRoot$_q'),
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot$_q$_typeB'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'int'),
-                              name: ClassPropertyName(name: r'b'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        extension: ClassName(name: r'Custom$_QueryRoot$_q'),
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot$_q'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {
-                          r'TypeA':
-                              ClassName(name: r'Custom$_QueryRoot$_q$_TypeA'),
-                          r'TypeB':
-                              ClassName(name: r'Custom$_QueryRoot$_q$_TypeB')
-                        },
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'Custom$_QueryRoot'),
-                        properties: [
-                          ClassProperty(
-                              type: TypeName(name: r'Custom$_QueryRoot$_q'),
-                              name: ClassPropertyName(name: r'q'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'__typename'),
-                              annotations: [r'''JsonKey(name: '__typename')'''],
-                              isResolveType: true)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false)
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'Custom$_QueryRoot'),
+              operationName: r'custom',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot$_q$_typeA'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'int'),
+                      name: const ClassPropertyName(name: r'a'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
                   ],
-                  generateHelpers: false,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  extension: ClassName(name: r'Custom$_QueryRoot$_q'),
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot$_q$_typeB'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'int'),
+                      name: const ClassPropertyName(name: r'b'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  extension: ClassName(name: r'Custom$_QueryRoot$_q'),
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot$_q'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  factoryPossibilities: {
+                    r'TypeA': ClassName(name: r'Custom$_QueryRoot$_q$_TypeA'),
+                    r'TypeB': ClassName(name: r'Custom$_QueryRoot$_q$_TypeB'),
+                  },
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'Custom$_QueryRoot'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'Custom$_QueryRoot$_q'),
+                      name: const ClassPropertyName(name: r'q'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -571,11 +579,12 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$Custom$QueryRootToJson(this);
 }
 ''',
-            generateHelpers: false));
+      ),
+    );
 
     test(
       'Appends typename to common fragments',
-      () async => testGenerator(
+      () => testGenerator(
         appendTypeName: true,
         query: r'''
           query custom {
@@ -597,59 +606,62 @@ class Custom$QueryRoot extends JsonSerializable with EquatableMixin {
             e: String
           }
         ''',
-        libraryDefinition:
-            LibraryDefinition(basename: r'query.graphql', queries: [
-          QueryDefinition(
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
               name: QueryName(name: r'Custom$_QueryRoot'),
               operationName: r'custom',
               classes: [
                 ClassDefinition(
-                    name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
-                    properties: [
-                      ClassProperty(
-                          type: TypeName(name: r'String'),
-                          name: ClassPropertyName(name: r'__typename'),
-                          annotations: [r'''JsonKey(name: '__typename')'''],
-                          isResolveType: true)
-                    ],
-                    mixins: [FragmentName(name: r'QueryResponseMixin')],
-                    factoryPossibilities: {},
-                    typeNameField: ClassPropertyName(name: r'__typename'),
-                    isInput: false),
+                  name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  mixins: [FragmentName(name: r'QueryResponseMixin')],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
                 ClassDefinition(
-                    name: ClassName(name: r'Custom$_QueryRoot'),
-                    properties: [
-                      ClassProperty(
-                          type: TypeName(
-                              name: r'Custom$_QueryRoot$_QueryResponse'),
-                          name: ClassPropertyName(name: r'q'),
-                          isResolveType: false),
-                      ClassProperty(
-                          type: TypeName(name: r'String'),
-                          name: ClassPropertyName(name: r'__typename'),
-                          annotations: [r'''JsonKey(name: '__typename')'''],
-                          isResolveType: true)
-                    ],
-                    factoryPossibilities: {},
-                    typeNameField: ClassPropertyName(name: r'__typename'),
-                    isInput: false),
+                  name: ClassName(name: r'Custom$_QueryRoot'),
+                  properties: [
+                    ClassProperty(
+                      type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
+                      name: const ClassPropertyName(name: r'q'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
                 FragmentClassDefinition(
-                    name: FragmentName(name: r'QueryResponseMixin'),
-                    properties: [
-                      ClassProperty(
-                          type: DartTypeName(name: r'String'),
-                          name: ClassPropertyName(name: r'e'),
-                          isResolveType: false),
-                      ClassProperty(
-                          type: TypeName(name: r'String'),
-                          name: ClassPropertyName(name: r'__typename'),
-                          annotations: [r'''JsonKey(name: '__typename')'''],
-                          isResolveType: true)
-                    ])
+                  name: FragmentName(name: r'QueryResponseMixin'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'e'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'__typename'),
+                      annotations: const [r'''JsonKey(name: '__typename')'''],
+                      isResolveType: true,
+                    ),
+                  ],
+                ),
               ],
               generateHelpers: true,
-              suffix: r'Query')
-        ]),
+            ),
+          ],
+        ),
         generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:dartpollo/dartpollo.dart';
@@ -784,7 +796,7 @@ class CustomQuery extends GraphQLQuery<Custom$QueryRoot, JsonSerializable> {
           fragment QueryResponse on QueryResponse {
             e
           }
-        '''
+        ''',
         },
         generateHelpers: true,
       ),

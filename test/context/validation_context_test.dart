@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:dartpollo/context/validation_context.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('ValidationContext', () {
@@ -47,11 +47,11 @@ void main() {
       });
 
       test('clearErrors removes all errors', () {
-        context.addError('Error 1');
-        context.addError('Error 2');
-        context.addWarning('Warning 1');
-
-        context.clearErrors();
+        context
+          ..addError('Error 1')
+          ..addError('Error 2')
+          ..addWarning('Warning 1')
+          ..clearErrors();
 
         expect(context.errors, isEmpty);
         expect(context.hasErrors, isFalse);
@@ -85,15 +85,17 @@ void main() {
         final warningsList = context.warnings;
 
         expect(
-            () => warningsList.add('Another warning'), throwsUnsupportedError);
+          () => warningsList.add('Another warning'),
+          throwsUnsupportedError,
+        );
       });
 
       test('clearWarnings removes all warnings', () {
-        context.addError('Error 1');
-        context.addWarning('Warning 1');
-        context.addWarning('Warning 2');
-
-        context.clearWarnings();
+        context
+          ..addError('Error 1')
+          ..addWarning('Warning 1')
+          ..addWarning('Warning 2')
+          ..clearWarnings();
 
         expect(context.warnings, isEmpty);
         expect(context.hasWarnings, isFalse);
@@ -162,33 +164,44 @@ void main() {
 
         expect(
           () => context.throwIfErrors(),
-          throwsA(isA<ValidationException>()
-              .having((e) => e.message, 'message',
-                  contains('Validation failed with 1 errors'))
-              .having((e) => e.errors, 'errors', contains('Test error'))),
+          throwsA(
+            isA<ValidationException>()
+                .having(
+                  (e) => e.message,
+                  'message',
+                  contains('Validation failed with 1 errors'),
+                )
+                .having((e) => e.errors, 'errors', contains('Test error')),
+          ),
         );
       });
 
       test('throwIfErrors includes all errors in exception', () {
-        context.addError('Error 1');
-        context.addError('Error 2');
+        context
+          ..addError('Error 1')
+          ..addError('Error 2');
 
         expect(
           () => context.throwIfErrors(),
-          throwsA(isA<ValidationException>().having(
-              (e) => e.errors, 'errors', equals(['Error 1', 'Error 2']))),
+          throwsA(
+            isA<ValidationException>().having(
+              (e) => e.errors,
+              'errors',
+              equals(['Error 1', 'Error 2']),
+            ),
+          ),
         );
       });
     });
 
     group('clear operations', () {
       test('clear removes all errors and warnings', () {
-        context.addError('Error 1');
-        context.addError('Error 2');
-        context.addWarning('Warning 1');
-        context.addWarning('Warning 2');
-
-        context.clear();
+        context
+          ..addError('Error 1')
+          ..addError('Error 2')
+          ..addWarning('Warning 1')
+          ..addWarning('Warning 2')
+          ..clear();
 
         expect(context.errors, isEmpty);
         expect(context.warnings, isEmpty);
@@ -198,14 +211,14 @@ void main() {
 
     group('merge operations', () {
       test('merge combines errors and warnings from another context', () {
-        final otherContext = ValidationContext();
-        otherContext.addError('Other error');
-        otherContext.addWarning('Other warning');
+        final otherContext = ValidationContext()
+          ..addError('Other error')
+          ..addWarning('Other warning');
 
-        context.addError('Original error');
-        context.addWarning('Original warning');
-
-        context.merge(otherContext);
+        context
+          ..addError('Original error')
+          ..addWarning('Original warning')
+          ..merge(otherContext);
 
         expect(context.errors, contains('Original error'));
         expect(context.errors, contains('Other error'));
@@ -217,9 +230,9 @@ void main() {
 
       test('merge with empty context does not change current context', () {
         final emptyContext = ValidationContext();
-        context.addError('Original error');
-
-        context.merge(emptyContext);
+        context
+          ..addError('Original error')
+          ..merge(emptyContext);
 
         expect(context.errorCount, equals(1));
         expect(context.warningCount, equals(0));
@@ -233,8 +246,9 @@ void main() {
       });
 
       test('getSummary returns formatted errors', () {
-        context.addError('Error 1');
-        context.addError('Error 2');
+        context
+          ..addError('Error 1')
+          ..addError('Error 2');
 
         final summary = context.getSummary();
         expect(summary, contains('Errors (2):'));
@@ -243,8 +257,9 @@ void main() {
       });
 
       test('getSummary returns formatted warnings', () {
-        context.addWarning('Warning 1');
-        context.addWarning('Warning 2');
+        context
+          ..addWarning('Warning 1')
+          ..addWarning('Warning 2');
 
         final summary = context.getSummary();
         expect(summary, contains('Warnings (2):'));
@@ -253,8 +268,9 @@ void main() {
       });
 
       test('getSummary returns both errors and warnings', () {
-        context.addError('Error 1');
-        context.addWarning('Warning 1');
+        context
+          ..addError('Error 1')
+          ..addWarning('Warning 1');
 
         final summary = context.getSummary();
         expect(summary, contains('Errors (1):'));

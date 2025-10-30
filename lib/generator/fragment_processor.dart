@@ -1,9 +1,12 @@
-import 'package:gql/ast.dart';
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/ephemeral_data.dart';
+import 'package:gql/ast.dart';
 
 /// Handles fragment processing logic including extraction and class generation.
 class FragmentProcessor {
+  /// Private constructor to prevent instantiation.
+  const FragmentProcessor._();
+
   /// Extracts fragments from a selection set recursively, including nested fragments.
   ///
   /// This method traverses the selection set and finds all fragment spreads,
@@ -25,25 +28,28 @@ class FragmentProcessor {
     });
 
     // Process inline fragments recursively
-    selectionSet.selections
-        .whereType<InlineFragmentNode>()
-        .forEach((selection) {
+    selectionSet.selections.whereType<InlineFragmentNode>().forEach((
+      selection,
+    ) {
       result.addAll(extractFragments(selection.selectionSet, fragmentsCommon));
     });
 
     // Process fragment spreads and their nested fragments
-    selectionSet.selections
-        .whereType<FragmentSpreadNode>()
-        .forEach((selection) {
-      final fragmentDefinitions = fragmentsCommon.where((fragmentDefinition) =>
-          fragmentDefinition.name.value == selection.name.value);
+    selectionSet.selections.whereType<FragmentSpreadNode>().forEach((
+      selection,
+    ) {
+      final fragmentDefinitions = fragmentsCommon.where(
+        (fragmentDefinition) =>
+            fragmentDefinition.name.value == selection.name.value,
+      );
 
       result.addAll(fragmentDefinitions);
 
       // Recursively extract fragments from the found fragment definitions
-      for (var fragmentDefinition in fragmentDefinitions) {
+      for (final fragmentDefinition in fragmentDefinitions) {
         result.addAll(
-            extractFragments(fragmentDefinition.selectionSet, fragmentsCommon));
+          extractFragments(fragmentDefinition.selectionSet, fragmentsCommon),
+        );
       }
     });
 
@@ -60,7 +66,7 @@ class FragmentProcessor {
   ) {
     final fragmentClasses = <FragmentClassDefinition>[];
 
-    for (var fragment in fragments) {
+    for (final fragment in fragments) {
       final fragmentClass = _processFragment(fragment, context);
       if (fragmentClass != null) {
         fragmentClasses.add(fragmentClass);
@@ -85,8 +91,7 @@ class FragmentProcessor {
     final placeholderProperties = <ClassProperty>[
       ClassProperty(
         type: DartTypeName(name: 'String'),
-        name: ClassPropertyName(name: '__placeholder'),
-        isResolveType: false,
+        name: const ClassPropertyName(name: '__placeholder'),
       ),
     ];
 

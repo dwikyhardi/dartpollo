@@ -1,3 +1,6 @@
+import 'package:dartpollo/dartpollo.dart' show GraphQLQuery;
+import 'package:dartpollo/schema/graphql_query.dart' show GraphQLQuery;
+import 'package:glob/glob.dart' show Glob;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:yaml/yaml.dart';
 
@@ -8,6 +11,22 @@ part 'schema_options.g.dart';
 /// This generator options, gathered from `build.yaml` file.
 @JsonSerializable(fieldRename: FieldRename.snake, anyMap: true)
 class GeneratorOptions {
+  /// Instantiate generator options.
+  GeneratorOptions({
+    this.generateHelpers = true,
+    this.generateQueries = true,
+    this.scalarMapping = const [],
+    this.fragmentsGlob,
+    this.convertEnumToString = false,
+    this.optimizeDocumentNodes = false,
+    this.schemaMapping = const [],
+    this.ignoreForFile = const [],
+  });
+
+  /// Build options from a JSON map.
+  factory GeneratorOptions.fromJson(Map<String, dynamic> json) =>
+      _$GeneratorOptionsFromJson(json);
+
   /// If instances of [GraphQLQuery] should be generated.
   @JsonKey(defaultValue: true)
   final bool generateHelpers;
@@ -40,22 +59,6 @@ class GeneratorOptions {
   /// and simplified helper functions.
   @JsonKey(defaultValue: false, name: 'optimize_document_nodes')
   final bool optimizeDocumentNodes;
-
-  /// Instantiate generator options.
-  GeneratorOptions({
-    this.generateHelpers = true,
-    this.generateQueries = true,
-    this.scalarMapping = const [],
-    this.fragmentsGlob,
-    this.convertEnumToString = false,
-    this.optimizeDocumentNodes = false,
-    this.schemaMapping = const [],
-    this.ignoreForFile = const [],
-  });
-
-  /// Build options from a JSON map.
-  factory GeneratorOptions.fromJson(Map<String, dynamic> json) =>
-      _$GeneratorOptionsFromJson(json);
 
   /// Convert this options instance to JSON.
   Map<String, dynamic> toJson() => _$GeneratorOptionsToJson(this);
@@ -91,13 +94,6 @@ class GeneratorOptions {
 /// Define a Dart type.
 @JsonSerializable()
 class DartType {
-  /// Dart type name.
-  final String? name;
-
-  /// Package imports related to this type.
-  @JsonKey(defaultValue: <String>[])
-  final List<String> imports;
-
   /// Instantiate a Dart type.
   const DartType({
     this.name,
@@ -116,9 +112,16 @@ class DartType {
         'imports': (json['imports'] as YamlList).map((s) => s).toList(),
       });
     } else {
-      throw 'Invalid YAML: $json';
+      throw FormatException('Invalid YAML: $json');
     }
   }
+
+  /// Dart type name.
+  final String? name;
+
+  /// Package imports related to this type.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> imports;
 
   /// Convert this Dart type instance to JSON.
   Map<String, dynamic> toJson() => _$DartTypeToJson(this);
@@ -127,16 +130,6 @@ class DartType {
 /// Maps a GraphQL scalar to a Dart type.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class ScalarMap {
-  /// The GraphQL type name.
-  @JsonKey(name: 'graphql_type')
-  final String? graphQLType;
-
-  /// The Dart type linked to this GraphQL type.
-  final DartType? dartType;
-
-  /// If custom parser would be used.
-  final String? customParserImport;
-
   /// Instatiates a scalar mapping.
   ScalarMap({
     this.graphQLType,
@@ -147,6 +140,16 @@ class ScalarMap {
   /// Build a scalar mapping from a JSON map.
   factory ScalarMap.fromJson(Map<String, dynamic> json) =>
       _$ScalarMapFromJson(json);
+
+  /// The GraphQL type name.
+  @JsonKey(name: 'graphql_type')
+  final String? graphQLType;
+
+  /// The Dart type linked to this GraphQL type.
+  final DartType? dartType;
+
+  /// If custom parser would be used.
+  final String? customParserImport;
 
   /// Convert this scalar mapping instance to JSON.
   Map<String, dynamic> toJson() => _$ScalarMapToJson(this);
@@ -171,6 +174,21 @@ enum NamingScheme {
 /// based on the queries_glob pattern and detected operation type.
 @JsonSerializable(fieldRename: FieldRename.snake)
 class SchemaMap {
+  /// Instantiates a schema mapping.
+  SchemaMap({
+    this.schema,
+    this.queriesGlob,
+    this.fragmentsGlob,
+    this.typeNameField = '__typename',
+    this.appendTypeName = false,
+    this.convertEnumToString = false,
+    this.namingScheme = NamingScheme.pathedWithTypes,
+  });
+
+  /// Build a schema mapping from a JSON map.
+  factory SchemaMap.fromJson(Map<String, dynamic> json) =>
+      _$SchemaMapFromJson(json);
+
   /// The GraphQL schema string.
   final String? schema;
 
@@ -202,21 +220,6 @@ class SchemaMap {
   /// use aliases.
   @JsonKey(unknownEnumValue: NamingScheme.pathedWithTypes)
   final NamingScheme? namingScheme;
-
-  /// Instantiates a schema mapping.
-  SchemaMap({
-    this.schema,
-    this.queriesGlob,
-    this.fragmentsGlob,
-    this.typeNameField = '__typename',
-    this.appendTypeName = false,
-    this.convertEnumToString = false,
-    this.namingScheme = NamingScheme.pathedWithTypes,
-  });
-
-  /// Build a schema mapping from a JSON map.
-  factory SchemaMap.fromJson(Map<String, dynamic> json) =>
-      _$SchemaMapFromJson(json);
 
   /// Convert this schema mapping instance to JSON.
   Map<String, dynamic> toJson() => _$SchemaMapToJson(this);

@@ -6,24 +6,23 @@ import 'package:recase/recase.dart';
 
 /// Define a Dart class parsed from GraphQL fragment.
 class FragmentClassDefinition extends Definition with DataPrinter {
+  /// Instantiate a fragment class definition.
+  FragmentClassDefinition({
+    required this.name,
+    required this.properties,
+  }) : assert(hasValue(name) && hasValue(properties)),
+       super(name: name);
   @override
   final FragmentName name;
 
   /// The properties (fields) of the class.
   final Iterable<ClassProperty> properties;
 
-  /// Instantiate a fragment class definition.
-  FragmentClassDefinition({
-    required this.name,
-    required this.properties,
-  })  : assert(hasValue(name) && hasValue(properties)),
-        super(name: name);
-
   @override
   Map<String, Object> get namedProps => {
-        'name': name,
-        'properties': properties,
-      };
+    'name': name,
+    'properties': properties,
+  };
 }
 
 /// Fragment name
@@ -38,8 +37,8 @@ class FragmentName extends Name with DataPrinter {
 
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   String normalize(String name) {

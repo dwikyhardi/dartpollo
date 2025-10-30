@@ -1,8 +1,8 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
 import 'package:dartpollo/context/generation_context.dart';
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/schema/schema_options.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('GenerationContext', () {
@@ -46,11 +46,10 @@ void main() {
       });
 
       test('creates context with optional fields', () {
-        final currentType = ObjectTypeDefinitionNode(
+        const currentType = ObjectTypeDefinitionNode(
           name: NameNode(value: 'User'),
-          fields: [],
         );
-        final currentFieldName = ClassPropertyName(name: 'name');
+        const currentFieldName = ClassPropertyName(name: 'name');
         final currentClassName = ClassName(name: 'UserClass');
 
         final context = GenerationContext(
@@ -99,7 +98,7 @@ void main() {
       test('creates new context with updated path', () {
         final newPath = [
           TypeName(name: 'Mutation'),
-          TypeName(name: 'CreateUser')
+          TypeName(name: 'CreateUser'),
         ];
         final newContext = originalContext.copyWith(path: newPath);
 
@@ -109,9 +108,8 @@ void main() {
       });
 
       test('creates new context with updated currentType', () {
-        final newType = ObjectTypeDefinitionNode(
+        const newType = ObjectTypeDefinitionNode(
           name: NameNode(value: 'Post'),
-          fields: [],
         );
         final newContext = originalContext.copyWith(currentType: newType);
 
@@ -125,8 +123,10 @@ void main() {
 
         expect(newContext.schemaMap, equals(originalContext.schemaMap));
         expect(newContext.path, equals(originalContext.path));
-        expect(newContext.generatedClasses,
-            equals(originalContext.generatedClasses));
+        expect(
+          newContext.generatedClasses,
+          equals(originalContext.generatedClasses),
+        );
         expect(newContext, isNot(same(originalContext)));
       });
     });
@@ -159,10 +159,13 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<GenerationContextValidationException>().having(
+          throwsA(
+            isA<GenerationContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('SchemaMap output cannot be null or empty'))),
+              contains('SchemaMap output cannot be null or empty'),
+            ),
+          ),
         );
       });
 
@@ -180,10 +183,13 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<GenerationContextValidationException>().having(
+          throwsA(
+            isA<GenerationContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('Path cannot contain empty type names'))),
+              contains('Path cannot contain empty type names'),
+            ),
+          ),
         );
       });
 
@@ -191,7 +197,6 @@ void main() {
         final context = GenerationContext(
           schemaMap: schemaMap,
           path: path,
-          currentClassName: null,
           // null is allowed
           generatedClasses: generatedClasses,
           inputsClasses: inputsClasses,
@@ -207,7 +212,6 @@ void main() {
         final context = GenerationContext(
           schemaMap: schemaMap,
           path: path,
-          currentFieldName: null,
           // null is allowed
           generatedClasses: generatedClasses,
           inputsClasses: inputsClasses,
@@ -221,8 +225,12 @@ void main() {
 
       test('throws exception for duplicate class names', () {
         final duplicateClasses = [
-          ClassDefinition(name: ClassName(name: 'User'), properties: []),
-          ClassDefinition(name: ClassName(name: 'User'), properties: []),
+          ClassDefinition(
+            name: ClassName(name: 'User'),
+          ),
+          ClassDefinition(
+            name: ClassName(name: 'User'),
+          ),
         ];
         final context = GenerationContext(
           schemaMap: schemaMap,
@@ -236,21 +244,26 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<GenerationContextValidationException>().having(
+          throwsA(
+            isA<GenerationContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('Duplicate class name found: User'))),
+              contains('Duplicate class name found: User'),
+            ),
+          ),
         );
       });
 
       test('throws exception for duplicate input class names', () {
         final duplicateInputs = [
           QueryInput(
-              name: QueryInputName(name: 'CreateUserInput'),
-              type: TypeName(name: 'String')),
+            name: const QueryInputName(name: 'CreateUserInput'),
+            type: TypeName(name: 'String'),
+          ),
           QueryInput(
-              name: QueryInputName(name: 'CreateUserInput'),
-              type: TypeName(name: 'String')),
+            name: const QueryInputName(name: 'CreateUserInput'),
+            type: TypeName(name: 'String'),
+          ),
         ];
         final context = GenerationContext(
           schemaMap: schemaMap,
@@ -264,26 +277,31 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<GenerationContextValidationException>().having(
+          throwsA(
+            isA<GenerationContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('Duplicate input class name found: CreateUserInput'))),
+              contains('Duplicate input class name found: CreateUserInput'),
+            ),
+          ),
         );
       });
 
       test('throws exception for duplicate fragment names', () {
         final duplicateFragments = [
-          FragmentDefinitionNode(
+          const FragmentDefinitionNode(
             name: NameNode(value: 'UserFragment'),
             typeCondition: TypeConditionNode(
-                on: NamedTypeNode(name: NameNode(value: 'User'))),
-            selectionSet: SelectionSetNode(selections: []),
+              on: NamedTypeNode(name: NameNode(value: 'User')),
+            ),
+            selectionSet: SelectionSetNode(),
           ),
-          FragmentDefinitionNode(
+          const FragmentDefinitionNode(
             name: NameNode(value: 'UserFragment'),
             typeCondition: TypeConditionNode(
-                on: NamedTypeNode(name: NameNode(value: 'User'))),
-            selectionSet: SelectionSetNode(selections: []),
+              on: NamedTypeNode(name: NameNode(value: 'User')),
+            ),
+            selectionSet: SelectionSetNode(),
           ),
         ];
         final context = GenerationContext(
@@ -298,10 +316,13 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<GenerationContextValidationException>().having(
+          throwsA(
+            isA<GenerationContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('Duplicate fragment name found: UserFragment'))),
+              contains('Duplicate fragment name found: UserFragment'),
+            ),
+          ),
         );
       });
     });
@@ -322,9 +343,8 @@ void main() {
       });
 
       test('withCurrentType creates new context with updated type', () {
-        final newType = ObjectTypeDefinitionNode(
+        const newType = ObjectTypeDefinitionNode(
           name: NameNode(value: 'Post'),
-          fields: [],
         );
         final newContext = context.withCurrentType(newType);
 
@@ -352,8 +372,9 @@ void main() {
       });
 
       test('withGeneratedClass creates new context with added class', () {
-        final newClass =
-            ClassDefinition(name: ClassName(name: 'Post'), properties: []);
+        final newClass = ClassDefinition(
+          name: ClassName(name: 'Post'),
+        );
         final newContext = context.withGeneratedClass(newClass);
 
         expect(newContext.generatedClasses, equals([newClass]));
@@ -363,8 +384,9 @@ void main() {
 
       test('withInputClass creates new context with added input', () {
         final newInput = QueryInput(
-            name: QueryInputName(name: 'CreatePostInput'),
-            type: TypeName(name: 'String'));
+          name: const QueryInputName(name: 'CreatePostInput'),
+          type: TypeName(name: 'String'),
+        );
         final newContext = context.withInputClass(newInput);
 
         expect(newContext.inputsClasses, equals([newInput]));
@@ -381,15 +403,17 @@ void main() {
         expect(newContext, isNot(same(context)));
       });
 
-      test('withUsedInputObject creates new context with added input object',
-          () {
-        final inputObjectName = ClassName(name: 'CreateUserInput');
-        final newContext = context.withUsedInputObject(inputObjectName);
+      test(
+        'withUsedInputObject creates new context with added input object',
+        () {
+          final inputObjectName = ClassName(name: 'CreateUserInput');
+          final newContext = context.withUsedInputObject(inputObjectName);
 
-        expect(newContext.usedInputObjects, contains(inputObjectName));
-        expect(newContext.schemaMap, equals(context.schemaMap));
-        expect(newContext, isNot(same(context)));
-      });
+          expect(newContext.usedInputObjects, contains(inputObjectName));
+          expect(newContext.schemaMap, equals(context.schemaMap));
+          expect(newContext, isNot(same(context)));
+        },
+      );
     });
 
     group('immutability', () {
@@ -422,8 +446,9 @@ void main() {
           usedInputObjects: <ClassName>{},
         );
 
-        final newClass =
-            ClassDefinition(name: ClassName(name: 'Post'), properties: []);
+        final newClass = ClassDefinition(
+          name: ClassName(name: 'Post'),
+        );
         final newContext = originalContext.withGeneratedClass(newClass);
 
         expect(originalContext.generatedClasses, isEmpty);
@@ -439,8 +464,10 @@ void main() {
 
       expect(exception.message, equals(message));
       expect(exception.toString(), contains(message));
-      expect(exception.toString(),
-          contains('GenerationContextValidationException'));
+      expect(
+        exception.toString(),
+        contains('GenerationContextValidationException'),
+      );
     });
   });
 }

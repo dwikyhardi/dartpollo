@@ -6,10 +6,10 @@ import '../helpers.dart';
 void main() {
   group('On query generation', () {
     test(
-        'A simple query yields simple classes',
-        () async => testGenerator(
-            query: 'query some_query { s, i }',
-            schema: r'''
+      'A simple query yields simple classes',
+      () => testGenerator(
+        query: 'query some_query { s, i }',
+        schema: r'''
         schema {
           query: SomeObject
         }
@@ -19,32 +19,32 @@ void main() {
           i: Int
         }
       ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'SomeQuery$_SomeObject'),
-                  operationName: r'some_query',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(name: r'SomeQuery$_SomeObject'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r's'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: DartTypeName(name: r'int'),
-                              name: ClassPropertyName(name: r'i'),
-                              isResolveType: false)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false)
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'SomeQuery$_SomeObject'),
+              operationName: r'some_query',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(name: r'SomeQuery$_SomeObject'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r's'),
+                    ),
+                    ClassProperty(
+                      type: DartTypeName(name: r'int'),
+                      name: const ClassPropertyName(name: r'i'),
+                    ),
                   ],
-                  generateHelpers: false,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -68,12 +68,13 @@ class SomeQuery$SomeObject extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$SomeQuery$SomeObjectToJson(this);
 }
 ''',
-            generateHelpers: false));
+      ),
+    );
 
     test(
-        'The selection from query can nest',
-        () async => testGenerator(
-            query: r'''
+      'The selection from query can nest',
+      () => testGenerator(
+        query: r'''
             query some_query {
           s
           o {
@@ -84,7 +85,7 @@ class SomeQuery$SomeObject extends JsonSerializable with EquatableMixin {
           }
         }
             ''',
-            schema: r'''
+        schema: r'''
             schema {
               query: Result
             }
@@ -103,65 +104,63 @@ class SomeQuery$SomeObject extends JsonSerializable with EquatableMixin {
               str: String
             }
       ''',
-            libraryDefinition:
-                LibraryDefinition(basename: r'query.graphql', queries: [
-              QueryDefinition(
-                  name: QueryName(name: r'SomeQuery$_Result'),
-                  operationName: r'some_query',
-                  classes: [
-                    ClassDefinition(
-                        name: ClassName(
-                            name:
-                                r'SomeQuery$_Result$_SomeObject$_AnotherObject'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'str'),
-                              isResolveType: false)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'SomeQuery$_Result$_SomeObject'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r'st'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: ListOfTypeName(
-                                  typeName: TypeName(
-                                      name:
-                                          r'SomeQuery$_Result$_SomeObject$_AnotherObject'),
-                                  isNonNull: false),
-                              name: ClassPropertyName(name: r'ob'),
-                              isResolveType: false)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false),
-                    ClassDefinition(
-                        name: ClassName(name: r'SomeQuery$_Result'),
-                        properties: [
-                          ClassProperty(
-                              type: DartTypeName(name: r'String'),
-                              name: ClassPropertyName(name: r's'),
-                              isResolveType: false),
-                          ClassProperty(
-                              type: TypeName(
-                                  name: r'SomeQuery$_Result$_SomeObject'),
-                              name: ClassPropertyName(name: r'o'),
-                              isResolveType: false)
-                        ],
-                        factoryPossibilities: {},
-                        typeNameField: ClassPropertyName(name: r'__typename'),
-                        isInput: false)
+        libraryDefinition: LibraryDefinition(
+          basename: r'query.graphql',
+          queries: [
+            QueryDefinition(
+              name: QueryName(name: r'SomeQuery$_Result'),
+              operationName: r'some_query',
+              classes: [
+                ClassDefinition(
+                  name: ClassName(
+                    name: r'SomeQuery$_Result$_SomeObject$_AnotherObject',
+                  ),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'str'),
+                    ),
                   ],
-                  generateHelpers: false,
-                  suffix: r'Query')
-            ]),
-            generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'SomeQuery$_Result$_SomeObject'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r'st'),
+                    ),
+                    ClassProperty(
+                      type: ListOfTypeName(
+                        typeName: TypeName(
+                          name: r'SomeQuery$_Result$_SomeObject$_AnotherObject',
+                        ),
+                        isNonNull: false,
+                      ),
+                      name: const ClassPropertyName(name: r'ob'),
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+                ClassDefinition(
+                  name: ClassName(name: r'SomeQuery$_Result'),
+                  properties: [
+                    ClassProperty(
+                      type: DartTypeName(name: r'String'),
+                      name: const ClassPropertyName(name: r's'),
+                    ),
+                    ClassProperty(
+                      type: TypeName(name: r'SomeQuery$_Result$_SomeObject'),
+                      name: const ClassPropertyName(name: r'o'),
+                    ),
+                  ],
+                  typeNameField: const ClassPropertyName(name: r'__typename'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        generatedFile: r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -220,6 +219,7 @@ class SomeQuery$Result extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$SomeQuery$ResultToJson(this);
 }
 ''',
-            generateHelpers: false));
+      ),
+    );
   });
 }

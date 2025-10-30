@@ -1,15 +1,15 @@
-import 'package:dartpollo/builder.dart';
-import 'package:dartpollo/generator/data/data.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
+import 'package:collection/collection.dart';
+import 'package:dartpollo/builder.dart';
+import 'package:dartpollo/generator/data/data.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
-import 'package:collection/collection.dart';
 
-final bool Function(Iterable, Iterable) listEquals =
+final bool Function(Iterable<dynamic>, Iterable<dynamic>) listEquals =
     const DeepCollectionEquality.unordered().equals;
 
-Future testGenerator({
+Future<TestBuilderResult> testGenerator({
   required String query,
   required LibraryDefinition libraryDefinition,
   required String generatedFile,
@@ -21,35 +21,37 @@ Future testGenerator({
   Map<String, dynamic> builderOptionsMap = const {},
   Map<String, Object> sourceAssetsMap = const {},
   Map<String, Object> outputsMap = const {},
-}) async {
+}) {
   Logger.root.level = Level.INFO;
 
-  final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-    if (!generateHelpers) 'generate_helpers': false,
-    if (!generateQueries) 'generate_queries': false,
-    'schema_mapping': [
-      {
-        'schema': 'api.schema.graphql',
-        'queries_glob': 'queries/**.graphql',
-        'naming_scheme': namingScheme,
-        'append_type_name': appendTypeName,
-      }
-    ],
-    ...builderOptionsMap,
-  }));
+  final anotherBuilder =
+      graphQLQueryBuilder(
+          BuilderOptions({
+            if (!generateHelpers) 'generate_helpers': false,
+            if (!generateQueries) 'generate_queries': false,
+            'schema_mapping': [
+              {
+                'schema': 'api.schema.graphql',
+                'queries_glob': 'queries/**.graphql',
+                'naming_scheme': namingScheme,
+                'append_type_name': appendTypeName,
+              },
+            ],
+            ...builderOptionsMap,
+          }),
+        )
+        ..onBuild = expectAsync1((definition) {
+          log.fine(definition);
+          // Create a copy of the definition with schemaMap set to null for comparison
+          final definitionForComparison = LibraryDefinition(
+            basename: definition.basename,
+            queries: definition.queries,
+            customImports: definition.customImports,
+          );
+          expect(definitionForComparison, libraryDefinition);
+        });
 
-  anotherBuilder.onBuild = expectAsync1((definition) {
-    log.fine(definition);
-    // Create a copy of the definition with schemaMap set to null for comparison
-    final definitionForComparison = LibraryDefinition(
-      basename: definition.basename,
-      queries: definition.queries,
-      customImports: definition.customImports,
-    );
-    expect(definitionForComparison, libraryDefinition);
-  }, count: 1);
-
-  return await testBuilder(
+  return testBuilder(
     anotherBuilder,
     {
       'a|api.schema.graphql': schema,
@@ -89,25 +91,27 @@ Future testGenerator({
 //   return [...imports, ...otherLines].join('\n');
 // }
 
-Future testNaming({
+Future<TestBuilderResult> testNaming({
   required String query,
   required String schema,
   required List<String> expectedNames,
   required String namingScheme,
   bool shouldFail = false,
 }) {
-  final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-    'generate_helpers': false,
-    'generate_queries': false,
-    'schema_mapping': [
-      {
-        'schema': 'api.schema.graphql',
-        'queries_glob': 'queries/**.graphql',
-        'output': 'lib/query.dart',
-        'naming_scheme': namingScheme,
-      }
-    ],
-  }));
+  final anotherBuilder = graphQLQueryBuilder(
+    BuilderOptions({
+      'generate_helpers': false,
+      'generate_queries': false,
+      'schema_mapping': [
+        {
+          'schema': 'api.schema.graphql',
+          'queries_glob': 'queries/**.graphql',
+          'output': 'lib/query.dart',
+          'naming_scheme': namingScheme,
+        },
+      ],
+    }),
+  );
 
   if (!shouldFail) {
     anotherBuilder.onBuild = expectAsync1((definition) {
@@ -116,7 +120,7 @@ Future testNaming({
           .toSet();
       log.fine(names);
       expect(names.toSet(), equals(expectedNames.toSet()));
-    }, count: 1);
+    });
   }
 
   return testBuilder(

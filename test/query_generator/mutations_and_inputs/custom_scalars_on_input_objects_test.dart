@@ -7,7 +7,7 @@ void main() {
   group('On input objects', () {
     test(
       'Custom scalars should be coerced',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           scalar MyUuid
@@ -40,7 +40,7 @@ void main() {
               'dart_type': {
                 'name': 'MyUuid',
                 'imports': ['package:uuid/uuid.dart'],
-              }
+              },
             },
           ],
         },
@@ -57,81 +57,87 @@ mutation custom($input: Input!, $previousId: MyUuid, $listIds: [MyUuid]) {
 }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_MutationRoot'),
       operationName: r'custom',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Custom$_MutationRoot$_MutationResponse'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_MutationRoot$_MutationResponse'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_MutationRoot'),
-            properties: [
-              ClassProperty(
-                  type:
-                      TypeName(name: r'Custom$_MutationRoot$_MutationResponse'),
-                  name: ClassPropertyName(name: r'mut'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_MutationRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_MutationRoot$_MutationResponse'),
+              name: const ClassPropertyName(name: r'mut'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Input'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'MyUuid', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  annotations: [
-                    r'JsonKey(fromJson: fromGraphQLMyUuidToDartMyUuid, toJson: fromDartMyUuidToGraphQLMyUuid)'
-                  ],
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'MyUuid'),
-                  name: ClassPropertyName(name: r'idNullabe'),
-                  annotations: [
-                    r'JsonKey(fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable, toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)'
-                  ],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true)
+          name: ClassName(name: r'Input'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'MyUuid', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+              annotations: const [
+                r'JsonKey(fromJson: fromGraphQLMyUuidToDartMyUuid, toJson: fromDartMyUuidToGraphQLMyUuid)',
+              ],
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'MyUuid'),
+              name: const ClassPropertyName(name: r'idNullabe'),
+              annotations: const [
+                r'JsonKey(fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable, toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)',
+              ],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
       ],
       inputs: [
         QueryInput(
-            type: TypeName(name: r'Input', isNonNull: true),
-            name: QueryInputName(name: r'input')),
+          type: TypeName(name: r'Input', isNonNull: true),
+          name: const QueryInputName(name: r'input'),
+        ),
         QueryInput(
-            type: DartTypeName(name: r'MyUuid'),
-            name: QueryInputName(name: r'previousId'),
-            annotations: [
-              r'JsonKey(fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable, toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)'
-            ]),
+          type: DartTypeName(name: r'MyUuid'),
+          name: const QueryInputName(name: r'previousId'),
+          annotations: const [
+            r'JsonKey(fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable, toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)',
+          ],
+        ),
         QueryInput(
-            type: ListOfTypeName(
-                typeName: DartTypeName(name: r'MyUuid'), isNonNull: false),
-            name: QueryInputName(name: r'listIds'),
-            annotations: [
-              r'JsonKey(fromJson: fromGraphQLListNullableMyUuidNullableToDartListNullableMyUuidNullable, toJson: fromDartListNullableMyUuidNullableToGraphQLListNullableMyUuidNullable)'
-            ])
+          type: ListOfTypeName(
+            typeName: DartTypeName(name: r'MyUuid'),
+            isNonNull: false,
+          ),
+          name: const QueryInputName(name: r'listIds'),
+          annotations: const [
+            r'JsonKey(fromJson: fromGraphQLListNullableMyUuidNullableToDartListNullableMyUuidNullable, toJson: fromDartListNullableMyUuidNullableToGraphQLListNullableMyUuidNullable)',
+          ],
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Mutation')
-], customImports: [
-  r'package:uuid/uuid.dart',
-  r'package:example/src/custom_parser.dart'
-]);
+      suffix: r'Mutation',
+    ),
+  ],
+  customImports: const [
+    r'package:uuid/uuid.dart',
+    r'package:example/src/custom_parser.dart',
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

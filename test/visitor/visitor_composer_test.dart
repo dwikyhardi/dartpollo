@@ -1,15 +1,15 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
-import 'package:dartpollo/visitor/visitor_composer.dart';
-import 'package:dartpollo/visitor/enum_visitor.dart';
-import 'package:dartpollo/visitor/class_visitor.dart';
-import 'package:dartpollo/visitor/input_visitor.dart';
-import 'package:dartpollo/visitor/fragment_visitor.dart';
-import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
-import 'package:dartpollo/schema/schema_options.dart';
-import 'package:dartpollo/generator/data/enum_definition.dart';
 import 'package:dartpollo/generator/data/class_definition.dart';
+import 'package:dartpollo/generator/data/enum_definition.dart';
 import 'package:dartpollo/generator/data/fragment_class_definition.dart';
+import 'package:dartpollo/schema/schema_options.dart';
+import 'package:dartpollo/visitor/class_visitor.dart';
+import 'package:dartpollo/visitor/enum_visitor.dart';
+import 'package:dartpollo/visitor/fragment_visitor.dart';
+import 'package:dartpollo/visitor/input_visitor.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
+import 'package:dartpollo/visitor/visitor_composer.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('VisitorComposer', () {
@@ -24,9 +24,8 @@ void main() {
       final options = GeneratorOptions();
 
       // Add test type for fragment visitor
-      final testType = ObjectTypeDefinitionNode(
+      const testType = ObjectTypeDefinitionNode(
         name: NameNode(value: 'TestType'),
-        fields: [],
       );
       typeDefinitionVisitor.types['TestType'] = testType;
 
@@ -61,28 +60,29 @@ void main() {
     });
 
     test('should visit document with all applicable visitors', () {
-      final document = DocumentNode(definitions: [
-        EnumTypeDefinitionNode(
-          name: NameNode(value: 'TestEnum'),
-          values: [
-            EnumValueDefinitionNode(name: NameNode(value: 'VALUE1')),
-          ],
-        ),
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'TestObject'),
-          fields: [],
-        ),
-        InputObjectTypeDefinitionNode(
-          name: NameNode(value: 'TestInput'),
-          fields: [],
-        ),
-        FragmentDefinitionNode(
-          name: NameNode(value: 'TestFragment'),
-          typeCondition: TypeConditionNode(
-              on: NamedTypeNode(name: NameNode(value: 'TestType'))),
-          selectionSet: SelectionSetNode(selections: []),
-        ),
-      ]);
+      const document = DocumentNode(
+        definitions: [
+          EnumTypeDefinitionNode(
+            name: NameNode(value: 'TestEnum'),
+            values: [
+              EnumValueDefinitionNode(name: NameNode(value: 'VALUE1')),
+            ],
+          ),
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'TestObject'),
+          ),
+          InputObjectTypeDefinitionNode(
+            name: NameNode(value: 'TestInput'),
+          ),
+          FragmentDefinitionNode(
+            name: NameNode(value: 'TestFragment'),
+            typeCondition: TypeConditionNode(
+              on: NamedTypeNode(name: NameNode(value: 'TestType')),
+            ),
+            selectionSet: SelectionSetNode(),
+          ),
+        ],
+      );
 
       // Should not throw when visiting
       expect(() => composer.visitDocument(document), returnsNormally);
@@ -90,12 +90,15 @@ void main() {
 
     test('should get result from specific visitor type', () {
       final enumResult = composer.getResult<List<EnumDefinition>>(EnumVisitor);
-      final classResult =
-          composer.getResult<List<ClassDefinition>>(ClassVisitor);
-      final inputResult =
-          composer.getResult<List<ClassDefinition>>(InputVisitor);
-      final fragmentResult =
-          composer.getResult<List<FragmentClassDefinition>>(FragmentVisitor);
+      final classResult = composer.getResult<List<ClassDefinition>>(
+        ClassVisitor,
+      );
+      final inputResult = composer.getResult<List<ClassDefinition>>(
+        InputVisitor,
+      );
+      final fragmentResult = composer.getResult<List<FragmentClassDefinition>>(
+        FragmentVisitor,
+      );
 
       expect(enumResult, isA<List<EnumDefinition>>());
       expect(classResult, isA<List<ClassDefinition>>());
@@ -108,27 +111,31 @@ void main() {
 
       expect(
         () => emptyComposer.getResult<List<EnumDefinition>>(EnumVisitor),
-        throwsA(isA<ArgumentError>().having(
-          (e) => e.message,
-          'message',
-          contains('Visitor of type EnumVisitor not found'),
-        )),
+        throwsA(
+          isA<ArgumentError>().having(
+            (e) => e.message,
+            'message',
+            contains('Visitor of type EnumVisitor not found'),
+          ),
+        ),
       );
     });
 
     test('should throw when result type is incorrect', () {
       expect(
         () => composer.getResult<String>(EnumVisitor),
-        throwsA(isA<ArgumentError>().having(
-          (e) => e.message,
-          'message',
-          contains('Visitor result is not of expected type String'),
-        )),
+        throwsA(
+          isA<ArgumentError>().having(
+            (e) => e.message,
+            'message',
+            contains('Visitor result is not of expected type String'),
+          ),
+        ),
       );
     });
 
     test('should only visit with visitors that can handle the document', () {
-      final document = DocumentNode(definitions: []);
+      const document = DocumentNode();
 
       // All visitors should be able to handle DocumentNode
       expect(() => composer.visitDocument(document), returnsNormally);
@@ -136,16 +143,18 @@ void main() {
 
     test('should handle empty visitor list', () {
       final emptyComposer = VisitorComposer([]);
-      final document = DocumentNode(definitions: []);
+      const document = DocumentNode();
 
       expect(() => emptyComposer.visitDocument(document), returnsNormally);
     });
 
     test('should handle visitors that cannot handle the document', () {
       // Create a document with a node type that none of our visitors handle
-      final document = DocumentNode(definitions: [
-        SchemaDefinitionNode(operationTypes: []),
-      ]);
+      const document = DocumentNode(
+        definitions: [
+          SchemaDefinitionNode(),
+        ],
+      );
 
       // Should still work, just won't visit with any visitors
       expect(() => composer.visitDocument(document), returnsNormally);

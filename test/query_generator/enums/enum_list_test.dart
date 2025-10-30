@@ -8,7 +8,7 @@ void main() {
   group('On enum list', () {
     test(
       'Enums as lists are generated correctly',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         libraryDefinition: libraryDefinition,
         generatedFile: generatedFile,
@@ -42,45 +42,49 @@ query custom {
 }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_QueryRoot'),
       operationName: r'custom',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'A')),
-          EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'MyEnum'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'A')),
+            EnumValueDefinition(name: EnumValueName(name: r'B')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(name: r'MyEnum'), isNonNull: false),
-                  name: ClassPropertyName(name: r'le'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'Custom$_QueryRoot$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(name: r'MyEnum'),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'le'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
-                  name: ClassPropertyName(name: r'q'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Custom$_QueryRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_QueryRoot$_QueryResponse'),
+              name: const ClassPropertyName(name: r'q'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

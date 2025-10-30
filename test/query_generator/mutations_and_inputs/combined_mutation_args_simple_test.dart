@@ -1,7 +1,8 @@
-import 'package:dartpollo/builder.dart';
-import 'package:build/build.dart';
 import 'dart:developer' as developer;
+
+import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
+import 'package:dartpollo/builder.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -9,36 +10,44 @@ void main() {
     test(
       'Should generate combined mutation class when combine_mutation_args is true',
       () async {
-        final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'combine_mutation_args': true,
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'combine_mutation_args': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'api.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/query.graphql.dart',
+                      'naming_scheme': 'pathedWithTypes',
+                    },
+                  ],
+                }),
+              )
+              // Test that the builder processes the mutation correctly
+              ..onBuild = expectAsync1((definition) {
+                expect(definition.queries.length, equals(1));
+                final query = definition.queries.first;
+                expect(query.suffix, equals('Mutation'));
+                expect(query.operationName, equals('CreateUser'));
 
-        // Test that the builder processes the mutation correctly
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          expect(definition.queries.length, equals(1));
-          final query = definition.queries.first;
-          expect(query.suffix, equals('Mutation'));
-          expect(query.operationName, equals('CreateUser'));
+                // Check that no Arguments class is generated (combined approach)
+                final classNames = query.classes
+                    .map((c) => c.name.namePrintable)
+                    .toList();
+                expect(
+                  classNames.any((name) => name.contains('Arguments')),
+                  isFalse,
+                );
 
-          // Check that no Arguments class is generated (combined approach)
-          final classNames =
-              query.classes.map((c) => c.name.namePrintable).toList();
-          expect(classNames.any((name) => name.contains('Arguments')), isFalse);
-
-          // Check that inputs are present (should be used for constructor parameters)
-          expect(query.inputs.length, equals(2));
-          expect(query.inputs.map((i) => i.name.name),
-              containsAll(['name', 'email']));
-        }, count: 1);
+                // Check that inputs are present (should be used for constructor parameters)
+                expect(query.inputs.length, equals(2));
+                expect(
+                  query.inputs.map((i) => i.name.name),
+                  containsAll(['name', 'email']),
+                );
+              });
 
         await testBuilder(
           anotherBuilder,
@@ -57,43 +66,51 @@ void main() {
     test(
       'Should generate separate Arguments class when combine_mutation_args is false',
       () async {
-        final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'combine_mutation_args': false,
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'combine_mutation_args': false,
+                  'schema_mapping': [
+                    {
+                      'schema': 'api.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/query.graphql.dart',
+                      'naming_scheme': 'pathedWithTypes',
+                    },
+                  ],
+                }),
+              )
+              // Test that the builder processes the mutation correctly
+              ..onBuild = expectAsync1((definition) {
+                expect(definition.queries.length, equals(1));
+                final query = definition.queries.first;
+                expect(query.suffix, equals('Mutation'));
+                expect(query.operationName, equals('CreateUser'));
 
-        // Test that the builder processes the mutation correctly
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          expect(definition.queries.length, equals(1));
-          final query = definition.queries.first;
-          expect(query.suffix, equals('Mutation'));
-          expect(query.operationName, equals('CreateUser'));
+                // Debug: Print all class names
+                final classNames = query.classes
+                    .map((c) => c.name.namePrintable)
+                    .toList();
+                developer.log(
+                  '[DEBUG_LOG] Generated classes when combine_mutation_args=false: $classNames',
+                );
 
-          // Debug: Print all class names
-          final classNames =
-              query.classes.map((c) => c.name.namePrintable).toList();
-          developer.log(
-              '[DEBUG_LOG] Generated classes when combine_mutation_args=false: $classNames');
+                // Check that the traditional approach generates the expected classes
+                // (Input classes and response classes, but no Arguments classes)
+                expect(classNames.any((name) => name.contains('User')), isTrue);
+                expect(
+                  classNames.any((name) => name.contains('MutationRoot')),
+                  isTrue,
+                );
 
-          // Check that the traditional approach generates the expected classes
-          // (Input classes and response classes, but no Arguments classes)
-          expect(classNames.any((name) => name.contains('User')), isTrue);
-          expect(
-              classNames.any((name) => name.contains('MutationRoot')), isTrue);
-
-          // Check that inputs are present
-          expect(query.inputs.length, equals(2));
-          expect(query.inputs.map((i) => i.name.name),
-              containsAll(['name', 'email']));
-        }, count: 1);
+                // Check that inputs are present
+                expect(query.inputs.length, equals(2));
+                expect(
+                  query.inputs.map((i) => i.name.name),
+                  containsAll(['name', 'email']),
+                );
+              });
 
         await testBuilder(
           anotherBuilder,
@@ -112,28 +129,30 @@ void main() {
     test(
       'Should handle mutations with no arguments when combine_mutation_args is true',
       () async {
-        final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'combine_mutation_args': true,
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'combine_mutation_args': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'api.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/query.graphql.dart',
+                      'naming_scheme': 'pathedWithTypes',
+                    },
+                  ],
+                }),
+              )
+              ..onBuild = expectAsync1((definition) {
+                expect(definition.queries.length, equals(1));
+                final query = definition.queries.first;
+                expect(query.suffix, equals('Mutation'));
+                expect(query.operationName, equals('RefreshCache'));
 
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          expect(definition.queries.length, equals(1));
-          final query = definition.queries.first;
-          expect(query.suffix, equals('Mutation'));
-          expect(query.operationName, equals('RefreshCache'));
-
-          // Check that no inputs are present for no-args mutation
-          expect(query.inputs.length, equals(0));
-        }, count: 1);
+                // Check that no inputs are present for no-args mutation
+                expect(query.inputs.length, equals(0));
+              });
 
         await testBuilder(
           anotherBuilder,
@@ -152,30 +171,34 @@ void main() {
     test(
       'Should handle mutations with optional arguments when combine_mutation_args is true',
       () async {
-        final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'combine_mutation_args': true,
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'combine_mutation_args': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'api.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/query.graphql.dart',
+                      'naming_scheme': 'pathedWithTypes',
+                    },
+                  ],
+                }),
+              )
+              ..onBuild = expectAsync1((definition) {
+                expect(definition.queries.length, equals(1));
+                final query = definition.queries.first;
+                expect(query.suffix, equals('Mutation'));
+                expect(query.operationName, equals('UpdateProfile'));
 
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          expect(definition.queries.length, equals(1));
-          final query = definition.queries.first;
-          expect(query.suffix, equals('Mutation'));
-          expect(query.operationName, equals('UpdateProfile'));
-
-          // Check that optional inputs are present
-          expect(query.inputs.length, equals(2));
-          expect(query.inputs.map((i) => i.name.name),
-              containsAll(['name', 'bio']));
-        }, count: 1);
+                // Check that optional inputs are present
+                expect(query.inputs.length, equals(2));
+                expect(
+                  query.inputs.map((i) => i.name.name),
+                  containsAll(['name', 'bio']),
+                );
+              });
 
         await testBuilder(
           anotherBuilder,
@@ -194,36 +217,44 @@ void main() {
     test(
       'Should handle mutations with complex nested input types when combine_mutation_args is true',
       () async {
-        final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'combine_mutation_args': true,
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'combine_mutation_args': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'api.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/query.graphql.dart',
+                      'naming_scheme': 'pathedWithTypes',
+                    },
+                  ],
+                }),
+              )
+              ..onBuild = expectAsync1((definition) {
+                expect(definition.queries.length, equals(1));
+                final query = definition.queries.first;
+                expect(query.suffix, equals('Mutation'));
+                expect(query.operationName, equals('CreateOrder'));
 
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          expect(definition.queries.length, equals(1));
-          final query = definition.queries.first;
-          expect(query.suffix, equals('Mutation'));
-          expect(query.operationName, equals('CreateOrder'));
+                // Check that complex nested inputs are present
+                expect(query.inputs.length, equals(1));
+                expect(query.inputs.first.name.name, equals('orderInput'));
 
-          // Check that complex nested inputs are present
-          expect(query.inputs.length, equals(1));
-          expect(query.inputs.first.name.name, equals('orderInput'));
-
-          // Check that input object classes are still generated
-          final classNames =
-              query.classes.map((c) => c.name.namePrintable).toList();
-          expect(classNames.any((name) => name.contains('OrderInput')), isTrue);
-          expect(
-              classNames.any((name) => name.contains('AddressInput')), isTrue);
-        }, count: 1);
+                // Check that input object classes are still generated
+                final classNames = query.classes
+                    .map((c) => c.name.namePrintable)
+                    .toList();
+                expect(
+                  classNames.any((name) => name.contains('OrderInput')),
+                  isTrue,
+                );
+                expect(
+                  classNames.any((name) => name.contains('AddressInput')),
+                  isTrue,
+                );
+              });
 
         await testBuilder(
           anotherBuilder,
@@ -242,30 +273,34 @@ void main() {
     test(
       'Should handle mutations with list and nullable parameters when combine_mutation_args is true',
       () async {
-        final anotherBuilder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'combine_mutation_args': true,
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.graphql.dart',
-              'naming_scheme': 'pathedWithTypes',
-            }
-          ],
-        }));
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'combine_mutation_args': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'api.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/query.graphql.dart',
+                      'naming_scheme': 'pathedWithTypes',
+                    },
+                  ],
+                }),
+              )
+              ..onBuild = expectAsync1((definition) {
+                expect(definition.queries.length, equals(1));
+                final query = definition.queries.first;
+                expect(query.suffix, equals('Mutation'));
+                expect(query.operationName, equals('BulkUpdateUsers'));
 
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          expect(definition.queries.length, equals(1));
-          final query = definition.queries.first;
-          expect(query.suffix, equals('Mutation'));
-          expect(query.operationName, equals('BulkUpdateUsers'));
-
-          // Check that list and nullable inputs are present
-          expect(query.inputs.length, equals(3));
-          expect(query.inputs.map((i) => i.name.name),
-              containsAll(['userIds', 'status', 'tags']));
-        }, count: 1);
+                // Check that list and nullable inputs are present
+                expect(query.inputs.length, equals(3));
+                expect(
+                  query.inputs.map((i) => i.name.name),
+                  containsAll(['userIds', 'status', 'tags']),
+                );
+              });
 
         await testBuilder(
           anotherBuilder,

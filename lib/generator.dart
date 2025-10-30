@@ -1,12 +1,14 @@
-import 'package:dartpollo/generator/data/data.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:dartpollo/generator/class_generator.dart';
+import 'package:dartpollo/generator/data/data.dart';
+import 'package:dartpollo/generator/errors.dart'
+    show DuplicatedClassesException, MissingRootTypeException;
 import 'package:dartpollo/generator/input_generator.dart';
+import 'package:dartpollo/services/file_service.dart';
 import 'package:dartpollo/services/generation_service.dart';
 import 'package:dartpollo/services/schema_service.dart';
-import 'package:dartpollo/services/file_service.dart';
 import 'package:dartpollo/visitor/canonical_visitor.dart';
 import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';
 
 import './generator/ephemeral_data.dart';
@@ -63,7 +65,7 @@ LibraryDefinition generateLibrary(
 ) {
   // Create services with dependency injection
   final schemaService = SchemaService(schema);
-  final fileService = FileService();
+  const fileService = FileService.instance;
   final generationService = GenerationService(
     schemaService: schemaService,
     fileService: fileService,
@@ -117,7 +119,7 @@ Iterable<QueryDefinition> generateDefinitions({
 }) {
   // Create services for this generation
   final schemaService = SchemaService(schema);
-  final fileService = FileService();
+  const fileService = FileService.instance;
   final generationService = GenerationService(
     schemaService: schemaService,
     fileService: fileService,
@@ -190,11 +192,12 @@ ClassProperty createClassProperty({
   // Determine field type and directives based on current type
   var finalFields = <Node>[];
   if (context.currentType is ObjectTypeDefinitionNode) {
-    finalFields = (context.currentType as ObjectTypeDefinitionNode).fields;
+    finalFields = (context.currentType! as ObjectTypeDefinitionNode).fields;
   } else if (context.currentType is InterfaceTypeDefinitionNode) {
-    finalFields = (context.currentType as InterfaceTypeDefinitionNode).fields;
+    finalFields = (context.currentType! as InterfaceTypeDefinitionNode).fields;
   } else if (context.currentType is InputObjectTypeDefinitionNode) {
-    finalFields = (context.currentType as InputObjectTypeDefinitionNode).fields;
+    finalFields =
+        (context.currentType! as InputObjectTypeDefinitionNode).fields;
   }
 
   final regularField = finalFields
@@ -210,8 +213,9 @@ ClassProperty createClassProperty({
 
   if (fieldType == null) {
     throw Exception(
-        '''Field $fieldName was not found in GraphQL type ${context.currentType?.name.value}.
-Make sure your query is correct and your schema is updated.''');
+      '''Field $fieldName was not found in GraphQL type ${context.currentType?.name.value}.
+Make sure your query is correct and your schema is updated.''',
+    );
   }
 
   // Use ClassGenerator or InputGenerator based on context
@@ -237,6 +241,7 @@ Make sure your query is correct and your schema is updated.''');
     );
   } else {
     throw Exception(
-        '''Unable to determine field type for $fieldName in ${context.currentType?.name.value}''');
+      '''Unable to determine field type for $fieldName in ${context.currentType?.name.value}''',
+    );
   }
 }

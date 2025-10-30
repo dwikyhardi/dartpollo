@@ -7,10 +7,23 @@ import 'package:recase/recase.dart';
 
 /// Define a Dart class parsed from GraphQL type.
 class ClassDefinition extends Definition with DataPrinter {
+  /// Instantiate a class definition.
+  ClassDefinition({
+    required super.name,
+    this.properties = const [],
+    this.extension,
+    this.implementations = const [],
+    this.mixins = const [],
+    this.factoryPossibilities = const {},
+    ClassPropertyName? typeNameField,
+    this.isInput = false,
+  }) : typeNameField =
+           typeNameField ?? const ClassPropertyName(name: '__typename');
+
   /// The properties (fields) of the class.
   final Iterable<ClassProperty> properties;
 
-  /// The type this class extends from, or [null].
+  /// The type this class extends from, or [`null`].
   final Name? extension;
 
   /// The types this class implements.
@@ -29,29 +42,17 @@ class ClassDefinition extends Definition with DataPrinter {
   /// Whether this is an input object or not.
   final bool isInput;
 
-  /// Instantiate a class definition.
-  ClassDefinition({
-    required super.name,
-    this.properties = const [],
-    this.extension,
-    this.implementations = const [],
-    this.mixins = const [],
-    this.factoryPossibilities = const {},
-    ClassPropertyName? typeNameField,
-    this.isInput = false,
-  }) : typeNameField = typeNameField ?? ClassPropertyName(name: '__typename');
-
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-        'properties': properties,
-        'extension': extension,
-        'implementations': implementations,
-        'mixins': mixins,
-        'factoryPossibilities': factoryPossibilities,
-        'typeNameField': typeNameField,
-        'isInput': isInput,
-      };
+    'name': name,
+    'properties': properties,
+    'extension': extension,
+    'implementations': implementations,
+    'mixins': mixins,
+    'factoryPossibilities': factoryPossibilities,
+    'typeNameField': typeNameField,
+    'isInput': isInput,
+  };
 }
 
 /// Class name.
@@ -66,8 +67,8 @@ class ClassName extends Name with DataPrinter {
 
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   String normalize(String name) {

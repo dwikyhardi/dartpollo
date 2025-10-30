@@ -1,7 +1,7 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
-import 'package:dartpollo/visitor/enum_visitor.dart';
 import 'package:dartpollo/generator/data/enum_definition.dart';
+import 'package:dartpollo/visitor/enum_visitor.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('EnumVisitor', () {
@@ -22,19 +22,18 @@ void main() {
     });
 
     test('should handle enum type definition nodes', () {
-      final enumNode = EnumTypeDefinitionNode(
+      const enumNode = EnumTypeDefinitionNode(
         name: NameNode(value: 'TestEnum'),
-        values: [],
       );
-      final documentNode = DocumentNode(definitions: []);
+      const documentNode = DocumentNode();
 
       expect(visitor.canHandle(enumNode), isTrue);
       expect(visitor.canHandle(documentNode), isTrue);
-      expect(visitor.canHandle(NameNode(value: 'test')), isFalse);
+      expect(visitor.canHandle(const NameNode(value: 'test')), isFalse);
     });
 
     test('should visit enum type definition nodes', () {
-      final enumNode = EnumTypeDefinitionNode(
+      const enumNode = EnumTypeDefinitionNode(
         name: NameNode(value: 'TestEnum'),
         values: [
           EnumValueDefinitionNode(name: NameNode(value: 'VALUE1')),
@@ -44,7 +43,9 @@ void main() {
 
       // Should not throw when visiting
       expect(
-          () => visitor.visitEnumTypeDefinitionNode(enumNode), returnsNormally);
+        () => visitor.visitEnumTypeDefinitionNode(enumNode),
+        returnsNormally,
+      );
     });
 
     test('should maintain immutable result', () {
@@ -56,12 +57,13 @@ void main() {
     });
 
     test('should handle document nodes', () {
-      final document = DocumentNode(definitions: [
-        EnumTypeDefinitionNode(
-          name: NameNode(value: 'TestEnum'),
-          values: [],
-        ),
-      ]);
+      const document = DocumentNode(
+        definitions: [
+          EnumTypeDefinitionNode(
+            name: NameNode(value: 'TestEnum'),
+          ),
+        ],
+      );
 
       expect(visitor.canHandle(document), isTrue);
       expect(() => document.accept(visitor), returnsNormally);

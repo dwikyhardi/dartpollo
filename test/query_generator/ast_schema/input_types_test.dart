@@ -7,7 +7,7 @@ void main() {
   group('On AST schema', () {
     test(
       'Input object was not generated',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -55,96 +55,99 @@ mutation createThing($createThingInput: CreateThingInput) {
 }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'CreateThing$_MutationRoot'),
       operationName: r'createThing',
       classes: [
         ClassDefinition(
-            name: ClassName(
-                name: r'CreateThing$_MutationRoot$_CreateThingResponse$_Thing'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'message'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(
+            name: r'CreateThing$_MutationRoot$_CreateThingResponse$_Thing',
+          ),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'message'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(
-                name: r'CreateThing$_MutationRoot$_CreateThingResponse'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(
-                      name:
-                          r'CreateThing$_MutationRoot$_CreateThingResponse$_Thing'),
-                  name: ClassPropertyName(name: r'thing'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(
+            name: r'CreateThing$_MutationRoot$_CreateThingResponse',
+          ),
+          properties: [
+            ClassProperty(
+              type: TypeName(
+                name: r'CreateThing$_MutationRoot$_CreateThingResponse$_Thing',
+              ),
+              name: const ClassPropertyName(name: r'thing'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'CreateThing$_MutationRoot'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(
-                      name: r'CreateThing$_MutationRoot$_CreateThingResponse'),
-                  name: ClassPropertyName(name: r'createThing'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'CreateThing$_MutationRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(
+                name: r'CreateThing$_MutationRoot$_CreateThingResponse',
+              ),
+              name: const ClassPropertyName(name: r'createThing'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'CreateThingInput'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'clientId'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'message'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName:
-                          TypeName(name: r'OtherObjectInput', isNonNull: true),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'shares'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true),
+          name: ClassName(name: r'CreateThingInput'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'clientId'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'message'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(name: r'OtherObjectInput', isNonNull: true),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'shares'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
         ClassDefinition(
-            name: ClassName(name: r'OtherObjectInput'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true)
+          name: ClassName(name: r'OtherObjectInput'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
       ],
       inputs: [
         QueryInput(
-            type: TypeName(name: r'CreateThingInput'),
-            name: QueryInputName(name: r'createThingInput'))
+          type: TypeName(name: r'CreateThingInput'),
+          name: const QueryInputName(name: r'createThingInput'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Mutation')
-]);
+      suffix: r'Mutation',
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

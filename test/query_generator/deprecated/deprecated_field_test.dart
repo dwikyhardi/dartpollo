@@ -7,7 +7,7 @@ void main() {
   group('On deprecated', () {
     test(
       'Fields can be deprecated',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -44,69 +44,69 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_QueryResponse'),
       operationName: r'some_query',
       classes: [
         ClassDefinition(
-            name:
-                ClassName(name: r'SomeQuery$_QueryResponse$_deprecatedObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'someField'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'deprecatedField'),
-                  annotations: [r'''Deprecated('message 2')'''],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryResponse$_deprecatedObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'someField'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'deprecatedField'),
+              annotations: const [r'''Deprecated('message 2')'''],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'someField'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'deprecatedField'),
-                  annotations: [r'''Deprecated('message 2')'''],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'someField'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'deprecatedField'),
+              annotations: const [r'''Deprecated('message 2')'''],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(
-                      name: r'SomeQuery$_QueryResponse$_deprecatedObject'),
-                  name: ClassPropertyName(name: r'deprecatedObject'),
-                  annotations: [r'''Deprecated('message')'''],
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(
-                          name: r'SomeQuery$_QueryResponse$_SomeObject'),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'someObjects'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'SomeQuery$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: TypeName(
+                name: r'SomeQuery$_QueryResponse$_deprecatedObject',
+              ),
+              name: const ClassPropertyName(name: r'deprecatedObject'),
+              annotations: const [r'''Deprecated('message')'''],
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name: r'SomeQuery$_QueryResponse$_SomeObject',
+                ),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'someObjects'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

@@ -4,9 +4,8 @@ import '../schema/schema_options.dart';
 
 /// Exception thrown when generation context validation fails
 class GenerationContextValidationException implements Exception {
-  final String message;
-
   GenerationContextValidationException(this.message);
+  final String message;
 
   @override
   String toString() => 'GenerationContextValidationException: $message';
@@ -15,17 +14,6 @@ class GenerationContextValidationException implements Exception {
 /// Immutable context containing all generation state and configuration.
 /// Supports immutable updates through copyWith method.
 class GenerationContext {
-  final SchemaMap schemaMap;
-  final List<TypeName> path;
-  final TypeDefinitionNode? currentType;
-  final ClassPropertyName? currentFieldName;
-  final ClassName? currentClassName;
-  final List<Definition> generatedClasses;
-  final List<QueryInput> inputsClasses;
-  final List<FragmentDefinitionNode> fragments;
-  final Set<EnumName> usedEnums;
-  final Set<ClassName> usedInputObjects;
-
   const GenerationContext({
     required this.schemaMap,
     required this.path,
@@ -38,6 +26,16 @@ class GenerationContext {
     required this.usedEnums,
     required this.usedInputObjects,
   });
+  final SchemaMap schemaMap;
+  final List<TypeName> path;
+  final TypeDefinitionNode? currentType;
+  final ClassPropertyName? currentFieldName;
+  final ClassName? currentClassName;
+  final List<Definition> generatedClasses;
+  final List<QueryInput> inputsClasses;
+  final List<FragmentDefinitionNode> fragments;
+  final Set<EnumName> usedEnums;
+  final Set<ClassName> usedInputObjects;
 
   /// Creates a new GenerationContext with updated values
   GenerationContext copyWith({
@@ -72,7 +70,8 @@ class GenerationContext {
     for (final typeName in path) {
       if (typeName.name.isEmpty) {
         throw GenerationContextValidationException(
-            'Path cannot contain empty type names');
+          'Path cannot contain empty type names',
+        );
       }
     }
 
@@ -86,7 +85,8 @@ class GenerationContext {
         final className = definition.name.name;
         if (classNames.contains(className)) {
           throw GenerationContextValidationException(
-              'Duplicate class name found: $className');
+            'Duplicate class name found: $className',
+          );
         }
         classNames.add(className);
       }
@@ -98,7 +98,8 @@ class GenerationContext {
       final inputName = input.name.name;
       if (inputNames.contains(inputName)) {
         throw GenerationContextValidationException(
-            'Duplicate input class name found: $inputName');
+          'Duplicate input class name found: $inputName',
+        );
       }
       inputNames.add(inputName);
     }
@@ -109,7 +110,8 @@ class GenerationContext {
       final fragmentName = fragment.name.value;
       if (fragmentNames.contains(fragmentName)) {
         throw GenerationContextValidationException(
-            'Duplicate fragment name found: $fragmentName');
+          'Duplicate fragment name found: $fragmentName',
+        );
       }
       fragmentNames.add(fragmentName);
     }

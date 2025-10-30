@@ -1,18 +1,18 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/ephemeral_data.dart';
-import 'package:dartpollo/generator/fragment_processor.dart';
 import 'package:dartpollo/generator/errors.dart';
+import 'package:dartpollo/generator/fragment_processor.dart';
 import 'package:dartpollo/generator/helpers.dart';
 import 'package:dartpollo/visitor/canonical_visitor.dart';
 import 'package:dartpollo/visitor/generator_visitor.dart';
 import 'package:dartpollo/visitor/object_type_definition_visitor.dart';
 import 'package:dartpollo/visitor/schema_definition_visitor.dart';
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:gql/ast.dart';
 
 import '../schema/schema_options.dart';
-import 'schema_service.dart';
 import 'file_service.dart';
+import 'schema_service.dart';
 
 /// Service responsible for coordinating the code generation process.
 ///
@@ -20,9 +20,6 @@ import 'file_service.dart';
 /// coordinating between schema operations, file operations, and various
 /// code generators.
 class GenerationService {
-  final SchemaService schemaService;
-  final FileService fileService;
-
   /// Creates a new GenerationService with the required dependencies.
   ///
   /// [schemaService] handles schema operations and type lookups
@@ -31,6 +28,9 @@ class GenerationService {
     required this.schemaService,
     required this.fileService,
   });
+
+  final SchemaService schemaService;
+  final FileService fileService;
 
   /// Generates a complete library definition from GraphQL documents.
   ///
@@ -106,17 +106,19 @@ class GenerationService {
 
       // Generate query definitions for each document
       final queryDefinitions = documentsWithoutFragments
-          .map((doc) => generateDefinitions(
-                path: path,
-                document: doc,
-                options: options,
-                schemaMap: schemaMap,
-                fragmentsCommon: [
-                  ...documentFragments,
-                  ...fragmentsCommon,
-                ],
-                canonicalVisitor: canonicalVisitor,
-              ))
+          .map(
+            (doc) => generateDefinitions(
+              path: path,
+              document: doc,
+              options: options,
+              schemaMap: schemaMap,
+              fragmentsCommon: [
+                ...documentFragments,
+                ...fragmentsCommon,
+              ],
+              canonicalVisitor: canonicalVisitor,
+            ),
+          )
           .expand((e) => e)
           .toList();
 
@@ -152,7 +154,7 @@ class GenerationService {
         rethrow;
       }
       throw GenerationProcessError(
-        'Failed to generate library: ${e.toString()}',
+        'Failed to generate library: $e',
         context: 'Path: $path, Documents: ${gqlDocs.length}',
         suggestion: 'Check your GraphQL documents and schema for errors',
       );
@@ -184,8 +186,9 @@ class GenerationService {
     required CanonicalVisitor canonicalVisitor,
   }) {
     try {
-      final operations =
-          document.definitions.whereType<OperationDefinitionNode>().toList();
+      final operations = document.definitions
+          .whereType<OperationDefinitionNode>()
+          .toList();
 
       if (operations.isEmpty) {
         return [];
@@ -207,7 +210,7 @@ class GenerationService {
         rethrow;
       }
       throw GenerationProcessError(
-        'Failed to generate definitions: ${e.toString()}',
+        'Failed to generate definitions: $e',
         context: 'Path: $path',
         suggestion: 'Check your GraphQL operations and schema',
       );
@@ -249,7 +252,7 @@ class GenerationService {
     final name = QueryName.fromPath(
       path: createPathName([
         ClassName(name: operationName),
-        ClassName(name: parentType.name.value)
+        ClassName(name: parentType.name.value),
       ], schemaMap.namingScheme),
     );
 
@@ -261,7 +264,7 @@ class GenerationService {
       schemaMap: schemaMap,
       path: [
         TypeName(name: operationName),
-        TypeName(name: parentType.name.value)
+        TypeName(name: parentType.name.value),
       ],
       currentType: parentType,
       currentFieldName: null,
@@ -275,8 +278,8 @@ class GenerationService {
 
     // Generate the query definition
     final visitor = GeneratorVisitor(context: context);
-    final documentDefinitions = DocumentNode(definitions: definitions);
-    documentDefinitions.accept(visitor);
+    final documentDefinitions = DocumentNode(definitions: definitions)
+      ..accept(visitor);
 
     return QueryDefinition(
       name: name,
@@ -302,7 +305,8 @@ class GenerationService {
 
   /// Determines the root type name and suffix for an operation.
   (String, String) _determineRootTypeAndSuffix(
-      OperationDefinitionNode operation) {
+    OperationDefinitionNode operation,
+  ) {
     final schemaVisitor = SchemaDefinitionVisitor();
     schemaService.schema.accept(schemaVisitor);
 
@@ -310,22 +314,19 @@ class GenerationService {
     switch (operation.type) {
       case OperationType.subscription:
         suffix = 'Subscription';
-        break;
       case OperationType.mutation:
         suffix = 'Mutation';
-        break;
       case OperationType.query:
         suffix = 'Query';
-        break;
     }
 
     final rootTypeName =
         (schemaVisitor.schemaDefinitionNode?.operationTypes ?? [])
-                .firstWhereOrNull((e) => e.operation == operation.type)
-                ?.type
-                .name
-                .value ??
-            suffix;
+            .firstWhereOrNull((e) => e.operation == operation.type)
+            ?.type
+            .name
+            .value ??
+        suffix;
 
     return (rootTypeName, suffix);
   }
@@ -356,15 +357,15 @@ class GenerationService {
 
 /// Exception thrown when the generation process encounters an error.
 class GenerationProcessError extends Error {
-  final String message;
-  final String? context;
-  final String? suggestion;
-
   GenerationProcessError(
     this.message, {
     this.context,
     this.suggestion,
   });
+
+  final String message;
+  final String? context;
+  final String? suggestion;
 
   @override
   String toString() {

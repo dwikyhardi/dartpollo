@@ -7,7 +7,7 @@ void main() {
   group('On generation', () {
     test(
       'Allows multiple mutations per file',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -61,101 +61,105 @@ query QueData($intsNonNullable: [Int]!, $stringNullable: String) {
 }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'MutData$_Mutation'),
       operationName: r'MutData',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'MutData$_Mutation$_MutationResponse'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'MutData$_Mutation$_MutationResponse'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'MutData$_Mutation'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'MutData$_Mutation$_MutationResponse'),
-                  name: ClassPropertyName(name: r'mut'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'MutData$_Mutation'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'MutData$_Mutation$_MutationResponse'),
+              name: const ClassPropertyName(name: r'mut'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'Input'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: true)
+          name: ClassName(name: r'Input'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
       ],
       inputs: [
         QueryInput(
-            type: TypeName(name: r'Input', isNonNull: true),
-            name: QueryInputName(name: r'input'))
+          type: TypeName(name: r'Input', isNonNull: true),
+          name: const QueryInputName(name: r'input'),
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Mutation'),
-  QueryDefinition(
+      suffix: r'Mutation',
+    ),
+    QueryDefinition(
       name: QueryName(name: r'QueData$_Query'),
       operationName: r'QueData',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'QueData$_Query$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'int'),
-                  name: ClassPropertyName(name: r'i'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: DartTypeName(name: r'int'), isNonNull: true),
-                  name: ClassPropertyName(name: r'list'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'QueData$_Query$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'int'),
+              name: const ClassPropertyName(name: r'i'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: DartTypeName(name: r'int'),
+              ),
+              name: const ClassPropertyName(name: r'list'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'QueData$_Query'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'QueData$_Query$_QueryResponse'),
-                  name: ClassPropertyName(name: r'que'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'QueData$_Query'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'QueData$_Query$_QueryResponse'),
+              name: const ClassPropertyName(name: r'que'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
       inputs: [
         QueryInput(
-            type: ListOfTypeName(
-                typeName: DartTypeName(name: r'int'), isNonNull: true),
-            name: QueryInputName(name: r'intsNonNullable')),
+          type: ListOfTypeName(
+            typeName: DartTypeName(name: r'int'),
+          ),
+          name: const QueryInputName(name: r'intsNonNullable'),
+        ),
         QueryInput(
-            type: DartTypeName(name: r'String'),
-            name: QueryInputName(name: r'stringNullable'))
+          type: DartTypeName(name: r'String'),
+          name: const QueryInputName(name: r'stringNullable'),
+        ),
       ],
       generateHelpers: true,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

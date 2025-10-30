@@ -5,6 +5,13 @@ import 'package:dartpollo/generator/helpers.dart';
 
 /// Define a query/mutation input parameter.
 class QueryInput extends Definition with DataPrinter {
+  /// Instantiate an input parameter.
+  QueryInput({
+    required this.type,
+    this.annotations = const [],
+    required this.name,
+  }) : assert(hasValue(type) && hasValue(name)),
+       super(name: name);
   @override
   final QueryInputName name;
 
@@ -14,29 +21,21 @@ class QueryInput extends Definition with DataPrinter {
   /// Some other custom annotation.
   final List<String> annotations;
 
-  /// Instantiate an input parameter.
-  QueryInput({
-    required this.type,
-    this.annotations = const [],
-    required this.name,
-  })  : assert(hasValue(type) && hasValue(name)),
-        super(name: name);
-
   @override
   Map<String, Object?> get namedProps => {
-        'type': type,
-        'name': name,
-        'annotations': annotations,
-      };
+    'type': type,
+    'name': name,
+    'annotations': annotations,
+  };
 }
 
 ///
 class QueryInputName extends Name {
   ///
-  QueryInputName({required super.name});
+  const QueryInputName({required super.name});
 
   @override
   Map<String, Object?> get namedProps => {
-        'name': name,
-      };
+    'name': name,
+  };
 }

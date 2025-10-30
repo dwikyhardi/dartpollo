@@ -7,7 +7,7 @@ void main() {
   group('On multiple queries', () {
     test(
       'Header and part should only be included once',
-      () async => testGenerator(
+      () => testGenerator(
         query: r'query some_query { s, i }',
         schema: r'''
             schema {
@@ -29,49 +29,47 @@ void main() {
   });
 }
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_SomeObject'),
       operationName: r'some_query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: DartTypeName(name: r'int'),
-                  name: ClassPropertyName(name: r'i'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'SomeQuery$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'int'),
+              name: const ClassPropertyName(name: r'i'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query'),
-  QueryDefinition(
+    ),
+    QueryDefinition(
       name: QueryName(name: r'AnotherQuery$_SomeObject'),
       operationName: r'another_query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'AnotherQuery$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'AnotherQuery$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

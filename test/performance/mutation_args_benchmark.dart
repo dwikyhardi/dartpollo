@@ -1,5 +1,6 @@
-import 'dart:io';
 import 'dart:developer' as developer;
+import 'dart:io';
+
 import 'package:test/test.dart';
 
 void main() {
@@ -11,7 +12,7 @@ void main() {
       final traditionalObjects = <Object>[];
       final stopwatch1 = Stopwatch()..start();
 
-      for (int i = 0; i < 10000; i++) {
+      for (var i = 0; i < 10000; i++) {
         // Simulate creating Arguments object
         final args = TraditionalArguments(
           attachmentId: 'attachment-$i',
@@ -34,22 +35,23 @@ void main() {
       final traditionalMemory = ProcessInfo.currentRss;
 
       developer.log(
-          '[DEBUG_LOG] Traditional approach: ${traditionalTime}ms, Memory: ${traditionalMemory ~/ 1024}KB');
+        '[DEBUG_LOG] Traditional approach: ${traditionalTime}ms, Memory: ${traditionalMemory ~/ 1024}KB',
+      );
 
       // Clear memory
       traditionalObjects.clear();
 
       // Force garbage collection
-      for (int i = 0; i < 3; i++) {
+      for (var i = 0; i < 3; i++) {
         ProcessInfo.currentRss; // Trigger GC
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future<void>.delayed(const Duration(milliseconds: 10));
       }
 
       // Simulate combined approach
       final combinedObjects = <Object>[];
       final stopwatch2 = Stopwatch()..start();
 
-      for (int i = 0; i < 10000; i++) {
+      for (var i = 0; i < 10000; i++) {
         // Simulate creating combined Mutation object
         final mutation = CombinedMutation(
           attachmentId: 'attachment-$i',
@@ -69,7 +71,8 @@ void main() {
       final combinedMemory = ProcessInfo.currentRss;
 
       developer.log(
-          '[DEBUG_LOG] Combined approach: ${combinedTime}ms, Memory: ${combinedMemory ~/ 1024}KB');
+        '[DEBUG_LOG] Combined approach: ${combinedTime}ms, Memory: ${combinedMemory ~/ 1024}KB',
+      );
 
       // Calculate improvements
       final timeImprovement =
@@ -79,11 +82,14 @@ void main() {
 
       developer.log('[DEBUG_LOG] Performance improvements:');
       developer.log(
-          '[DEBUG_LOG] - Time: ${timeImprovement.toStringAsFixed(1)}% faster');
+        '[DEBUG_LOG] - Time: ${timeImprovement.toStringAsFixed(1)}% faster',
+      );
       developer.log(
-          '[DEBUG_LOG] - Memory: ${memoryImprovement.toStringAsFixed(1)}% less memory');
-      developer
-          .log('[DEBUG_LOG] - Object count: 50% fewer objects (10k vs 20k)');
+        '[DEBUG_LOG] - Memory: ${memoryImprovement.toStringAsFixed(1)}% less memory',
+      );
+      developer.log(
+        '[DEBUG_LOG] - Object count: 50% fewer objects (10k vs 20k)',
+      );
 
       // Validate that combined approach is more efficient
       expect(combinedObjects.length, equals(10000));
@@ -94,14 +100,15 @@ void main() {
     });
 
     test('Instantiation performance comparison', () {
-      developer
-          .log('[DEBUG_LOG] Starting instantiation performance benchmark...');
+      developer.log(
+        '[DEBUG_LOG] Starting instantiation performance benchmark...',
+      );
 
       const iterations = 100000;
 
       // Benchmark traditional approach
       final stopwatch1 = Stopwatch()..start();
-      for (int i = 0; i < iterations; i++) {
+      for (var i = 0; i < iterations; i++) {
         final args = TraditionalArguments(
           attachmentId: 'attachment-$i',
           name: 'name-$i',
@@ -120,7 +127,7 @@ void main() {
 
       // Benchmark combined approach
       final stopwatch2 = Stopwatch()..start();
-      for (int i = 0; i < iterations; i++) {
+      for (var i = 0; i < iterations; i++) {
         final mutation = CombinedMutation(
           attachmentId: 'attachment-$i',
           name: 'name-$i',
@@ -143,15 +150,20 @@ void main() {
 
       developer.log('[DEBUG_LOG] Instantiation benchmark results:');
       developer.log(
-          '[DEBUG_LOG] - Traditional: ${traditionalTime}ms for $iterations iterations');
+        '[DEBUG_LOG] - Traditional: ${traditionalTime}ms for $iterations iterations',
+      );
       developer.log(
-          '[DEBUG_LOG] - Combined: ${combinedTime}ms for $iterations iterations');
+        '[DEBUG_LOG] - Combined: ${combinedTime}ms for $iterations iterations',
+      );
       developer.log(
-          '[DEBUG_LOG] - Improvement: ${improvement.toStringAsFixed(1)}% faster');
+        '[DEBUG_LOG] - Improvement: ${improvement.toStringAsFixed(1)}% faster',
+      );
 
       // Validate performance improvement or at least parity
-      expect(combinedTime,
-          lessThanOrEqualTo(traditionalTime * 1.1)); // Allow 10% tolerance
+      expect(
+        combinedTime,
+        lessThanOrEqualTo(traditionalTime * 1.1),
+      ); // Allow 10% tolerance
     });
   });
 }
@@ -177,14 +189,14 @@ class TraditionalArguments {
   final String recipientId;
 
   Map<String, dynamic> toJson() => {
-        'attachmentId': attachmentId,
-        'name': name,
-        'receiptAmount': receiptAmount,
-        'receiptCategory': receiptCategory,
-        'receiptDate': receiptDate,
-        'receiptName': receiptName,
-        'recipientId': recipientId,
-      };
+    'attachmentId': attachmentId,
+    'name': name,
+    'receiptAmount': receiptAmount,
+    'receiptCategory': receiptCategory,
+    'receiptDate': receiptDate,
+    'receiptName': receiptName,
+    'recipientId': recipientId,
+  };
 }
 
 class TraditionalMutation {
@@ -216,12 +228,12 @@ class CombinedMutation {
   final String recipientId;
 
   Map<String, dynamic> getParameterVariablesMap() => {
-        'attachmentId': attachmentId,
-        'name': name,
-        'receiptAmount': receiptAmount,
-        'receiptCategory': receiptCategory,
-        'receiptDate': receiptDate,
-        'receiptName': receiptName,
-        'recipientId': recipientId,
-      };
+    'attachmentId': attachmentId,
+    'name': name,
+    'receiptAmount': receiptAmount,
+    'receiptCategory': receiptCategory,
+    'receiptDate': receiptDate,
+    'receiptName': receiptName,
+    'recipientId': recipientId,
+  };
 }

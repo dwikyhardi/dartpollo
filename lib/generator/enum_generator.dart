@@ -18,6 +18,9 @@ import 'package:gql/ast.dart';
 /// an UNKNOWN enum value to handle cases where the server returns enum
 /// values not known to the client (useful for schema evolution).
 class EnumGenerator {
+  /// Private constructor to prevent instantiation.
+  const EnumGenerator._();
+
   /// Standard enum value for handling unknown enum values from the server.
   ///
   /// This value is automatically added to all generated enums to provide
@@ -71,8 +74,11 @@ class EnumGenerator {
     );
 
     logFn(context, nextContext.align, '-> Enum');
-    logFn(context, nextContext.align,
-        '<- Generated enum ${enumName.namePrintable}.');
+    logFn(
+      context,
+      nextContext.align,
+      '<- Generated enum ${enumName.namePrintable}.',
+    );
 
     return EnumDefinition(
       name: enumName,
@@ -85,15 +91,17 @@ class EnumGenerator {
     List<EnumValueDefinitionNode> values,
     Context context,
   ) {
-    final enumValues = values
-        .map((ev) => EnumValueDefinition(
-              name: EnumValueName(name: ev.name.value),
-              annotations: proceedDeprecated(ev.directives),
-            ))
-        .toList();
-
-    // Add the unknown enum value for handling unmapped values
-    enumValues.add(unknownEnumValue);
+    final enumValues =
+        values
+            .map(
+              (ev) => EnumValueDefinition(
+                name: EnumValueName(name: ev.name.value),
+                annotations: proceedDeprecated(ev.directives),
+              ),
+            )
+            .toList()
+          // Add the unknown enum value for handling unmapped values
+          ..add(unknownEnumValue);
 
     return enumValues;
   }
@@ -113,7 +121,7 @@ class EnumGenerator {
       // Override the dartTypeName to be List<String>
       return ClassProperty(
         type: ListOfTypeName(
-          typeName: TypeName(name: 'String', isNonNull: false),
+          typeName: TypeName(name: 'String'),
           isNonNull: dartTypeName.isNonNull,
         ),
         name: name,
@@ -130,8 +138,9 @@ class EnumGenerator {
         orderedEntries.add('name: ${jsonKeyAnnotation['name']}');
       }
       if (jsonKeyAnnotation.containsKey('unknownEnumValue')) {
-        orderedEntries
-            .add('unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}');
+        orderedEntries.add(
+          'unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}',
+        );
       }
       // Add any other entries
       for (final entry in jsonKeyAnnotation.entries) {

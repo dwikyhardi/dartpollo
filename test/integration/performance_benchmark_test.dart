@@ -1,9 +1,10 @@
+import 'dart:developer' as dev;
 import 'dart:io';
 import 'dart:math';
-import 'dart:developer' as dev;
-import 'package:dartpollo/builder.dart';
+
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
+import 'package:dartpollo/builder.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
@@ -41,25 +42,28 @@ void main() {
         final times = <int>[];
 
         // Run multiple iterations to get average performance
-        for (int i = 0; i < 10; i++) {
-          final builder = graphQLQueryBuilder(BuilderOptions({
-            'generate_helpers': false,
-            'generate_queries': false,
-            'schema_mapping': [
-              {
-                'schema': 'benchmark.schema.graphql',
-                'queries_glob': 'queries/**.graphql',
-                'output': 'lib/benchmark.graphql.dart',
-              }
-            ],
-          }));
+        for (var i = 0; i < 10; i++) {
+          final builder =
+              graphQLQueryBuilder(
+                  const BuilderOptions({
+                    'generate_helpers': false,
+                    'generate_queries': false,
+                    'schema_mapping': [
+                      {
+                        'schema': 'benchmark.schema.graphql',
+                        'queries_glob': 'queries/**.graphql',
+                        'output': 'lib/benchmark.graphql.dart',
+                      },
+                    ],
+                  }),
+                )
+                ..onBuild = expectAsync1((definition) {
+                  // Capture timing when build completes
+                });
 
-          builder.onBuild = expectAsync1((definition) {
-            // Capture timing when build completes
-          }, count: 1);
-
-          stopwatch.reset();
-          stopwatch.start();
+          stopwatch
+            ..reset()
+            ..start();
 
           await testBuilder(
             builder,
@@ -80,10 +84,16 @@ void main() {
         final minTime = times.reduce(min);
         final maxTime = times.reduce(max);
 
-        dev.log('Simple Schema Generation Performance:',
-            level: Level.INFO.value, name: 'INFO');
-        dev.log('  Average: ${averageTime.toStringAsFixed(2)}ms',
-            level: Level.INFO.value, name: 'INFO');
+        dev.log(
+          'Simple Schema Generation Performance:',
+          level: Level.INFO.value,
+          name: 'INFO',
+        );
+        dev.log(
+          '  Average: ${averageTime.toStringAsFixed(2)}ms',
+          level: Level.INFO.value,
+          name: 'INFO',
+        );
         dev.log(
           '  Min: ${minTime}ms',
           level: Level.INFO.value,
@@ -98,20 +108,21 @@ void main() {
         // Performance assertions
         expect(averageTime, lessThan(1000)); // Should average under 1 second
         expect(
-            maxTime, lessThan(2000)); // No single run should exceed 2 seconds
+          maxTime,
+          lessThan(2000),
+        ); // No single run should exceed 2 seconds
       });
 
       test('should benchmark complex schema generation', () async {
         // Generate a complex schema with multiple types and relationships
-        final schemaBuffer = StringBuffer();
-        schemaBuffer.writeln('type Query {');
-        schemaBuffer.writeln('  user(id: ID!): User');
-        schemaBuffer.writeln('  users(filter: UserFilter): [User!]!');
-        schemaBuffer.writeln('  post(id: ID!): Post');
-        schemaBuffer.writeln('  posts(filter: PostFilter): [Post!]!');
-        schemaBuffer.writeln('}');
-
-        schemaBuffer.writeln('''
+        final schemaBuffer = StringBuffer()
+          ..writeln('type Query {')
+          ..writeln('  user(id: ID!): User')
+          ..writeln('  users(filter: UserFilter): [User!]!')
+          ..writeln('  post(id: ID!): Post')
+          ..writeln('  posts(filter: PostFilter): [Post!]!')
+          ..writeln('}')
+          ..writeln('''
           type User {
             id: ID!
             name: String!
@@ -301,25 +312,28 @@ void main() {
         final times = <int>[];
 
         // Run multiple iterations
-        for (int i = 0; i < 5; i++) {
-          final builder = graphQLQueryBuilder(BuilderOptions({
-            'generate_helpers': true,
-            'generate_queries': true,
-            'schema_mapping': [
-              {
-                'schema': 'complex.schema.graphql',
-                'queries_glob': 'queries/**.graphql',
-                'output': 'lib/complex.graphql.dart',
-              }
-            ],
-          }));
+        for (var i = 0; i < 5; i++) {
+          final builder =
+              graphQLQueryBuilder(
+                  const BuilderOptions({
+                    'generate_helpers': true,
+                    'generate_queries': true,
+                    'schema_mapping': [
+                      {
+                        'schema': 'complex.schema.graphql',
+                        'queries_glob': 'queries/**.graphql',
+                        'output': 'lib/complex.graphql.dart',
+                      },
+                    ],
+                  }),
+                )
+                ..onBuild = expectAsync1((definition) {
+                  // Capture timing when build completes
+                });
 
-          builder.onBuild = expectAsync1((definition) {
-            // Capture timing when build completes
-          }, count: 1);
-
-          stopwatch.reset();
-          stopwatch.start();
+          stopwatch
+            ..reset()
+            ..start();
 
           await testBuilder(
             builder,
@@ -364,7 +378,9 @@ void main() {
         // Performance assertions for complex schema
         expect(averageTime, lessThan(5000)); // Should average under 5 seconds
         expect(
-            maxTime, lessThan(10000)); // No single run should exceed 10 seconds
+          maxTime,
+          lessThan(10000),
+        ); // No single run should exceed 10 seconds
       });
 
       test('should benchmark memory usage during generation', () async {
@@ -403,21 +419,23 @@ void main() {
         // Get initial memory usage
         final initialMemory = ProcessInfo.currentRss;
 
-        final builder = graphQLQueryBuilder(BuilderOptions({
-          'generate_helpers': true,
-          'generate_queries': true,
-          'schema_mapping': [
-            {
-              'schema': 'memory.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/memory.graphql.dart',
-            }
-          ],
-        }));
-
-        builder.onBuild = expectAsync1((definition) {
-          // Memory check after generation
-        }, count: 1);
+        final builder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'generate_queries': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'memory.schema.graphql',
+                      'queries_glob': 'queries/**.graphql',
+                      'output': 'lib/memory.graphql.dart',
+                    },
+                  ],
+                }),
+              )
+              ..onBuild = expectAsync1((definition) {
+                // Memory check after generation
+              });
 
         await testBuilder(
           builder,
@@ -451,8 +469,10 @@ void main() {
         );
 
         // Memory usage should be reasonable
-        expect(memoryIncrease,
-            lessThan(100 * 1024 * 1024)); // Less than 100MB increase
+        expect(
+          memoryIncrease,
+          lessThan(100 * 1024 * 1024),
+        ); // Less than 100MB increase
       });
     });
 
@@ -462,32 +482,32 @@ void main() {
 
         for (final entityCount in [10, 25, 50, 100]) {
           // Generate schema with varying sizes
-          final schemaBuffer = StringBuffer();
-          schemaBuffer.writeln('type Query {');
+          final schemaBuffer = StringBuffer()..writeln('type Query {');
 
-          for (int i = 0; i < entityCount; i++) {
+          for (var i = 0; i < entityCount; i++) {
             schemaBuffer.writeln('  entity$i: Entity$i');
           }
           schemaBuffer.writeln('}');
 
-          for (int i = 0; i < entityCount; i++) {
-            schemaBuffer.writeln('type Entity$i {');
-            schemaBuffer.writeln('  id: ID!');
-            schemaBuffer.writeln('  name: String');
-            schemaBuffer.writeln('  value: Int');
+          for (var i = 0; i < entityCount; i++) {
+            schemaBuffer
+              ..writeln('type Entity$i {')
+              ..writeln('  id: ID!')
+              ..writeln('  name: String')
+              ..writeln('  value: Int');
             if (i > 0) {
               schemaBuffer.writeln('  related: Entity${i - 1}');
             }
             schemaBuffer.writeln('}');
           }
 
-          final queryBuffer = StringBuffer();
-          queryBuffer.writeln('query GetEntities {');
-          for (int i = 0; i < min(entityCount, 10); i++) {
-            queryBuffer.writeln('  entity$i {');
-            queryBuffer.writeln('    id');
-            queryBuffer.writeln('    name');
-            queryBuffer.writeln('    value');
+          final queryBuffer = StringBuffer()..writeln('query GetEntities {');
+          for (var i = 0; i < min(entityCount, 10); i++) {
+            queryBuffer
+              ..writeln('  entity$i {')
+              ..writeln('    id')
+              ..writeln('    name')
+              ..writeln('    value');
             if (i > 0) {
               queryBuffer.writeln('    related { id name }');
             }
@@ -499,25 +519,28 @@ void main() {
           final times = <int>[];
 
           // Run 3 iterations for each size
-          for (int i = 0; i < 3; i++) {
-            final builder = graphQLQueryBuilder(BuilderOptions({
-              'generate_helpers': false,
-              'generate_queries': false,
-              'schema_mapping': [
-                {
-                  'schema': 'scale_$entityCount.schema.graphql',
-                  'queries_glob': 'queries/**.graphql',
-                  'output': 'lib/scale_$entityCount.graphql.dart',
-                }
-              ],
-            }));
+          for (var i = 0; i < 3; i++) {
+            final builder =
+                graphQLQueryBuilder(
+                    BuilderOptions({
+                      'generate_helpers': false,
+                      'generate_queries': false,
+                      'schema_mapping': [
+                        {
+                          'schema': 'scale_$entityCount.schema.graphql',
+                          'queries_glob': 'queries/**.graphql',
+                          'output': 'lib/scale_$entityCount.graphql.dart',
+                        },
+                      ],
+                    }),
+                  )
+                  ..onBuild = expectAsync1((definition) {
+                    // Timing capture
+                  });
 
-            builder.onBuild = expectAsync1((definition) {
-              // Timing capture
-            }, count: 1);
-
-            stopwatch.reset();
-            stopwatch.start();
+            stopwatch
+              ..reset()
+              ..start();
 
             await testBuilder(
               builder,
@@ -601,22 +624,24 @@ void main() {
         // Baseline performance measurement
         final baselineTimes = <int>[];
 
-        for (int i = 0; i < 5; i++) {
-          final builder = graphQLQueryBuilder(BuilderOptions({
-            'generate_helpers': true,
-            'generate_queries': true,
-            'schema_mapping': [
-              {
-                'schema': 'regression.schema.graphql',
-                'queries_glob': 'queries/**.graphql',
-                'output': 'lib/regression.graphql.dart',
-              }
-            ],
-          }));
-
-          builder.onBuild = expectAsync1((definition) {
-            // Timing capture
-          }, count: 1);
+        for (var i = 0; i < 5; i++) {
+          final builder =
+              graphQLQueryBuilder(
+                  const BuilderOptions({
+                    'generate_helpers': true,
+                    'generate_queries': true,
+                    'schema_mapping': [
+                      {
+                        'schema': 'regression.schema.graphql',
+                        'queries_glob': 'queries/**.graphql',
+                        'output': 'lib/regression.graphql.dart',
+                      },
+                    ],
+                  }),
+                )
+                ..onBuild = expectAsync1((definition) {
+                  // Timing capture
+                });
 
           final stopwatch = Stopwatch()..start();
 
@@ -646,8 +671,10 @@ void main() {
 
         // Store baseline for future regression testing
         // In a real scenario, this would be compared against stored historical data
-        expect(baselineAverage,
-            lessThan(3000)); // Should complete within 3 seconds
+        expect(
+          baselineAverage,
+          lessThan(3000),
+        ); // Should complete within 3 seconds
 
         // This test serves as a baseline for future performance regression detection
         // Future runs can compare against this baseline to detect regressions

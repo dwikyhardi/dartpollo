@@ -3,19 +3,25 @@ import 'dart:convert';
 
 import 'package:build/build.dart';
 import 'package:crypto/crypto.dart';
+import 'package:dart_style/dart_style.dart';
+import 'package:dartpollo/generator/data/data.dart' show QueryDefinition;
+import 'package:dartpollo/generator/data/query_definition.dart'
+    show QueryDefinition;
 import 'package:dartpollo/services/file_service.dart';
 import 'package:glob/glob.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/language.dart';
+import 'package:pub_semver/pub_semver.dart' show Version;
+import 'package:source_gen/source_gen.dart';
 
 import './generator.dart';
 import './generator/print_helpers.dart';
 import './schema/schema_options.dart';
 import 'generator/data/library_definition.dart';
 import 'generator/errors.dart';
-import 'transformer/add_typename_transformer.dart';
 import 'optimization/batched_ast_processor.dart';
 import 'optimization/streaming_file_processor.dart';
+import 'transformer/add_typename_transformer.dart';
 
 /// [GraphQLQueryBuilder] instance, to be used by `build_runner`.
 GraphQLQueryBuilder graphQLQueryBuilder(BuilderOptions options) =>
@@ -30,30 +36,26 @@ String _addGqlExtensionToPathIfNeeded(String path) {
 
 /// Cached output with input hash for validation
 class _CachedOutput {
-  final String inputHash;
-  final _SchemaProcessingResult result;
-
   _CachedOutput({
     required this.inputHash,
     required this.result,
   });
+
+  final String inputHash;
+  final _SchemaProcessingResult result;
 }
 
 /// Result of processing a single schema mapping
 class _SchemaProcessingResult {
-  final AssetId outputFileId;
-  final String content;
-  final AssetId? forwarderOutputFileId;
-  final String? forwarderContent;
-  final LibraryDefinition libDefinition;
-
   _SchemaProcessingResult({
     required this.outputFileId,
     required this.content,
-    this.forwarderOutputFileId,
-    this.forwarderContent,
     required this.libDefinition,
   });
+
+  final AssetId outputFileId;
+  final String content;
+  final LibraryDefinition libDefinition;
 }
 
 /// Generate automatic output path when output is null
@@ -74,8 +76,9 @@ String _generateAutoOutputPath(String queriesGlob) {
   final outputSegments = ['__generated__'];
 
   // Extract filename from original queries_glob
-  final originalFilename =
-      FileService.extractBasename(uri.pathSegments.last).split('.').first;
+  final originalFilename = FileService.extractBasename(
+    uri.pathSegments.last,
+  ).split('.').first;
 
   // Add .dart extension
   final outputFilename = '$originalFilename.dart';
@@ -86,8 +89,9 @@ String _generateAutoOutputPath(String queriesGlob) {
 }
 
 List<String> _builderOptionsToExpectedOutputs(BuilderOptions builderOptions) {
-  final schemaMapping =
-      GeneratorOptions.fromJson(builderOptions.config).schemaMapping;
+  final schemaMapping = GeneratorOptions.fromJson(
+    builderOptions.config,
+  ).schemaMapping;
 
   if (schemaMapping.isEmpty) {
     throw MissingBuildConfigurationException('schema_mapping');
@@ -97,7 +101,8 @@ List<String> _builderOptionsToExpectedOutputs(BuilderOptions builderOptions) {
       .map((s) {
         if (s.queriesGlob == null) {
           throw MissingBuildConfigurationException(
-              'schema_mapping => queries_glob required');
+            'schema_mapping => queries_glob required',
+          );
         }
 
         // Generate paths for all possible operation types since we detect at build time
@@ -113,11 +118,11 @@ List<String> _builderOptionsToExpectedOutputs(BuilderOptions builderOptions) {
 }
 
 /// Main Dartpollo builder.
-class GraphQLQueryBuilder implements Builder {
+class GraphQLQueryBuilder implements SharedPartBuilder {
   /// Creates a builder from [BuilderOptions].
   GraphQLQueryBuilder(BuilderOptions builderOptions)
-      : options = GeneratorOptions.fromJson(builderOptions.config),
-        expectedOutputs = _builderOptionsToExpectedOutputs(builderOptions);
+    : options = GeneratorOptions.fromJson(builderOptions.config),
+      expectedOutputs = _builderOptionsToExpectedOutputs(builderOptions);
 
   /// This generator options, gathered from `build.yaml` file.
   final GeneratorOptions options;
@@ -148,8 +153,8 @@ class GraphQLQueryBuilder implements Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-        r'$lib$': expectedOutputs,
-      };
+    r'$lib$': expectedOutputs,
+  };
 
   /// Get comprehensive performance statistics from all optimization components
   Map<String, dynamic> getPerformanceStats() {
@@ -178,10 +183,10 @@ class GraphQLQueryBuilder implements Builder {
   Future<List<DocumentNode>> readGraphQlFiles(
     BuildStep buildStep,
     String schema,
-  ) async {
+  ) {
     final schemaAssetStream = buildStep.findAssets(Glob(schema));
 
-    return await schemaAssetStream
+    return schemaAssetStream
         .asyncMap(
           (asset) async => parseString(
             await buildStep.readAsString(asset),
@@ -193,7 +198,9 @@ class GraphQLQueryBuilder implements Builder {
 
   /// Compute content hash for a set of files matching a glob pattern
   Future<String> _computeContentHash(
-      BuildStep buildStep, String globPattern) async {
+    BuildStep buildStep,
+    String globPattern,
+  ) async {
     final assets = await buildStep.findAssets(Glob(globPattern)).toList();
     final contents = <String>[];
 
@@ -237,14 +244,12 @@ class GraphQLQueryBuilder implements Builder {
       documents = await _streamingProcessor.processMultipleFiles(
         buildStep,
         assetIds,
-        enableMemoryMonitoring: true,
       );
     } else if (assetIds.isNotEmpty) {
       // Process single file with streaming if large
       documents = await _streamingProcessor.processLargeFile(
         buildStep,
         assetIds.first,
-        enableMemoryMonitoring: true,
       );
     } else {
       // Fallback to regular processing if no assets found
@@ -275,31 +280,36 @@ class GraphQLQueryBuilder implements Builder {
 
     // Add queries hash
     if (schemaMap.queriesGlob != null) {
-      inputHashes
-          .add(await _computeContentHash(buildStep, schemaMap.queriesGlob!));
+      inputHashes.add(
+        await _computeContentHash(buildStep, schemaMap.queriesGlob!),
+      );
     }
 
     // Add schema fragments hash
     if (schemaMap.fragmentsGlob != null) {
-      inputHashes
-          .add(await _computeContentHash(buildStep, schemaMap.fragmentsGlob!));
+      inputHashes.add(
+        await _computeContentHash(buildStep, schemaMap.fragmentsGlob!),
+      );
     }
 
     // Add common fragments hash (convert to string representation)
-    final commonFragmentsStr =
-        fragmentsCommon.map((f) => f.toString()).join('|');
-    final commonFragmentsHash =
-        sha256.convert(utf8.encode(commonFragmentsStr)).toString();
+    final commonFragmentsStr = fragmentsCommon
+        .map((f) => f.toString())
+        .join('|');
+    final commonFragmentsHash = sha256
+        .convert(utf8.encode(commonFragmentsStr))
+        .toString();
     inputHashes.add(commonFragmentsHash);
 
     // Add options hash
-    final optionsStr = '${copyOptions.toString()}|${schemaMap.toString()}';
+    final optionsStr = '$copyOptions|$schemaMap';
     final optionsHash = sha256.convert(utf8.encode(optionsStr)).toString();
     inputHashes.add(optionsHash);
 
     // Combine all hashes
-    final combinedHash =
-        sha256.convert(utf8.encode(inputHashes.join('|'))).toString();
+    final combinedHash = sha256
+        .convert(utf8.encode(inputHashes.join('|')))
+        .toString();
     final cacheKey = schemaMap.queriesGlob ?? 'unknown';
 
     // Check if we have cached output with same hash
@@ -307,7 +317,7 @@ class GraphQLQueryBuilder implements Builder {
         _outputCache[cacheKey]!.inputHash == combinedHash) {
       return _outputCache[cacheKey]!.result;
     }
-    List<FragmentDefinitionNode> schemaCommonFragments = [
+    var schemaCommonFragments = <FragmentDefinitionNode>[
       ...fragmentsCommon,
     ];
     final schemaFragmentsGlob = schemaMap.fragmentsGlob;
@@ -336,7 +346,7 @@ class GraphQLQueryBuilder implements Builder {
     if (queriesGlob == null) {
       throw MissingBuildConfigurationException('schema_map => queries_glob');
     } else if (Glob(queriesGlob).matches(schema)) {
-      throw QueryGlobsSchemaException();
+      throw const QueryGlobsSchemaException();
     }
 
     final gqlSchema = await readGraphQlFilesWithCache(buildStep, schema);
@@ -365,7 +375,9 @@ class GraphQLQueryBuilder implements Builder {
       // Use BatchedASTProcessor for all transformations including AppendTypename
       gqlDocs = await _astProcessor.processBatch(gqlDocs, transformers);
       schemaCommonFragments = await _astProcessor.processFragmentsBatch(
-          schemaCommonFragments, transformers);
+        schemaCommonFragments,
+        transformers,
+      );
     }
 
     final libDefinition = generateLibrary(
@@ -397,8 +409,6 @@ class GraphQLQueryBuilder implements Builder {
     final result = _SchemaProcessingResult(
       outputFileId: outputFileId,
       content: buffer.toString(),
-      forwarderOutputFileId: null,
-      forwarderContent: null,
       libDefinition: libDefinition,
     );
 
@@ -413,14 +423,15 @@ class GraphQLQueryBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    List<FragmentDefinitionNode> fragmentsCommon = [];
+    final fragmentsCommon = <FragmentDefinitionNode>[];
 
-    GeneratorOptions copyOptions = options;
+    var copyOptions = options;
     if (copyOptions.convertEnumToString) {
       final copyMapping = copyOptions.schemaMapping
           .map(
             (e) => e.copyWith(
-                convertEnumToString: copyOptions.convertEnumToString),
+              convertEnumToString: copyOptions.convertEnumToString,
+            ),
           )
           .toList();
 
@@ -445,9 +456,13 @@ class GraphQLQueryBuilder implements Builder {
     }
 
     // Process all schema mappings in parallel
-    final futures = copyOptions.schemaMapping.map((schemaMap) async {
-      return await _processSchemaMapping(
-          buildStep, schemaMap, fragmentsCommon, copyOptions);
+    final futures = copyOptions.schemaMapping.map((schemaMap) {
+      return _processSchemaMapping(
+        buildStep,
+        schemaMap,
+        fragmentsCommon,
+        copyOptions,
+      );
     });
 
     final results = await Future.wait(futures);
@@ -462,4 +477,13 @@ class GraphQLQueryBuilder implements Builder {
       // No forwarder files to write
     }
   }
+
+  @override
+  bool get allowSyntaxErrors => throw UnimplementedError();
+
+  @override
+  String Function(String code, Version languageVersion) get formatOutput => _defaultFormatOutput;
 }
+
+String _defaultFormatOutput(String code, Version languageVersion) =>
+    DartFormatter(languageVersion: languageVersion).format(code);

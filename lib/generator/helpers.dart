@@ -1,6 +1,6 @@
-import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:build/build.dart';
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:dartpollo/generator/ephemeral_data.dart';
 import 'package:gql/ast.dart';
 
 typedef IterableFunction<T, U> = U Function(T i);
@@ -72,7 +72,9 @@ List<String> dartKeywords = const [
 ];
 
 Iterable<T> _removeDuplicatedBy<T, U>(
-    Iterable<T> list, IterableFunction<T, U> fn) {
+  Iterable<T> list,
+  IterableFunction<T, U> fn,
+) {
   final values = <U, bool>{};
   return list.where((i) {
     final value = fn(i);
@@ -86,11 +88,11 @@ Iterable<T> _removeDuplicatedBy<T, U>(
 /// new -> kw$new
 String normalizeName(String name) {
   final regExp = RegExp(r'^(_+)([\w$]*)$');
-  var matches = regExp.allMatches(name);
+  final matches = regExp.allMatches(name);
 
   if (matches.isNotEmpty) {
-    var match = matches.elementAt(0);
-    var fieldName = match.group(2)!;
+    final match = matches.elementAt(0);
+    final fieldName = match.group(2)!;
 
     return fieldName.padLeft(name.length, r'$');
   }
@@ -121,8 +123,9 @@ extension ExtensionsOnIterable<T, U> on Iterable<T> {
   /// Merge multiple values from an iterable given a predicate without modifying
   /// the original iterable.
   Iterable<T> mergeDuplicatesBy(
-          IterableFunction<T, U> fn, MergeAbleFunction<T> mergeFn) =>
-      _mergeDuplicatesBy(this, fn, mergeFn);
+    IterableFunction<T, U> fn,
+    MergeAbleFunction<T> mergeFn,
+  ) => _mergeDuplicatesBy(this, fn, mergeFn);
 
   /// Remove duplicated values from an iterable given a predicate without
   /// modifying the original iterable.
@@ -166,5 +169,5 @@ List<String> proceedDeprecated(
 /// Logger function
 void logFn(Context context, int align, Object logObject) {
   if (!context.log) return;
-  log.fine('${List.filled(align, '|   ').join()}${logObject.toString()}');
+  log.fine('${List.filled(align, '|   ').join()}$logObject');
 }

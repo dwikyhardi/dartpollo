@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:dartpollo/generator/helpers.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('On removeDuplicatedBy helper', () {
@@ -20,7 +20,7 @@ void main() {
         {'a': 2},
         {'a': 1},
       ];
-      final copyOfIt = List.from(it);
+      final copyOfIt = List<dynamic>.from(it);
       it.removeDuplicatedBy((i) => i['a']);
 
       expect(it, equals(copyOfIt));
@@ -36,11 +36,12 @@ void main() {
       final anotherIt = it.removeDuplicatedBy((i) => i['a']);
 
       expect(
-          anotherIt,
-          equals([
-            {'a': 1, 'first': true},
-            {'a': 2, 'first': true},
-          ]));
+        anotherIt,
+        equals([
+          {'a': 1, 'first': true},
+          {'a': 2, 'first': true},
+        ]),
+      );
     });
 
     test('Iterable function can return anything.', () {
@@ -77,11 +78,12 @@ void main() {
       final anotherIt = it.mergeDuplicatesBy((i) => i['a'], (i, _) => i);
 
       expect(
-          anotherIt,
-          equals([
-            {'a': 1, 'first': true},
-            {'a': 2, 'first': true},
-          ]));
+        anotherIt,
+        equals([
+          {'a': 1, 'first': true},
+          {'a': 2, 'first': true},
+        ]),
+      );
     });
 
     test('It can return a list of the last elements based on fn.', () {
@@ -94,11 +96,12 @@ void main() {
       final anotherIt = it.mergeDuplicatesBy((i) => i['a'], (_, i) => i);
 
       expect(
-          anotherIt,
-          equals([
-            {'a': 1, 'last': true},
-            {'a': 2, 'last': true},
-          ]));
+        anotherIt,
+        equals([
+          {'a': 1, 'last': true},
+          {'a': 2, 'last': true},
+        ]),
+      );
     });
   });
 }

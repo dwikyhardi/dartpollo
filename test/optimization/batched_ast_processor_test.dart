@@ -1,17 +1,17 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
 import 'package:dartpollo/optimization/batched_ast_processor.dart';
 import 'package:dartpollo/transformer/add_typename_transformer.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 /// Mock transformer for testing mixed transformer scenarios
 class MockTransformer extends TransformingVisitor {
-  final String fieldToAdd;
-
   MockTransformer(this.fieldToAdd);
+  final String fieldToAdd;
 
   @override
   OperationDefinitionNode visitOperationDefinitionNode(
-      OperationDefinitionNode node) {
+    OperationDefinitionNode node,
+  ) {
     return OperationDefinitionNode(
       type: node.type,
       name: node.name,
@@ -46,62 +46,68 @@ void main() {
         final documents = [_createSimpleQuery()];
 
         // This should not throw and should use the AppendTypename processing path
-        expect(() => processor.processBatch(documents, transformers),
-            returnsNormally);
+        expect(
+          () => processor.processBatch(documents, transformers),
+          returnsNormally,
+        );
       });
 
-      test('should process single document with AppendTypename transformer',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final documents = [_createSimpleQuery()];
+      test(
+        'should process single document with AppendTypename transformer',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final documents = [_createSimpleQuery()];
 
-        final results = await processor.processBatch(documents, transformers);
+          final results = await processor.processBatch(documents, transformers);
 
-        expect(results, hasLength(1));
-        expect(results.first.definitions, hasLength(1));
+          expect(results, hasLength(1));
+          expect(results.first.definitions, hasLength(1));
 
-        final operation =
-            results.first.definitions.first as OperationDefinitionNode;
-        final selections = operation.selectionSet.selections;
-
-        // Should have the original field plus the __typename field
-        expect(selections, hasLength(2));
-
-        // Check that __typename field was added
-        final typenameField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == '__typename');
-        expect(typenameField.name.value, equals('__typename'));
-      });
-
-      test('should process multiple documents with AppendTypename transformer',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final documents = [
-          _createSimpleQuery('Query1'),
-          _createSimpleQuery('Query2'),
-          _createSimpleQuery('Query3'),
-        ];
-
-        final results = await processor.processBatch(documents, transformers);
-
-        expect(results, hasLength(3));
-
-        for (int i = 0; i < results.length; i++) {
           final operation =
-              results[i].definitions.first as OperationDefinitionNode;
+              results.first.definitions.first as OperationDefinitionNode;
           final selections = operation.selectionSet.selections;
 
-          // Each should have the original field plus the __typename field
+          // Should have the original field plus the __typename field
           expect(selections, hasLength(2));
 
-          // Check that __typename field was added to each
-          final typenameField = selections
-              .whereType<FieldNode>()
-              .firstWhere((field) => field.name.value == '__typename');
+          // Check that __typename field was added
+          final typenameField = selections.whereType<FieldNode>().firstWhere(
+            (field) => field.name.value == '__typename',
+          );
           expect(typenameField.name.value, equals('__typename'));
-        }
-      });
+        },
+      );
+
+      test(
+        'should process multiple documents with AppendTypename transformer',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final documents = [
+            _createSimpleQuery('Query1'),
+            _createSimpleQuery('Query2'),
+            _createSimpleQuery('Query3'),
+          ];
+
+          final results = await processor.processBatch(documents, transformers);
+
+          expect(results, hasLength(3));
+
+          for (var i = 0; i < results.length; i++) {
+            final operation =
+                results[i].definitions.first as OperationDefinitionNode;
+            final selections = operation.selectionSet.selections;
+
+            // Each should have the original field plus the __typename field
+            expect(selections, hasLength(2));
+
+            // Check that __typename field was added to each
+            final typenameField = selections.whereType<FieldNode>().firstWhere(
+              (field) => field.name.value == '__typename',
+            );
+            expect(typenameField.name.value, equals('__typename'));
+          }
+        },
+      );
 
       test('should handle nested selections with AppendTypename', () async {
         final transformers = [AppendTypename('__typename')];
@@ -119,15 +125,15 @@ void main() {
         expect(selections, hasLength(2));
 
         // Check that __typename field was added at root level
-        final typenameField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == '__typename');
+        final typenameField = selections.whereType<FieldNode>().firstWhere(
+          (field) => field.name.value == '__typename',
+        );
         expect(typenameField.name.value, equals('__typename'));
 
         // Check nested field also has __typename
-        final userField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == 'user');
+        final userField = selections.whereType<FieldNode>().firstWhere(
+          (field) => field.name.value == 'user',
+        );
         expect(userField.selectionSet, isNotNull);
 
         final nestedSelections = userField.selectionSet!.selections;
@@ -150,9 +156,9 @@ void main() {
         final selections = operation.selectionSet.selections;
 
         // Check that custom typename field was added
-        final typenameField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == 'customTypename');
+        final typenameField = selections.whereType<FieldNode>().firstWhere(
+          (field) => field.name.value == 'customTypename',
+        );
         expect(typenameField.name.value, equals('customTypename'));
       });
 
@@ -225,8 +231,10 @@ void main() {
             .whereType<FieldNode>()
             .map((field) => field.name.value)
             .toSet();
-        expect(fieldNames,
-            containsAll(['test', 'field1', 'field2', '__typename']));
+        expect(
+          fieldNames,
+          containsAll(['test', 'field1', 'field2', '__typename']),
+        );
       });
 
       test('should handle AppendTypename before other transformers', () async {
@@ -253,7 +261,7 @@ void main() {
         expect(fieldNames, containsAll(['test', '__typename', 'mockField']));
       });
 
-      test('should handle multiple AppendTypename transformers', () async {
+      test('should handle multiple AppendTypename transformers', () {
         final transformers = [
           AppendTypename('__typename'),
           AppendTypename('customType'),
@@ -269,43 +277,49 @@ void main() {
     });
 
     group('Fragment Processing with AppendTypename', () {
-      test('should process fragments with AppendTypename transformer',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final fragments = [_createSimpleFragment()];
+      test(
+        'should process fragments with AppendTypename transformer',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final fragments = [_createSimpleFragment()];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+          final results = await processor.processFragmentsBatch(
+            fragments,
+            transformers,
+          );
 
-        expect(results, hasLength(1));
+          expect(results, hasLength(1));
 
-        final fragment = results.first;
-        final selections = fragment.selectionSet.selections;
+          final fragment = results.first;
+          final selections = fragment.selectionSet.selections;
 
-        // Should have the original field plus the __typename field
-        expect(selections, hasLength(2));
+          // Should have the original field plus the __typename field
+          expect(selections, hasLength(2));
 
-        // Check that __typename field was added
-        final typenameField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == '__typename');
-        expect(typenameField.name.value, equals('__typename'));
-      });
+          // Check that __typename field was added
+          final typenameField = selections.whereType<FieldNode>().firstWhere(
+            (field) => field.name.value == '__typename',
+          );
+          expect(typenameField.name.value, equals('__typename'));
+        },
+      );
 
       test('should process multiple fragments with AppendTypename', () async {
         final transformers = [AppendTypename('__typename')];
         final fragments = [
-          _createSimpleFragment('Fragment1', 'User'),
+          _createSimpleFragment('Fragment1'),
           _createSimpleFragment('Fragment2', 'Post'),
           _createSimpleFragment('Fragment3', 'Comment'),
         ];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+        final results = await processor.processFragmentsBatch(
+          fragments,
+          transformers,
+        );
 
         expect(results, hasLength(3));
 
-        for (int i = 0; i < results.length; i++) {
+        for (var i = 0; i < results.length; i++) {
           final fragment = results[i];
           final selections = fragment.selectionSet.selections;
 
@@ -313,20 +327,22 @@ void main() {
           expect(selections, hasLength(2));
 
           // Check that __typename field was added to each
-          final typenameField = selections
-              .whereType<FieldNode>()
-              .firstWhere((field) => field.name.value == '__typename');
+          final typenameField = selections.whereType<FieldNode>().firstWhere(
+            (field) => field.name.value == '__typename',
+          );
           expect(typenameField.name.value, equals('__typename'));
         }
       });
 
       test('should preserve fragment name and type condition', () async {
         final transformers = [AppendTypename('__typename')];
-        final originalFragment = _createSimpleFragment('TestFragment', 'User');
+        final originalFragment = _createSimpleFragment();
         final fragments = [originalFragment];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+        final results = await processor.processFragmentsBatch(
+          fragments,
+          transformers,
+        );
 
         final transformedFragment = results.first;
 
@@ -341,8 +357,10 @@ void main() {
         final transformers = [AppendTypename('__typename')];
         final fragments = [_createNestedFragment()];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+        final results = await processor.processFragmentsBatch(
+          fragments,
+          transformers,
+        );
 
         final fragment = results.first;
         final selections = fragment.selectionSet.selections;
@@ -351,15 +369,15 @@ void main() {
         expect(selections, hasLength(3));
 
         // Check that __typename field was added at fragment level
-        final typenameField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == '__typename');
+        final typenameField = selections.whereType<FieldNode>().firstWhere(
+          (field) => field.name.value == '__typename',
+        );
         expect(typenameField.name.value, equals('__typename'));
 
         // Check nested field also has __typename
-        final profileField = selections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == 'profile');
+        final profileField = selections.whereType<FieldNode>().firstWhere(
+          (field) => field.name.value == 'profile',
+        );
         expect(profileField.selectionSet, isNotNull);
 
         final nestedSelections = profileField.selectionSet!.selections;
@@ -377,8 +395,10 @@ void main() {
         ];
         final fragments = [_createSimpleFragment()];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+        final results = await processor.processFragmentsBatch(
+          fragments,
+          transformers,
+        );
 
         final fragment = results.first;
         final selections = fragment.selectionSet.selections;
@@ -409,20 +429,22 @@ void main() {
         expect(stats['appendTypenameCacheSize'], greaterThan(0));
       });
 
-      test('should cache fragment AppendTypename transformation results',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final fragments = [_createSimpleFragment()];
+      test(
+        'should cache fragment AppendTypename transformation results',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final fragments = [_createSimpleFragment()];
 
-        // Process twice
-        await processor.processFragmentsBatch(fragments, transformers);
-        await processor.processFragmentsBatch(fragments, transformers);
+          // Process twice
+          await processor.processFragmentsBatch(fragments, transformers);
+          await processor.processFragmentsBatch(fragments, transformers);
 
-        final stats = processor.getCacheStats();
+          final stats = processor.getCacheStats();
 
-        // Should have fragment cache entries
-        expect(stats['fragmentAppendTypenameCacheSize'], greaterThan(0));
-      });
+          // Should have fragment cache entries
+          expect(stats['fragmentAppendTypenameCacheSize'], greaterThan(0));
+        },
+      );
 
       test('should cache AppendTypename transformation results', () async {
         final documents = [_createSimpleQuery()];
@@ -441,7 +463,9 @@ void main() {
 
         stats = processor.getCacheStats();
         expect(
-            stats['appendTypenameCacheSize'], equals(1)); // Should still be 1
+          stats['appendTypenameCacheSize'],
+          equals(1),
+        ); // Should still be 1
       });
 
       test('should cache mixed transformer results separately', () async {
@@ -460,73 +484,91 @@ void main() {
         expect(stats['appendTypenameCacheSize'], equals(2));
       });
 
-      test('should reuse cached results for identical transformations',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final documents = [_createSimpleQuery()];
+      test(
+        'should reuse cached results for identical transformations',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final documents = [_createSimpleQuery()];
 
-        // Process first time
-        final results1 = await processor.processBatch(documents, transformers);
+          // Process first time
+          final results1 = await processor.processBatch(
+            documents,
+            transformers,
+          );
 
-        // Process second time (should use cache)
-        final results2 = await processor.processBatch(documents, transformers);
+          // Process second time (should use cache)
+          final results2 = await processor.processBatch(
+            documents,
+            transformers,
+          );
 
-        // Results should be identical
-        expect(results1.length, equals(results2.length));
+          // Results should be identical
+          expect(results1.length, equals(results2.length));
 
-        final op1 = results1.first.definitions.first as OperationDefinitionNode;
-        final op2 = results2.first.definitions.first as OperationDefinitionNode;
+          final op1 =
+              results1.first.definitions.first as OperationDefinitionNode;
+          final op2 =
+              results2.first.definitions.first as OperationDefinitionNode;
 
-        expect(op1.selectionSet.selections.length,
-            equals(op2.selectionSet.selections.length));
-      });
+          expect(
+            op1.selectionSet.selections.length,
+            equals(op2.selectionSet.selections.length),
+          );
+        },
+      );
 
-      test('should clear AppendTypename caches when clearCaches is called',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final documents = [_createSimpleQuery()];
-        final fragments = [_createSimpleFragment()];
+      test(
+        'should clear AppendTypename caches when clearCaches is called',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final documents = [_createSimpleQuery()];
+          final fragments = [_createSimpleFragment()];
 
-        // Process to populate caches
-        await processor.processBatch(documents, transformers);
-        await processor.processFragmentsBatch(fragments, transformers);
+          // Process to populate caches
+          await processor.processBatch(documents, transformers);
+          await processor.processFragmentsBatch(fragments, transformers);
 
-        // Verify caches are populated
-        var stats = processor.getCacheStats();
-        expect(stats['appendTypenameCacheSize'], greaterThan(0));
-        expect(stats['fragmentAppendTypenameCacheSize'], greaterThan(0));
+          // Verify caches are populated
+          var stats = processor.getCacheStats();
+          expect(stats['appendTypenameCacheSize'], greaterThan(0));
+          expect(stats['fragmentAppendTypenameCacheSize'], greaterThan(0));
 
-        // Clear caches
-        processor.clearCaches();
+          // Clear caches
+          processor.clearCaches();
 
-        // Verify caches are cleared
-        stats = processor.getCacheStats();
-        expect(stats['appendTypenameCacheSize'], equals(0));
-        expect(stats['fragmentAppendTypenameCacheSize'], equals(0));
-      });
+          // Verify caches are cleared
+          stats = processor.getCacheStats();
+          expect(stats['appendTypenameCacheSize'], equals(0));
+          expect(stats['fragmentAppendTypenameCacheSize'], equals(0));
+        },
+      );
     });
 
     group('Error Handling and Validation', () {
-      test('should handle empty fragments with AppendTypename gracefully',
-          () async {
-        final transformers = [AppendTypename('__typename')];
-        final fragments = [_createEmptyFragment()];
+      test(
+        'should handle empty fragments with AppendTypename gracefully',
+        () async {
+          final transformers = [AppendTypename('__typename')];
+          final fragments = [_createEmptyFragment()];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+          final results = await processor.processFragmentsBatch(
+            fragments,
+            transformers,
+          );
 
-        expect(results, hasLength(1));
-        final fragment = results.first;
-        expect(fragment.name.value, 'EmptyFragment');
+          expect(results, hasLength(1));
+          final fragment = results.first;
+          expect(fragment.name.value, 'EmptyFragment');
 
-        // Should have added the typename field
-        final hasTypename = fragment.selectionSet.selections
-            .whereType<FieldNode>()
-            .any((field) => field.name.value == '__typename');
-        expect(hasTypename, isTrue);
-      });
+          // Should have added the typename field
+          final hasTypename = fragment.selectionSet.selections
+              .whereType<FieldNode>()
+              .any((field) => field.name.value == '__typename');
+          expect(hasTypename, isTrue);
+        },
+      );
 
-      test('should validate transformation results', () async {
+      test('should validate transformation results', () {
         final transformers = [AppendTypename('__typename')];
         final documents = [_createSimpleQuery()];
 
@@ -537,7 +579,7 @@ void main() {
         );
       });
 
-      test('should handle empty document list gracefully', () async {
+      test('should handle empty document list gracefully', () {
         final transformers = [AppendTypename('__typename')];
         final documents = <DocumentNode>[];
 
@@ -552,13 +594,15 @@ void main() {
         final transformers = [AppendTypename('__typename')];
         final fragments = <FragmentDefinitionNode>[];
 
-        final results =
-            await processor.processFragmentsBatch(fragments, transformers);
+        final results = await processor.processFragmentsBatch(
+          fragments,
+          transformers,
+        );
 
         expect(results, isEmpty);
       });
 
-      test('should handle empty transformer list gracefully', () async {
+      test('should handle empty transformer list gracefully', () {
         final transformers = <TransformingVisitor>[];
         final documents = [_createSimpleQuery()];
 
@@ -575,86 +619,108 @@ void main() {
 // Helper functions to create test data
 
 DocumentNode _createSimpleQuery([String name = 'TestQuery']) {
-  return DocumentNode(definitions: [
-    OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: name),
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(name: NameNode(value: 'test')),
-      ]),
-    ),
-  ]);
+  return DocumentNode(
+    definitions: [
+      OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: name),
+        selectionSet: const SelectionSetNode(
+          selections: [
+            FieldNode(name: NameNode(value: 'test')),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 DocumentNode _createNestedQuery() {
-  return DocumentNode(definitions: [
-    OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'NestedQuery'),
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-          name: NameNode(value: 'user'),
-          selectionSet: SelectionSetNode(selections: [
-            FieldNode(name: NameNode(value: 'id')),
-            FieldNode(name: NameNode(value: 'name')),
-          ]),
+  return const DocumentNode(
+    definitions: [
+      OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'NestedQuery'),
+        selectionSet: SelectionSetNode(
+          selections: [
+            FieldNode(
+              name: NameNode(value: 'user'),
+              selectionSet: SelectionSetNode(
+                selections: [
+                  FieldNode(name: NameNode(value: 'id')),
+                  FieldNode(name: NameNode(value: 'name')),
+                ],
+              ),
+            ),
+          ],
         ),
-      ]),
-    ),
-  ]);
+      ),
+    ],
+  );
 }
 
 DocumentNode _createQueryWithExistingTypename() {
-  return DocumentNode(definitions: [
-    OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'QueryWithTypename'),
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(name: NameNode(value: 'test')),
-        FieldNode(name: NameNode(value: '__typename')),
-      ]),
-    ),
-  ]);
+  return const DocumentNode(
+    definitions: [
+      OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'QueryWithTypename'),
+        selectionSet: SelectionSetNode(
+          selections: [
+            FieldNode(name: NameNode(value: 'test')),
+            FieldNode(name: NameNode(value: '__typename')),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
-FragmentDefinitionNode _createSimpleFragment(
-    [String name = 'TestFragment', String type = 'User']) {
+FragmentDefinitionNode _createSimpleFragment([
+  String name = 'TestFragment',
+  String type = 'User',
+]) {
   return FragmentDefinitionNode(
     name: NameNode(value: name),
     typeCondition: TypeConditionNode(
       on: NamedTypeNode(name: NameNode(value: type)),
     ),
-    selectionSet: SelectionSetNode(selections: [
-      FieldNode(name: NameNode(value: 'id')),
-    ]),
+    selectionSet: const SelectionSetNode(
+      selections: [
+        FieldNode(name: NameNode(value: 'id')),
+      ],
+    ),
   );
 }
 
 FragmentDefinitionNode _createNestedFragment() {
-  return FragmentDefinitionNode(
+  return const FragmentDefinitionNode(
     name: NameNode(value: 'NestedFragment'),
     typeCondition: TypeConditionNode(
       on: NamedTypeNode(name: NameNode(value: 'User')),
     ),
-    selectionSet: SelectionSetNode(selections: [
-      FieldNode(name: NameNode(value: 'id')),
-      FieldNode(
-        name: NameNode(value: 'profile'),
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(name: NameNode(value: 'name')),
-          FieldNode(name: NameNode(value: 'email')),
-        ]),
-      ),
-    ]),
+    selectionSet: SelectionSetNode(
+      selections: [
+        FieldNode(name: NameNode(value: 'id')),
+        FieldNode(
+          name: NameNode(value: 'profile'),
+          selectionSet: SelectionSetNode(
+            selections: [
+              FieldNode(name: NameNode(value: 'name')),
+              FieldNode(name: NameNode(value: 'email')),
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 }
 
 FragmentDefinitionNode _createEmptyFragment() {
-  return FragmentDefinitionNode(
+  return const FragmentDefinitionNode(
     name: NameNode(value: 'EmptyFragment'),
     typeCondition: TypeConditionNode(
       on: NamedTypeNode(name: NameNode(value: 'User')),
     ),
-    selectionSet: SelectionSetNode(selections: []),
+    selectionSet: SelectionSetNode(),
   );
 }

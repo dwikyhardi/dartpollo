@@ -1,8 +1,8 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
 import 'package:dartpollo/context/schema_context.dart';
-import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
 import 'package:dartpollo/schema/schema_options.dart';
+import 'package:dartpollo/visitor/type_definition_node_visitor.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('SchemaContext', () {
@@ -12,28 +12,30 @@ void main() {
 
     setUp(() {
       // Create a valid schema with basic types
-      validSchema = DocumentNode(definitions: [
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'User'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'id'),
-              type: NamedTypeNode(name: NameNode(value: 'ID')),
-            ),
-            FieldDefinitionNode(
-              name: NameNode(value: 'name'),
-              type: NamedTypeNode(name: NameNode(value: 'String')),
-            ),
-          ],
-        ),
-        EnumTypeDefinitionNode(
-          name: NameNode(value: 'Status'),
-          values: [
-            EnumValueDefinitionNode(name: NameNode(value: 'ACTIVE')),
-            EnumValueDefinitionNode(name: NameNode(value: 'INACTIVE')),
-          ],
-        ),
-      ]);
+      validSchema = const DocumentNode(
+        definitions: [
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'User'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'id'),
+                type: NamedTypeNode(name: NameNode(value: 'ID')),
+              ),
+              FieldDefinitionNode(
+                name: NameNode(value: 'name'),
+                type: NamedTypeNode(name: NameNode(value: 'String')),
+              ),
+            ],
+          ),
+          EnumTypeDefinitionNode(
+            name: NameNode(value: 'Status'),
+            values: [
+              EnumValueDefinitionNode(name: NameNode(value: 'ACTIVE')),
+              EnumValueDefinitionNode(name: NameNode(value: 'INACTIVE')),
+            ],
+          ),
+        ],
+      );
 
       typeVisitor = TypeDefinitionNodeVisitor();
       validSchema.accept(typeVisitor);
@@ -67,7 +69,7 @@ void main() {
       });
 
       test('throws exception for empty schema', () {
-        final emptySchema = DocumentNode(definitions: []);
+        const emptySchema = DocumentNode();
         final context = SchemaContext(
           schema: emptySchema,
           typeVisitor: TypeDefinitionNodeVisitor(),
@@ -76,10 +78,13 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<SchemaContextValidationException>().having(
+          throwsA(
+            isA<SchemaContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('at least one definition'))),
+              contains('at least one definition'),
+            ),
+          ),
         );
       });
 
@@ -96,10 +101,13 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<SchemaContextValidationException>().having(
+          throwsA(
+            isA<SchemaContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('Type visitor must be initialized'))),
+              contains('Type visitor must be initialized'),
+            ),
+          ),
         );
       });
 
@@ -117,10 +125,13 @@ void main() {
 
         expect(
           context.validate,
-          throwsA(isA<SchemaContextValidationException>().having(
+          throwsA(
+            isA<SchemaContextValidationException>().having(
               (e) => e.message,
               'message',
-              contains('Missing required scalar type'))),
+              contains('Missing required scalar type'),
+            ),
+          ),
         );
       });
     });
@@ -151,12 +162,16 @@ void main() {
         final userType = context.getType('User');
         expect(userType, isA<ObjectTypeDefinitionNode>());
         expect(
-            (userType as ObjectTypeDefinitionNode).name.value, equals('User'));
+          (userType! as ObjectTypeDefinitionNode).name.value,
+          equals('User'),
+        );
 
         final statusType = context.getType('Status');
         expect(statusType, isA<EnumTypeDefinitionNode>());
-        expect((statusType as EnumTypeDefinitionNode).name.value,
-            equals('Status'));
+        expect(
+          (statusType! as EnumTypeDefinitionNode).name.value,
+          equals('Status'),
+        );
       });
 
       test('getType returns null for non-existing types', () {
@@ -199,7 +214,9 @@ void main() {
       expect(exception.message, equals(message));
       expect(exception.toString(), contains(message));
       expect(
-          exception.toString(), contains('SchemaContextValidationException'));
+        exception.toString(),
+        contains('SchemaContextValidationException'),
+      );
     });
   });
 }

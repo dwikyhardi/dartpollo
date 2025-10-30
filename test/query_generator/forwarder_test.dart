@@ -7,7 +7,7 @@ void main() {
   group('On forwarder', () {
     test(
       'Forwarder are created if output file does not end with .graphql.dart',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         libraryDefinition: libraryDefinition,
         generatedFile: generatedFile,
@@ -25,7 +25,7 @@ void main() {
               'schema': 'api.schema.graphql',
               'queries_glob': 'queries/**.graphql',
               'output': 'lib/query.dart',
-            }
+            },
           ],
         },
         outputsMap: {
@@ -45,27 +45,27 @@ query custom {
 }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'Custom$_QueryRoot'),
       operationName: r'custom',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'Custom$_QueryRoot'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'a'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'Custom$_QueryRoot'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'a'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

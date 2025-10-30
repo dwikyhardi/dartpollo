@@ -1,24 +1,24 @@
 import 'package:gql/ast.dart';
-import 'base_visitor.dart';
-import '../generator/data/fragment_class_definition.dart';
+
 import '../generator/data/class_property.dart';
+import '../generator/data/fragment_class_definition.dart';
 import '../generator/graphql_helpers.dart';
-import '../visitor/type_definition_node_visitor.dart';
 import '../schema/schema_options.dart';
+import '../visitor/type_definition_node_visitor.dart';
+import 'base_visitor.dart';
 
 /// Specialized visitor for handling GraphQL fragment definitions.
 /// Processes fragment nodes and generates fragment class definitions.
 class FragmentVisitor extends BaseVisitor<List<FragmentClassDefinition>> {
-  final List<FragmentClassDefinition> _fragments = [];
-  final TypeDefinitionNodeVisitor _typeDefinitionVisitor;
-  final GeneratorOptions _options;
-
   /// Creates a new FragmentVisitor with required dependencies.
   FragmentVisitor({
     required TypeDefinitionNodeVisitor typeDefinitionVisitor,
     required GeneratorOptions options,
-  })  : _typeDefinitionVisitor = typeDefinitionVisitor,
-        _options = options;
+  }) : _typeDefinitionVisitor = typeDefinitionVisitor,
+       _options = options;
+  final List<FragmentClassDefinition> _fragments = [];
+  final TypeDefinitionNodeVisitor _typeDefinitionVisitor;
+  final GeneratorOptions _options;
 
   @override
   List<FragmentClassDefinition> get result => List.unmodifiable(_fragments);
@@ -44,23 +44,27 @@ class FragmentVisitor extends BaseVisitor<List<FragmentClassDefinition>> {
     );
 
     // Convert GraphQL fields to class properties
-    final properties =
-        node.selectionSet.selections.whereType<FieldNode>().map((field) {
+    final properties = node.selectionSet.selections.whereType<FieldNode>().map((
+      field,
+    ) {
       final fieldName = ClassPropertyName(name: field.name.value);
 
       // Find the field definition in the fragment's target type
       FieldDefinitionNode? fieldDefinition;
       if (fragmentType is ObjectTypeDefinitionNode) {
-        fieldDefinition = fragmentType.fields
-            .firstWhere((f) => f.name.value == field.name.value);
+        fieldDefinition = fragmentType.fields.firstWhere(
+          (f) => f.name.value == field.name.value,
+        );
       } else if (fragmentType is InterfaceTypeDefinitionNode) {
-        fieldDefinition = fragmentType.fields
-            .firstWhere((f) => f.name.value == field.name.value);
+        fieldDefinition = fragmentType.fields.firstWhere(
+          (f) => f.name.value == field.name.value,
+        );
       }
 
       if (fieldDefinition == null) {
         throw Exception(
-            'Field "${field.name.value}" not found in type "${fragmentType.name.value}"');
+          'Field "${field.name.value}" not found in type "${fragmentType.name.value}"',
+        );
       }
 
       final fieldType = buildTypeName(

@@ -1,5 +1,5 @@
-import 'package:dartpollo/services/schema_service.dart';
 import 'package:dartpollo/schema/schema_options.dart';
+import 'package:dartpollo/services/schema_service.dart';
 import 'package:gql/ast.dart';
 import 'package:test/test.dart';
 
@@ -13,180 +13,169 @@ void main() {
 
     setUp(() {
       // Basic schema with simple types
-      basicSchema = DocumentNode(definitions: [
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'User'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'id'),
-              type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-            FieldDefinitionNode(
-              name: NameNode(value: 'name'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-        ScalarTypeDefinitionNode(
-          name: NameNode(value: 'DateTime'),
-          directives: [],
-        ),
-      ]);
+      basicSchema = const DocumentNode(
+        definitions: [
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'User'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'id'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'ID'),
+                  isNonNull: true,
+                ),
+              ),
+              FieldDefinitionNode(
+                name: NameNode(value: 'name'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'String'),
+                  isNonNull: true,
+                ),
+              ),
+            ],
+          ),
+          ScalarTypeDefinitionNode(
+            name: NameNode(value: 'DateTime'),
+          ),
+        ],
+      );
 
       // Complex schema with various types
-      complexSchema = DocumentNode(definitions: [
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'User'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'id'),
-              type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-            FieldDefinitionNode(
-              name: NameNode(value: 'profile'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'Profile'), isNonNull: false),
-              directives: [],
-              args: [],
-            ),
-            FieldDefinitionNode(
-              name: NameNode(value: 'posts'),
-              type: ListTypeNode(
+      complexSchema = const DocumentNode(
+        definitions: [
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'User'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'id'),
                 type: NamedTypeNode(
-                    name: NameNode(value: 'Post'), isNonNull: true),
-                isNonNull: true,
+                  name: NameNode(value: 'ID'),
+                  isNonNull: true,
+                ),
               ),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [NamedTypeNode(name: NameNode(value: 'Node'))],
-          directives: [],
-        ),
-        InterfaceTypeDefinitionNode(
-          name: NameNode(value: 'Node'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'id'),
-              type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'Profile'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'bio'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: false),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'Post'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'title'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-            FieldDefinitionNode(
-              name: NameNode(value: 'status'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'PostStatus'), isNonNull: true),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-        EnumTypeDefinitionNode(
-          name: NameNode(value: 'PostStatus'),
-          values: [
-            EnumValueDefinitionNode(
-              name: NameNode(value: 'DRAFT'),
-              directives: [],
-            ),
-            EnumValueDefinitionNode(
-              name: NameNode(value: 'PUBLISHED'),
-              directives: [],
-            ),
-          ],
-          directives: [],
-        ),
-        InputObjectTypeDefinitionNode(
-          name: NameNode(value: 'CreateUserInput'),
-          fields: [
-            InputValueDefinitionNode(
-              name: NameNode(value: 'name'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: true),
-              directives: [],
-            ),
-            InputValueDefinitionNode(
-              name: NameNode(value: 'email'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: true),
-              directives: [],
-            ),
-          ],
-          directives: [],
-        ),
-        UnionTypeDefinitionNode(
-          name: NameNode(value: 'SearchResult'),
-          types: [
-            NamedTypeNode(name: NameNode(value: 'User')),
-            NamedTypeNode(name: NameNode(value: 'Post')),
-          ],
-          directives: [],
-        ),
-        ScalarTypeDefinitionNode(
-          name: NameNode(value: 'DateTime'),
-          directives: [],
-        ),
-        ScalarTypeDefinitionNode(
-          name: NameNode(value: 'JSON'),
-          directives: [],
-        ),
-      ]);
+              FieldDefinitionNode(
+                name: NameNode(value: 'profile'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'Profile'),
+                ),
+              ),
+              FieldDefinitionNode(
+                name: NameNode(value: 'posts'),
+                type: ListTypeNode(
+                  type: NamedTypeNode(
+                    name: NameNode(value: 'Post'),
+                    isNonNull: true,
+                  ),
+                  isNonNull: true,
+                ),
+              ),
+            ],
+            interfaces: [NamedTypeNode(name: NameNode(value: 'Node'))],
+          ),
+          InterfaceTypeDefinitionNode(
+            name: NameNode(value: 'Node'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'id'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'ID'),
+                  isNonNull: true,
+                ),
+              ),
+            ],
+          ),
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'Profile'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'bio'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'String'),
+                ),
+              ),
+            ],
+          ),
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'Post'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'title'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'String'),
+                  isNonNull: true,
+                ),
+              ),
+              FieldDefinitionNode(
+                name: NameNode(value: 'status'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'PostStatus'),
+                  isNonNull: true,
+                ),
+              ),
+            ],
+          ),
+          EnumTypeDefinitionNode(
+            name: NameNode(value: 'PostStatus'),
+            values: [
+              EnumValueDefinitionNode(
+                name: NameNode(value: 'DRAFT'),
+              ),
+              EnumValueDefinitionNode(
+                name: NameNode(value: 'PUBLISHED'),
+              ),
+            ],
+          ),
+          InputObjectTypeDefinitionNode(
+            name: NameNode(value: 'CreateUserInput'),
+            fields: [
+              InputValueDefinitionNode(
+                name: NameNode(value: 'name'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'String'),
+                  isNonNull: true,
+                ),
+              ),
+              InputValueDefinitionNode(
+                name: NameNode(value: 'email'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'String'),
+                  isNonNull: true,
+                ),
+              ),
+            ],
+          ),
+          UnionTypeDefinitionNode(
+            name: NameNode(value: 'SearchResult'),
+            types: [
+              NamedTypeNode(name: NameNode(value: 'User')),
+              NamedTypeNode(name: NameNode(value: 'Post')),
+            ],
+          ),
+          ScalarTypeDefinitionNode(
+            name: NameNode(value: 'DateTime'),
+          ),
+          ScalarTypeDefinitionNode(
+            name: NameNode(value: 'JSON'),
+          ),
+        ],
+      );
 
       // Invalid schema with missing type references
-      invalidSchema = DocumentNode(definitions: [
-        ObjectTypeDefinitionNode(
-          name: NameNode(value: 'User'),
-          fields: [
-            FieldDefinitionNode(
-              name: NameNode(value: 'profile'),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'NonExistentType'), isNonNull: false),
-              directives: [],
-              args: [],
-            ),
-          ],
-          interfaces: [],
-          directives: [],
-        ),
-      ]);
+      invalidSchema = const DocumentNode(
+        definitions: [
+          ObjectTypeDefinitionNode(
+            name: NameNode(value: 'User'),
+            fields: [
+              FieldDefinitionNode(
+                name: NameNode(value: 'profile'),
+                type: NamedTypeNode(
+                  name: NameNode(value: 'NonExistentType'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
 
       basicOptions = GeneratorOptions(
         scalarMapping: [],
@@ -246,7 +235,9 @@ void main() {
         expect(service.typeVisitor.types.containsKey('Post'), isTrue);
         expect(service.typeVisitor.types.containsKey('PostStatus'), isTrue);
         expect(
-            service.typeVisitor.types.containsKey('CreateUserInput'), isTrue);
+          service.typeVisitor.types.containsKey('CreateUserInput'),
+          isTrue,
+        );
         expect(service.typeVisitor.types.containsKey('SearchResult'), isTrue);
         expect(service.typeVisitor.types.containsKey('DateTime'), isTrue);
         expect(service.typeVisitor.types.containsKey('JSON'), isTrue);
@@ -261,7 +252,9 @@ void main() {
         expect(userType, isNotNull);
         expect(userType, isA<ObjectTypeDefinitionNode>());
         expect(
-            (userType as ObjectTypeDefinitionNode).name.value, equals('User'));
+          (userType! as ObjectTypeDefinitionNode).name.value,
+          equals('User'),
+        );
       });
 
       test('should return null for non-existent type', () {
@@ -289,8 +282,10 @@ void main() {
         final dateTimeType = service.getTypeByName('DateTime');
         expect(dateTimeType, isNotNull);
         expect(dateTimeType, isA<ScalarTypeDefinitionNode>());
-        expect((dateTimeType as ScalarTypeDefinitionNode).name.value,
-            equals('DateTime'));
+        expect(
+          (dateTimeType! as ScalarTypeDefinitionNode).name.value,
+          equals('DateTime'),
+        );
       });
 
       test('should return different type kinds correctly', () {
@@ -338,7 +333,9 @@ void main() {
         expect(imports, contains('dart:core'));
         expect(imports, contains('dart:convert'));
         expect(
-            imports, contains('package:json_annotation/json_annotation.dart'));
+          imports,
+          contains('package:json_annotation/json_annotation.dart'),
+        );
       });
 
       test('should handle scalar mappings without imports', () {
@@ -391,8 +388,10 @@ void main() {
         final imports = service.extractCustomImports(customScalarOptions);
 
         // Should only process DateTime and JSON scalars, not object types like User
-        expect(imports.length,
-            equals(3)); // dart:core, dart:convert, json_annotation
+        expect(
+          imports.length,
+          equals(3),
+        ); // dart:core, dart:convert, json_annotation
       });
     });
 
@@ -410,203 +409,218 @@ void main() {
       });
 
       test('should throw exception for empty schema', () {
-        final emptySchema = DocumentNode(definitions: []);
+        const emptySchema = DocumentNode();
         final service = SchemaService(emptySchema);
 
         expect(
           service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('Schema is empty or contains no type definitions'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('Schema is empty or contains no type definitions'),
+            ),
+          ),
         );
       });
 
-      test('should throw exception for schema with missing type references',
-          () {
-        final service = SchemaService(invalidSchema);
+      test(
+        'should throw exception for schema with missing type references',
+        () {
+          final service = SchemaService(invalidSchema);
 
-        expect(
-          service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('Type NonExistentType not found in schema'),
-          )),
-        );
-      });
+          expect(
+            service.validateSchema,
+            throwsA(
+              isA<Exception>().having(
+                (e) => e.toString(),
+                'message',
+                contains('Type NonExistentType not found in schema'),
+              ),
+            ),
+          );
+        },
+      );
 
       test('should validate interface implementations', () {
-        final schemaWithInvalidInterface = DocumentNode(definitions: [
-          ObjectTypeDefinitionNode(
-            name: NameNode(value: 'User'),
-            fields: [
-              FieldDefinitionNode(
-                name: NameNode(value: 'id'),
-                type:
-                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-                directives: [],
-                args: [],
-              ),
-            ],
-            interfaces: [
-              NamedTypeNode(name: NameNode(value: 'NonExistentInterface'))
-            ],
-            directives: [],
-          ),
-        ]);
+        const schemaWithInvalidInterface = DocumentNode(
+          definitions: [
+            ObjectTypeDefinitionNode(
+              name: NameNode(value: 'User'),
+              fields: [
+                FieldDefinitionNode(
+                  name: NameNode(value: 'id'),
+                  type: NamedTypeNode(
+                    name: NameNode(value: 'ID'),
+                    isNonNull: true,
+                  ),
+                ),
+              ],
+              interfaces: [
+                NamedTypeNode(name: NameNode(value: 'NonExistentInterface')),
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(schemaWithInvalidInterface);
 
         expect(
           service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains(
-                'Interface NonExistentInterface referenced by User not found in schema'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains(
+                'Interface NonExistentInterface referenced by User not found in schema',
+              ),
+            ),
+          ),
         );
       });
 
       test('should validate union member types', () {
-        final schemaWithInvalidUnion = DocumentNode(definitions: [
-          ObjectTypeDefinitionNode(
-            name: NameNode(value: 'User'),
-            fields: [
-              FieldDefinitionNode(
-                name: NameNode(value: 'id'),
-                type:
-                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-                directives: [],
-                args: [],
-              ),
-            ],
-            interfaces: [],
-            directives: [],
-          ),
-          UnionTypeDefinitionNode(
-            name: NameNode(value: 'SearchResult'),
-            types: [
-              NamedTypeNode(name: NameNode(value: 'User')),
-              NamedTypeNode(name: NameNode(value: 'NonExistentType')),
-            ],
-            directives: [],
-          ),
-        ]);
+        const schemaWithInvalidUnion = DocumentNode(
+          definitions: [
+            ObjectTypeDefinitionNode(
+              name: NameNode(value: 'User'),
+              fields: [
+                FieldDefinitionNode(
+                  name: NameNode(value: 'id'),
+                  type: NamedTypeNode(
+                    name: NameNode(value: 'ID'),
+                    isNonNull: true,
+                  ),
+                ),
+              ],
+            ),
+            UnionTypeDefinitionNode(
+              name: NameNode(value: 'SearchResult'),
+              types: [
+                NamedTypeNode(name: NameNode(value: 'User')),
+                NamedTypeNode(name: NameNode(value: 'NonExistentType')),
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(schemaWithInvalidUnion);
 
         expect(
           service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains(
-                'Union member type NonExistentType in SearchResult not found in schema'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains(
+                'Union member type NonExistentType in SearchResult not found in schema',
+              ),
+            ),
+          ),
         );
       });
 
       test('should validate list type references', () {
-        final schemaWithInvalidListType = DocumentNode(definitions: [
-          ObjectTypeDefinitionNode(
-            name: NameNode(value: 'User'),
-            fields: [
-              FieldDefinitionNode(
-                name: NameNode(value: 'posts'),
-                type: ListTypeNode(
-                  type: NamedTypeNode(
+        const schemaWithInvalidListType = DocumentNode(
+          definitions: [
+            ObjectTypeDefinitionNode(
+              name: NameNode(value: 'User'),
+              fields: [
+                FieldDefinitionNode(
+                  name: NameNode(value: 'posts'),
+                  type: ListTypeNode(
+                    type: NamedTypeNode(
                       name: NameNode(value: 'NonExistentPost'),
-                      isNonNull: true),
-                  isNonNull: true,
+                      isNonNull: true,
+                    ),
+                    isNonNull: true,
+                  ),
                 ),
-                directives: [],
-                args: [],
-              ),
-            ],
-            interfaces: [],
-            directives: [],
-          ),
-        ]);
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(schemaWithInvalidListType);
 
         expect(
           service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('Type NonExistentPost not found in schema'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('Type NonExistentPost not found in schema'),
+            ),
+          ),
         );
       });
 
       test('should validate input object field types', () {
-        final schemaWithInvalidInputField = DocumentNode(definitions: [
-          InputObjectTypeDefinitionNode(
-            name: NameNode(value: 'CreateUserInput'),
-            fields: [
-              InputValueDefinitionNode(
-                name: NameNode(value: 'profile'),
-                type: NamedTypeNode(
+        const schemaWithInvalidInputField = DocumentNode(
+          definitions: [
+            InputObjectTypeDefinitionNode(
+              name: NameNode(value: 'CreateUserInput'),
+              fields: [
+                InputValueDefinitionNode(
+                  name: NameNode(value: 'profile'),
+                  type: NamedTypeNode(
                     name: NameNode(value: 'NonExistentProfile'),
-                    isNonNull: false),
-                directives: [],
-              ),
-            ],
-            directives: [],
-          ),
-        ]);
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(schemaWithInvalidInputField);
 
         expect(
           service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('Type NonExistentProfile not found in schema'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('Type NonExistentProfile not found in schema'),
+            ),
+          ),
         );
       });
 
       test('should validate interface field types', () {
-        final schemaWithInvalidInterfaceField = DocumentNode(definitions: [
-          InterfaceTypeDefinitionNode(
-            name: NameNode(value: 'Node'),
-            fields: [
-              FieldDefinitionNode(
-                name: NameNode(value: 'metadata'),
-                type: NamedTypeNode(
+        const schemaWithInvalidInterfaceField = DocumentNode(
+          definitions: [
+            InterfaceTypeDefinitionNode(
+              name: NameNode(value: 'Node'),
+              fields: [
+                FieldDefinitionNode(
+                  name: NameNode(value: 'metadata'),
+                  type: NamedTypeNode(
                     name: NameNode(value: 'NonExistentMetadata'),
-                    isNonNull: false),
-                directives: [],
-                args: [],
-              ),
-            ],
-            interfaces: [],
-            directives: [],
-          ),
-        ]);
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(schemaWithInvalidInterfaceField);
 
         expect(
           service.validateSchema,
-          throwsA(isA<Exception>().having(
-            (e) => e.toString(),
-            'message',
-            contains('Type NonExistentMetadata not found in schema'),
-          )),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('Type NonExistentMetadata not found in schema'),
+            ),
+          ),
         );
       });
     });
 
     group('error cases and edge conditions', () {
       test('should handle schema with only default scalars', () {
-        final scalarOnlySchema = DocumentNode(definitions: []);
+        const scalarOnlySchema = DocumentNode();
         final service = SchemaService(scalarOnlySchema);
 
         // Should still have default scalars
@@ -632,22 +646,21 @@ void main() {
       });
 
       test('should handle schema with circular type references', () {
-        final circularSchema = DocumentNode(definitions: [
-          ObjectTypeDefinitionNode(
-            name: NameNode(value: 'User'),
-            fields: [
-              FieldDefinitionNode(
-                name: NameNode(value: 'friend'),
-                type: NamedTypeNode(
-                    name: NameNode(value: 'User'), isNonNull: false),
-                directives: [],
-                args: [],
-              ),
-            ],
-            interfaces: [],
-            directives: [],
-          ),
-        ]);
+        const circularSchema = DocumentNode(
+          definitions: [
+            ObjectTypeDefinitionNode(
+              name: NameNode(value: 'User'),
+              fields: [
+                FieldDefinitionNode(
+                  name: NameNode(value: 'friend'),
+                  type: NamedTypeNode(
+                    name: NameNode(value: 'User'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(circularSchema);
 
@@ -656,31 +669,31 @@ void main() {
       });
 
       test('should handle schema with deeply nested list types', () {
-        final nestedListSchema = DocumentNode(definitions: [
-          ObjectTypeDefinitionNode(
-            name: NameNode(value: 'Matrix'),
-            fields: [
-              FieldDefinitionNode(
-                name: NameNode(value: 'data'),
-                type: ListTypeNode(
+        const nestedListSchema = DocumentNode(
+          definitions: [
+            ObjectTypeDefinitionNode(
+              name: NameNode(value: 'Matrix'),
+              fields: [
+                FieldDefinitionNode(
+                  name: NameNode(value: 'data'),
                   type: ListTypeNode(
                     type: ListTypeNode(
-                      type: NamedTypeNode(
-                          name: NameNode(value: 'Int'), isNonNull: true),
+                      type: ListTypeNode(
+                        type: NamedTypeNode(
+                          name: NameNode(value: 'Int'),
+                          isNonNull: true,
+                        ),
+                        isNonNull: true,
+                      ),
                       isNonNull: true,
                     ),
                     isNonNull: true,
                   ),
-                  isNonNull: true,
                 ),
-                directives: [],
-                args: [],
-              ),
-            ],
-            interfaces: [],
-            directives: [],
-          ),
-        ]);
+              ],
+            ),
+          ],
+        );
 
         final service = SchemaService(nestedListSchema);
 
@@ -692,10 +705,8 @@ void main() {
           scalarMapping: [
             ScalarMap(
               graphQLType: 'DateTime',
-              dartType: null,
             ),
             ScalarMap(
-              graphQLType: null,
               dartType: const DartType(name: 'String'),
             ),
           ],
@@ -704,8 +715,10 @@ void main() {
         final service = SchemaService(complexSchema);
 
         // Should not throw, but should handle null values gracefully
-        expect(() => service.extractCustomImports(optionsWithNulls),
-            returnsNormally);
+        expect(
+          () => service.extractCustomImports(optionsWithNulls),
+          returnsNormally,
+        );
       });
     });
   });

@@ -11,6 +11,14 @@ typedef OnBuildQuery = void Function(LibraryDefinition definition);
 /// Define a whole library file, the output of a single [SchemaMap] code
 /// generation.
 class LibraryDefinition extends Equatable with DataPrinter {
+  /// Instantiate a library definition.
+  LibraryDefinition({
+    required this.basename,
+    this.queries = const [],
+    this.customImports = const [],
+    this.schemaMap,
+  }) : assert(hasValue(basename));
+
   /// The output file basename.
   final String basename;
 
@@ -22,19 +30,11 @@ class LibraryDefinition extends Equatable with DataPrinter {
 
   final SchemaMap? schemaMap;
 
-  /// Instantiate a library definition.
-  LibraryDefinition({
-    required this.basename,
-    this.queries = const [],
-    this.customImports = const [],
-    this.schemaMap,
-  }) : assert(hasValue(basename));
-
   @override
   Map<String, Object?> get namedProps => {
-        'basename': basename,
-        'queries': queries,
-        'customImports': customImports,
-        'schemaMap': schemaMap,
-      };
+    'basename': basename,
+    'queries': queries,
+    'customImports': customImports,
+    'schemaMap': schemaMap,
+  };
 }

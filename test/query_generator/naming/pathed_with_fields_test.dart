@@ -7,7 +7,7 @@ void main() {
   group('On naming', () {
     test(
       'On pathedWithFields naming scheme',
-      () async => testNaming(
+      () => testNaming(
         query: query,
         schema: schema,
         expectedNames: _expectedNames,
@@ -32,5 +32,5 @@ final _expectedNames = [
   r'PartsMixin$AliasOnFThing',
   r'PartsMixin',
   r'Input',
-  r'SubInput'
+  r'SubInput',
 ];

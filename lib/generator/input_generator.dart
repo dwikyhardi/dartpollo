@@ -1,16 +1,20 @@
 import 'package:gql/ast.dart';
+
 import 'data/class_definition.dart';
 import 'data/class_property.dart';
 import 'data/enum_definition.dart';
 import 'data/nullable.dart';
 import 'enum_generator.dart';
 import 'ephemeral_data.dart';
-import 'helpers.dart';
 import 'graphql_helpers.dart' as gql;
+import 'helpers.dart';
 
 /// Generator responsible for creating input object class definitions from
 /// GraphQL input types. Handles input validation, type relationships, and annotations.
 class InputGenerator {
+  /// Private constructor to prevent instantiation.
+  const InputGenerator._();
+
   /// Generates an input class definition from a GraphQL input object type definition node
   static ClassDefinition generateInputClass(
     InputObjectTypeDefinitionNode node,
@@ -23,15 +27,24 @@ class InputGenerator {
     );
 
     logFn(context, nextContext.align, '-> Input class');
-    logFn(context, nextContext.align,
-        '┌ ${nextContext.path}[${node.name.value}]');
+    logFn(
+      context,
+      nextContext.align,
+      '┌ ${nextContext.path}[${node.name.value}]',
+    );
 
     final properties = generateInputProperties(node.fields, nextContext);
 
-    logFn(context, nextContext.align,
-        '└ ${nextContext.path}[${node.name.value}]');
-    logFn(context, nextContext.align,
-        '<- Generated input class ${name.namePrintable}.');
+    logFn(
+      context,
+      nextContext.align,
+      '└ ${nextContext.path}[${node.name.value}]',
+    );
+    logFn(
+      context,
+      nextContext.align,
+      '<- Generated input class ${name.namePrintable}.',
+    );
 
     return ClassDefinition(
       isInput: true,
@@ -62,20 +75,24 @@ class InputGenerator {
     required List<DirectiveNode> fieldDirectives,
     required Context context,
   }) {
-    final nextType =
-        gql.getTypeByName(context.typeDefinitionNodeVisitor, fieldType);
+    final nextType = gql.getTypeByName(
+      context.typeDefinitionNodeVisitor,
+      fieldType,
+    );
 
     final dartTypeName = gql.buildTypeName(
       fieldType,
       context.options,
-      dartType: true,
       replaceLeafWith: ClassName(name: nextType.name.value),
       typeDefinitionNodeVisitor: context.typeDefinitionNodeVisitor,
     );
 
     final currentTypeName = context.currentType?.name.value ?? 'Unknown';
-    logFn(context, context.align + 1,
-        '${context.path}[$currentTypeName][${context.currentClassName} ${fieldName.name}] -> ${dartTypeName.namePrintable}');
+    logFn(
+      context,
+      context.align + 1,
+      '${context.path}[$currentTypeName][${context.currentClassName} ${fieldName.name}] -> ${dartTypeName.namePrintable}',
+    );
 
     // Handle annotations for input properties
     final annotations = <String>[];
@@ -115,8 +132,10 @@ class InputGenerator {
 
     // Handle custom scalars
     if (nextType is ScalarTypeDefinitionNode) {
-      final scalar =
-          gql.getSingleScalarMap(context.options, nextType.name.value);
+      final scalar = gql.getSingleScalarMap(
+        context.options,
+        nextType.name.value,
+      );
 
       if (scalar?.customParserImport != null &&
           nextType.name.value == scalar?.graphQLType) {
@@ -141,8 +160,9 @@ class InputGenerator {
         orderedEntries.add('name: ${jsonKeyAnnotation['name']}');
       }
       if (jsonKeyAnnotation.containsKey('unknownEnumValue')) {
-        orderedEntries
-            .add('unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}');
+        orderedEntries.add(
+          'unknownEnumValue: ${jsonKeyAnnotation['unknownEnumValue']}',
+        );
       }
       // Add any other entries
       for (final entry in jsonKeyAnnotation.entries) {

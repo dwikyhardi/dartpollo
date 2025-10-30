@@ -8,7 +8,7 @@ void main() {
   group('On aliases', () {
     test(
       'Leaves can be aliased',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -46,48 +46,50 @@ const query = r'''
         }
         ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_Response'),
       operationName: r'some_query',
       classes: [
-        EnumDefinition(name: EnumName(name: r'MyEnum'), values: [
-          EnumValueDefinition(name: EnumValueName(name: r'A')),
-          EnumValueDefinition(name: EnumValueName(name: r'B')),
-          EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN'))
-        ]),
+        EnumDefinition(
+          name: EnumName(name: r'MyEnum'),
+          values: [
+            EnumValueDefinition(name: EnumValueName(name: r'A')),
+            EnumValueDefinition(name: EnumValueName(name: r'B')),
+            EnumValueDefinition(name: EnumValueName(name: r'UNKNOWN')),
+          ],
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_Response$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'MyEnum'),
-                  name: ClassPropertyName(name: r'thisIsAnEnum'),
-                  annotations: [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_Response$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'MyEnum'),
+              name: const ClassPropertyName(name: r'thisIsAnEnum'),
+              annotations: const [r'JsonKey(unknownEnumValue: MyEnum.unknown)'],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_Response'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'thisIsAString'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'SomeQuery$_Response$_SomeObject'),
-                  name: ClassPropertyName(name: r'o'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'SomeQuery$_Response'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'thisIsAString'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'SomeQuery$_Response$_SomeObject'),
+              name: const ClassPropertyName(name: r'o'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

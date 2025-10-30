@@ -7,7 +7,7 @@ void main() {
   group('On aliases', () {
     test(
       'Objects can be aliased',
-      () async => testGenerator(
+      () => testGenerator(
         query: query,
         schema: r'''
           schema {
@@ -44,60 +44,60 @@ const query = r'''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'SomeQuery$_QueryResponse'),
       operationName: r'some_query',
       classes: [
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'st'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'st'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse$_anotherObject'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'str'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'SomeQuery$_QueryResponse$_anotherObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'str'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(name: r'SomeQuery$_QueryResponse'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r's'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
-                  name: ClassPropertyName(name: r'o'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(
-                          name: r'SomeQuery$_QueryResponse$_anotherObject'),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'anotherObject'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'SomeQuery$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
+              name: const ClassPropertyName(name: r'o'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name: r'SomeQuery$_QueryResponse$_anotherObject',
+                ),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'anotherObject'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 

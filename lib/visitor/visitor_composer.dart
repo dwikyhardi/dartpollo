@@ -4,9 +4,8 @@ import 'base_visitor.dart';
 /// Composer for combining multiple visitors to process GraphQL documents.
 /// Coordinates visitor execution and provides type-safe result retrieval.
 class VisitorComposer {
-  final List<BaseVisitor> visitors;
-
   VisitorComposer(this.visitors);
+  final List<BaseVisitor<dynamic>> visitors;
 
   /// Visits a GraphQL document with all registered visitors
   void visitDocument(DocumentNode document) {

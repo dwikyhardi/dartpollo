@@ -6,6 +6,8 @@ import 'package:gql/ast.dart';
 /// DocumentNode verbosity by 40-50% through intelligent caching and
 /// simplified helper functions.
 class DocumentNodeHelpers {
+  const DocumentNodeHelpers._();
+
   /// Cache for frequently used NameNode instances to reduce memory allocation
   /// and improve build performance.
   static final Map<String, NameNode> _nameNodeCache = <String, NameNode>{};
@@ -58,9 +60,9 @@ class DocumentNodeHelpers {
       alias: alias != null ? nameNode(alias) : null,
       arguments:
           args?.entries.map((e) => argument(e.key, e.value)).toList() ?? [],
-      directives: [],
-      selectionSet:
-          selections != null ? SelectionSetNode(selections: selections) : null,
+      selectionSet: selections != null
+          ? SelectionSetNode(selections: selections)
+          : null,
     );
   }
 
@@ -119,7 +121,6 @@ class DocumentNodeHelpers {
       type: type,
       name: nameNode(name),
       variableDefinitions: variables ?? [],
-      directives: [],
       selectionSet: SelectionSetNode(selections: selections ?? []),
     );
   }
@@ -170,15 +171,17 @@ class DocumentNodeHelpers {
     if (value is Map<String, dynamic>) {
       return ObjectValueNode(
         fields: value.entries
-            .map((e) => ObjectFieldNode(
-                  name: nameNode(e.key),
-                  value: _valueToNode(e.value),
-                ))
+            .map(
+              (e) => ObjectFieldNode(
+                name: nameNode(e.key),
+                value: _valueToNode(e.value),
+              ),
+            )
             .toList(),
       );
     }
     if (value == null) {
-      return NullValueNode();
+      return const NullValueNode();
     }
 
     throw ArgumentError('Unsupported value type: ${value.runtimeType}');
@@ -190,10 +193,9 @@ class DocumentNodeHelpers {
   /// excessive memory usage during large builds.
   static void _clearOldestCacheEntries() {
     // Simple strategy: clear half the cache when limit is reached
-    final keysToRemove = _nameNodeCache.keys.take(_nameNodeCache.length ~/ 2);
-    for (final key in keysToRemove) {
-      _nameNodeCache.remove(key);
-    }
+    _nameNodeCache.keys
+        .take(_nameNodeCache.length ~/ 2)
+        .forEach(_nameNodeCache.remove);
   }
 
   /// Clears the entire NameNode cache.
@@ -212,8 +214,8 @@ class DocumentNodeHelpers {
     return {
       'size': _nameNodeCache.length,
       'maxSize': _maxCacheSize,
-      'utilizationPercent':
-          (_nameNodeCache.length / _maxCacheSize * 100).round(),
+      'utilizationPercent': (_nameNodeCache.length / _maxCacheSize * 100)
+          .round(),
     };
   }
 
@@ -242,7 +244,6 @@ class DocumentNodeHelpers {
   static FragmentSpreadNode fragmentSpread(String name) {
     return FragmentSpreadNode(
       name: nameNode(name),
-      directives: [],
     );
   }
 
@@ -264,9 +265,8 @@ class DocumentNodeHelpers {
   }) {
     return InlineFragmentNode(
       typeCondition: TypeConditionNode(
-        on: NamedTypeNode(name: nameNode(typeName), isNonNull: false),
+        on: NamedTypeNode(name: nameNode(typeName)),
       ),
-      directives: [],
       selectionSet: SelectionSetNode(selections: selections ?? []),
     );
   }
@@ -302,9 +302,8 @@ class DocumentNodeHelpers {
     return FragmentDefinitionNode(
       name: nameNode(name),
       typeCondition: TypeConditionNode(
-        on: NamedTypeNode(name: nameNode(typeCondition), isNonNull: false),
+        on: NamedTypeNode(name: nameNode(typeCondition)),
       ),
-      directives: [],
       selectionSet: SelectionSetNode(selections: selections ?? []),
     );
   }

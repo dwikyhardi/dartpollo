@@ -2,18 +2,18 @@ import 'package:gql/ast.dart';
 
 /// adds type name resolving to all schema types
 class AppendTypename extends TransformingVisitor {
-  /// type name value
-  final String typeName;
-
   /// adds type name resolving to all schema types
   AppendTypename(this.typeName);
 
-  @override
+  /// type name value
+  final String typeName;
 
+  @override
   /// appends type name to OperationDefinitionNode
   @override
   OperationDefinitionNode visitOperationDefinitionNode(
-      OperationDefinitionNode node) {
+    OperationDefinitionNode node,
+  ) {
     // if (node.selectionSet == null) {
     //   return node;
     // }
@@ -26,8 +26,10 @@ class AppendTypename extends TransformingVisitor {
       span: node.span,
       selectionSet: SelectionSetNode(
         selections: <SelectionNode>[
-          ...node.selectionSet.selections.where((element) =>
-              (element is! FieldNode) || (element.name.value != typeName)),
+          ...node.selectionSet.selections.where(
+            (element) =>
+                (element is! FieldNode) || (element.name.value != typeName),
+          ),
           FieldNode(name: NameNode(value: typeName)),
         ],
       ),
@@ -37,7 +39,8 @@ class AppendTypename extends TransformingVisitor {
   /// appends type name to FragmentDefinitionNode
   @override
   FragmentDefinitionNode visitFragmentDefinitionNode(
-      FragmentDefinitionNode node) {
+    FragmentDefinitionNode node,
+  ) {
     if (node.selectionSet.selections.isEmpty) {
       return node;
     }
@@ -49,8 +52,10 @@ class AppendTypename extends TransformingVisitor {
       span: node.span,
       selectionSet: SelectionSetNode(
         selections: <SelectionNode>[
-          ...node.selectionSet.selections.where((element) =>
-              (element is! FieldNode) || (element.name.value != typeName)),
+          ...node.selectionSet.selections.where(
+            (element) =>
+                (element is! FieldNode) || (element.name.value != typeName),
+          ),
           FieldNode(name: NameNode(value: typeName)),
         ],
       ),
@@ -70,8 +75,10 @@ class AppendTypename extends TransformingVisitor {
       span: node.span,
       selectionSet: SelectionSetNode(
         selections: <SelectionNode>[
-          ...node.selectionSet.selections.where((element) =>
-              (element is! FieldNode) || (element.name.value != typeName)),
+          ...node.selectionSet.selections.where(
+            (element) =>
+                (element is! FieldNode) || (element.name.value != typeName),
+          ),
           FieldNode(name: NameNode(value: typeName)),
         ],
       ),
@@ -93,9 +100,10 @@ class AppendTypename extends TransformingVisitor {
       span: node.span,
       selectionSet: SelectionSetNode(
         selections: <SelectionNode>[
-          ...node.selectionSet?.selections.where((element) =>
-                  (element is! FieldNode) ||
-                  (element.name.value != typeName)) ??
+          ...node.selectionSet?.selections.where(
+                (element) =>
+                    (element is! FieldNode) || (element.name.value != typeName),
+              ) ??
               [],
           FieldNode(name: NameNode(value: typeName)),
         ],

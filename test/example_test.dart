@@ -7,7 +7,7 @@ void main() {
     });
 
     test('String manipulation test', () {
-      final projectName = 'Dartpollo';
+      const projectName = 'Dartpollo';
       expect(projectName.toLowerCase(), equals('dartpollo'));
       expect(projectName.split('').reversed.join(), equals('olloptraD'));
     });

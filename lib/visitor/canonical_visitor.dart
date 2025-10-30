@@ -1,7 +1,7 @@
 import 'package:dartpollo/generator/data/data.dart';
 import 'package:dartpollo/generator/enum_generator.dart';
-import 'package:dartpollo/generator/input_generator.dart';
 import 'package:dartpollo/generator/ephemeral_data.dart';
+import 'package:dartpollo/generator/input_generator.dart';
 import 'package:gql/ast.dart';
 
 /// class definition lazy generator

@@ -1,6 +1,6 @@
-import 'package:test/test.dart';
-import 'package:gql/ast.dart';
 import 'package:dartpollo/generator/document_helpers.dart';
+import 'package:gql/ast.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('DocumentNodeHelpers', () {
@@ -45,41 +45,52 @@ void main() {
       });
 
       test('creates field with alias', () {
-        final field =
-            DocumentNodeHelpers.field('number', alias: 'pokemonNumber');
+        final field = DocumentNodeHelpers.field(
+          'number',
+          alias: 'pokemonNumber',
+        );
 
         expect(field.name.value, equals('number'));
         expect(field.alias?.value, equals('pokemonNumber'));
       });
 
       test('creates field with arguments', () {
-        final field = DocumentNodeHelpers.field('pokemon', args: {
-          'name': 'Charmander',
-          'limit': 10,
-          'active': true,
-        });
+        final field = DocumentNodeHelpers.field(
+          'pokemon',
+          args: {
+            'name': 'Charmander',
+            'limit': 10,
+            'active': true,
+          },
+        );
 
         expect(field.name.value, equals('pokemon'));
         expect(field.arguments, hasLength(3));
 
-        final nameArg =
-            field.arguments.firstWhere((arg) => arg.name.value == 'name');
+        final nameArg = field.arguments.firstWhere(
+          (arg) => arg.name.value == 'name',
+        );
         expect((nameArg.value as StringValueNode).value, equals('Charmander'));
 
-        final limitArg =
-            field.arguments.firstWhere((arg) => arg.name.value == 'limit');
+        final limitArg = field.arguments.firstWhere(
+          (arg) => arg.name.value == 'limit',
+        );
         expect((limitArg.value as IntValueNode).value, equals('10'));
 
-        final activeArg =
-            field.arguments.firstWhere((arg) => arg.name.value == 'active');
+        final activeArg = field.arguments.firstWhere(
+          (arg) => arg.name.value == 'active',
+        );
         expect((activeArg.value as BooleanValueNode).value, isTrue);
       });
 
       test('creates field with nested selections', () {
-        final field = DocumentNodeHelpers.field('pokemon', selections: [
-          DocumentNodeHelpers.field('number'),
-          DocumentNodeHelpers.field('types'),
-        ]);
+        final field = DocumentNodeHelpers.field(
+          'pokemon',
+          selections: [
+            DocumentNodeHelpers.field('number'),
+            DocumentNodeHelpers.field('types'),
+          ],
+        );
 
         expect(field.name.value, equals('pokemon'));
         expect(field.selectionSet, isNotNull);
@@ -133,7 +144,9 @@ void main() {
         expect(listValue.values, hasLength(2));
         expect((listValue.values[0] as StringValueNode).value, equals('fire'));
         expect(
-            (listValue.values[1] as StringValueNode).value, equals('starter'));
+          (listValue.values[1] as StringValueNode).value,
+          equals('starter'),
+        );
       });
 
       test('creates object argument', () {
@@ -148,12 +161,14 @@ void main() {
         final objectValue = arg.value as ObjectValueNode;
         expect(objectValue.fields, hasLength(2));
 
-        final typeField =
-            objectValue.fields.firstWhere((f) => f.name.value == 'type');
+        final typeField = objectValue.fields.firstWhere(
+          (f) => f.name.value == 'type',
+        );
         expect((typeField.value as StringValueNode).value, equals('fire'));
 
-        final levelField =
-            objectValue.fields.firstWhere((f) => f.name.value == 'level');
+        final levelField = objectValue.fields.firstWhere(
+          (f) => f.name.value == 'level',
+        );
         expect((levelField.value as IntValueNode).value, equals('5'));
       });
     });
@@ -192,12 +207,14 @@ void main() {
             OperationType.query,
             'simple_query',
             selections: [
-              DocumentNodeHelpers.field('pokemon', args: {
-                'name': 'Charmander'
-              }, selections: [
-                DocumentNodeHelpers.field('number'),
-                DocumentNodeHelpers.field('types'),
-              ]),
+              DocumentNodeHelpers.field(
+                'pokemon',
+                args: {'name': 'Charmander'},
+                selections: [
+                  DocumentNodeHelpers.field('number'),
+                  DocumentNodeHelpers.field('types'),
+                ],
+              ),
             ],
           ),
         ]);
@@ -235,7 +252,7 @@ void main() {
       test('cache eviction works when limit is reached', () {
         // This test would be slow with the actual limit of 1000,
         // so we'll test the concept by filling cache and checking behavior
-        for (int i = 0; i < 10; i++) {
+        for (var i = 0; i < 10; i++) {
           DocumentNodeHelpers.nameNode('field_$i');
         }
 
@@ -273,92 +290,100 @@ void main() {
         expect(arg.value, isA<ObjectValueNode>());
         final objectValue = arg.value as ObjectValueNode;
 
-        final itemsField =
-            objectValue.fields.firstWhere((f) => f.name.value == 'items');
+        final itemsField = objectValue.fields.firstWhere(
+          (f) => f.name.value == 'items',
+        );
         expect(itemsField.value, isA<ListValueNode>());
 
-        final statsField =
-            objectValue.fields.firstWhere((f) => f.name.value == 'stats');
+        final statsField = objectValue.fields.firstWhere(
+          (f) => f.name.value == 'stats',
+        );
         expect(statsField.value, isA<ObjectValueNode>());
 
-        final activeField =
-            objectValue.fields.firstWhere((f) => f.name.value == 'active');
+        final activeField = objectValue.fields.firstWhere(
+          (f) => f.name.value == 'active',
+        );
         expect(activeField.value, isA<BooleanValueNode>());
       });
     });
 
     group('integration test', () {
-      test('generates optimized DocumentNode equivalent to verbose version',
-          () {
-        // Create the optimized version using helpers
-        final optimizedDocument = DocumentNodeHelpers.document([
-          DocumentNodeHelpers.operation(
-            OperationType.query,
-            'simple_query',
-            selections: [
-              DocumentNodeHelpers.field('pokemon', args: {
-                'name': 'Charmander'
-              }, selections: [
-                DocumentNodeHelpers.field('number'),
-                DocumentNodeHelpers.field('types'),
-              ]),
-            ],
-          ),
-        ]);
+      test(
+        'generates optimized DocumentNode equivalent to verbose version',
+        () {
+          // Create the optimized version using helpers
+          final optimizedDocument = DocumentNodeHelpers.document([
+            DocumentNodeHelpers.operation(
+              OperationType.query,
+              'simple_query',
+              selections: [
+                DocumentNodeHelpers.field(
+                  'pokemon',
+                  args: {'name': 'Charmander'},
+                  selections: [
+                    DocumentNodeHelpers.field('number'),
+                    DocumentNodeHelpers.field('types'),
+                  ],
+                ),
+              ],
+            ),
+          ]);
 
-        // Create the verbose version (like current generation)
-        final verboseDocument = DocumentNode(definitions: [
-          OperationDefinitionNode(
-            type: OperationType.query,
-            name: NameNode(value: 'simple_query'),
-            variableDefinitions: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                name: NameNode(value: 'pokemon'),
-                alias: null,
-                arguments: [
-                  ArgumentNode(
-                    name: NameNode(value: 'name'),
-                    value: StringValueNode(value: 'Charmander', isBlock: false),
-                  ),
-                ],
-                directives: [],
-                selectionSet: SelectionSetNode(selections: [
-                  FieldNode(
-                    name: NameNode(value: 'number'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null,
-                  ),
-                  FieldNode(
-                    name: NameNode(value: 'types'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null,
-                  ),
-                ]),
+          // Create the verbose version (like current generation)
+          const verboseDocument = DocumentNode(
+            definitions: [
+              OperationDefinitionNode(
+                type: OperationType.query,
+                name: NameNode(value: 'simple_query'),
+                selectionSet: SelectionSetNode(
+                  selections: [
+                    FieldNode(
+                      name: NameNode(value: 'pokemon'),
+                      arguments: [
+                        ArgumentNode(
+                          name: NameNode(value: 'name'),
+                          value: StringValueNode(
+                            value: 'Charmander',
+                            isBlock: false,
+                          ),
+                        ),
+                      ],
+                      selectionSet: SelectionSetNode(
+                        selections: [
+                          FieldNode(
+                            name: NameNode(value: 'number'),
+                          ),
+                          FieldNode(
+                            name: NameNode(value: 'types'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ]),
-          ),
-        ]);
+            ],
+          );
 
-        // Both should have the same structure
-        expect(optimizedDocument.definitions.length,
-            equals(verboseDocument.definitions.length));
+          // Both should have the same structure
+          expect(
+            optimizedDocument.definitions.length,
+            equals(verboseDocument.definitions.length),
+          );
 
-        final optimizedOp =
-            optimizedDocument.definitions[0] as OperationDefinitionNode;
-        final verboseOp =
-            verboseDocument.definitions[0] as OperationDefinitionNode;
+          final optimizedOp =
+              optimizedDocument.definitions[0] as OperationDefinitionNode;
+          final verboseOp =
+              verboseDocument.definitions[0] as OperationDefinitionNode;
 
-        expect(optimizedOp.type, equals(verboseOp.type));
-        expect(optimizedOp.name?.value, equals(verboseOp.name?.value));
-        expect(optimizedOp.selectionSet.selections.length,
-            equals(verboseOp.selectionSet.selections.length));
-      });
+          expect(optimizedOp.type, equals(verboseOp.type));
+          expect(optimizedOp.name?.value, equals(verboseOp.name?.value));
+          expect(
+            optimizedOp.selectionSet.selections.length,
+            equals(verboseOp.selectionSet.selections.length),
+          );
+        },
+      );
     });
   });
 }

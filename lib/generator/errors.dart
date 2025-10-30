@@ -17,10 +17,10 @@ class DuplicatedClassesException implements Exception {
 but with different selection set.
 
 Class A
-${a.toString()}
+$a
 
 Class B
-${b.toString()}
+$b
 ''';
 }
 
@@ -52,11 +52,11 @@ Change `schema` or `output` location and try again.
 
 /// Define an exception thrown when Dartpollo does not find asset files
 class MissingFilesException implements Exception {
-  /// glob pattern which was used
-  final String globPattern;
-
   /// Define an exception thrown when Dartpollo does not find asset files
   MissingFilesException(this.globPattern);
+
+  /// glob pattern which was used
+  final String globPattern;
 
   @override
   String toString() {
@@ -66,11 +66,11 @@ class MissingFilesException implements Exception {
 
 /// Define an exception thrown when Dartpollo does not find required config params
 class MissingBuildConfigurationException implements Exception {
-  /// missing config option name
-  final String name;
-
   /// Define an exception thrown when Dartpollo does not find required config params
   MissingBuildConfigurationException(this.name);
+
+  /// missing config option name
+  final String name;
 
   @override
   String toString() =>

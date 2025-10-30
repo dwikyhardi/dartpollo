@@ -6,7 +6,7 @@ import '../../helpers.dart';
 void main() {
   test(
     'On union with nested types',
-    () async => testGenerator(
+    () => testGenerator(
       query: query,
       schema: graphQLSchema,
       libraryDefinition: libraryDefinition,
@@ -15,7 +15,7 @@ void main() {
   );
 }
 
-final String query = r'''
+const String query = r'''
   query checkoutById($checkoutId: ID!) {
     node(id: $checkoutId) {
         __typename
@@ -34,7 +34,7 @@ final String query = r'''
 }
 ''';
 
-final String graphQLSchema = '''
+const String graphQLSchema = '''
   schema {
     query: QueryRoot
   }
@@ -84,118 +84,124 @@ final String graphQLSchema = '''
   }
 ''';
 
-final LibraryDefinition libraryDefinition =
-    LibraryDefinition(basename: r'query.graphql', queries: [
-  QueryDefinition(
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
       name: QueryName(name: r'CheckoutById$_QueryRoot'),
       operationName: r'checkoutById',
       classes: [
         ClassDefinition(
-            name: ClassName(
+          name: ClassName(
+            name:
+                r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge$_ImageConnection',
+          ),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(
+            name:
+                r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge',
+          ),
+          properties: [
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name:
+                      r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge$_ImageConnection',
+                ),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'edges'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(
+            name:
+                r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection',
+          ),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name:
+                      r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge',
+                  isNonNull: true,
+                ),
+              ),
+              name: const ClassPropertyName(name: r'edges'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(name: r'CheckoutById$_QueryRoot$_Node$_Checkout'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+            ),
+            ClassProperty(
+              type: TypeName(
                 name:
-                    r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge$_ImageConnection'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+                    r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection',
+                isNonNull: true,
+              ),
+              name: const ClassPropertyName(name: r'lineItems'),
+            ),
+          ],
+          extension: ClassName(name: r'CheckoutById$_QueryRoot$_Node'),
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(
-                name:
-                    r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge'),
-            properties: [
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(
-                          name:
-                              r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge$_ImageConnection'),
-                      isNonNull: false),
-                  name: ClassPropertyName(name: r'edges'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
+          name: ClassName(name: r'CheckoutById$_QueryRoot$_Node'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'__typename'),
+              annotations: const [r'''JsonKey(name: '__typename')'''],
+              isResolveType: true,
+            ),
+          ],
+          factoryPossibilities: {
+            r'Checkout': ClassName(
+              name: r'CheckoutById$_QueryRoot$_Node$_Checkout',
+            ),
+          },
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
         ClassDefinition(
-            name: ClassName(
-                name:
-                    r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: ListOfTypeName(
-                      typeName: TypeName(
-                          name:
-                              r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection$_CheckoutLineItemEdge',
-                          isNonNull: true),
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'edges'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
-        ClassDefinition(
-            name: ClassName(name: r'CheckoutById$_QueryRoot$_Node$_Checkout'),
-            properties: [
-              ClassProperty(
-                  type: DartTypeName(name: r'String', isNonNull: true),
-                  name: ClassPropertyName(name: r'id'),
-                  isResolveType: false),
-              ClassProperty(
-                  type: TypeName(
-                      name:
-                          r'CheckoutById$_QueryRoot$_Node$_Checkout$_CheckoutLineItemConnection',
-                      isNonNull: true),
-                  name: ClassPropertyName(name: r'lineItems'),
-                  isResolveType: false)
-            ],
-            extension: ClassName(name: r'CheckoutById$_QueryRoot$_Node'),
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
-        ClassDefinition(
-            name: ClassName(name: r'CheckoutById$_QueryRoot$_Node'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'String'),
-                  name: ClassPropertyName(name: r'__typename'),
-                  annotations: [r'''JsonKey(name: '__typename')'''],
-                  isResolveType: true)
-            ],
-            factoryPossibilities: {
-              r'Checkout':
-                  ClassName(name: r'CheckoutById$_QueryRoot$_Node$_Checkout')
-            },
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false),
-        ClassDefinition(
-            name: ClassName(name: r'CheckoutById$_QueryRoot'),
-            properties: [
-              ClassProperty(
-                  type: TypeName(name: r'CheckoutById$_QueryRoot$_Node'),
-                  name: ClassPropertyName(name: r'node'),
-                  isResolveType: false)
-            ],
-            factoryPossibilities: {},
-            typeNameField: ClassPropertyName(name: r'__typename'),
-            isInput: false)
+          name: ClassName(name: r'CheckoutById$_QueryRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'CheckoutById$_QueryRoot$_Node'),
+              name: const ClassPropertyName(name: r'node'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
       ],
       inputs: [
         QueryInput(
-            type: DartTypeName(name: r'String', isNonNull: true),
-            name: QueryInputName(name: r'checkoutId'))
+          type: DartTypeName(name: r'String', isNonNull: true),
+          name: const QueryInputName(name: r'checkoutId'),
+        ),
       ],
-      generateHelpers: false,
-      suffix: r'Query')
-]);
+    ),
+  ],
+);
 
 const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
