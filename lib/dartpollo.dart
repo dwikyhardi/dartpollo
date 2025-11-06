@@ -1,3 +1,11 @@
+export 'cache/cache_context.dart';
+export 'cache/cache_entry.dart';
+export 'cache/cache_link.dart';
+export 'cache/cache_policy.dart';
+export 'cache/cache_store.dart';
+export 'cache/hive_cache_store.dart';
+export 'cache/in_memory_cache_store.dart';
+export 'cached_client.dart';
 export 'client.dart';
 export 'generator/document_helpers.dart';
 export 'schema/graphql_query.dart';

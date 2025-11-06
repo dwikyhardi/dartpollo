@@ -22,8 +22,10 @@ dependencies:
   gql_exec: ^1.1.1-alpha+1699813812660
   gql_http_link: ^1.2.0
   gql_link: ^1.1.0
+  hive_ce: ^2.15.1
   http: ^1.5.0
   json_annotation: ^4.9.0
+  meta: ^1.16.0
   path: ^1.9.1
   pub_semver: ^2.2.0
   recase: ^4.1.0
