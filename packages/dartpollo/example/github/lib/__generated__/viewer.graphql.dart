@@ -4,6 +4,7 @@ import 'package:dartpollo/dartpollo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'viewer.graphql.g.dart';
 
 @JsonSerializable(explicitToJson: true)
