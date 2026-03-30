@@ -59,6 +59,9 @@ Temporary Items
 # FVM Version Cache
 .fvm/
 .junie/
+.ai/
 .kiro/
 .vscode/
 .clinerules/
+.env
+*.iml
