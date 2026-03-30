@@ -10,12 +10,7 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: 3.9.2
-      - name: Install Melos
-        run: dart pub global activate melos
-      - name: Bootstrap
-        run: |
-          dart pub get
-          melos bootstrap
+      - uses: bluefireteam/melos-action@v3
       - name: Check formatting
         run: dart format --set-exit-if-changed packages/
 
@@ -26,12 +21,7 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: 3.9.2
-      - name: Install Melos
-        run: dart pub global activate melos
-      - name: Bootstrap
-        run: |
-          dart pub get
-          melos bootstrap
+      - uses: bluefireteam/melos-action@v3
       - name: Test
         run: melos run test
 
@@ -42,11 +32,6 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: 3.9.2
-      - name: Install Melos
-        run: dart pub global activate melos
-      - name: Bootstrap
-        run: |
-          dart pub get
-          melos bootstrap
+      - uses: bluefireteam/melos-action@v3
       - name: Analyze
         run: melos run analyze
