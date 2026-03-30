@@ -16,14 +16,12 @@ melos:
   sdkPath: .fvm/flutter_sdk
   scripts:
     analyze:
-      run: fvm dart analyze --fatal-infos
+      run: dart analyze --fatal-infos
       exec:
         concurrency: 3
     test:
-      run: fvm dart test
+      run: dart test
       exec:
         concurrency: 1
     format:
-      run: fvm dart format .
-    pub-get:
-      run: fvm flutter pub get
+      run: dart format .

@@ -292,11 +292,7 @@ String introspectionJsonToSdl(String jsonString) {
   return '${buffer.toString().trimRight()}\n';
 }
 
-void _writeDescription(
-  StringBuffer buffer,
-  String description,
-  String indent,
-) {
+void _writeDescription(StringBuffer buffer, String description, String indent) {
   if (description.contains('\n')) {
     buffer.writeln('$indent"""');
     for (final line in description.split('\n')) {
@@ -473,7 +469,5 @@ void main(List<String> args) async {
       ? jsonResponse
       : introspectionJsonToSdl(jsonResponse);
 
-  File(
-    results['output'] as String,
-  ).writeAsStringSync(output, flush: true);
+  File(results['output'] as String).writeAsStringSync(output, flush: true);
 }
