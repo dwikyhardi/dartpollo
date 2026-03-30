@@ -13,7 +13,6 @@ dev_dependencies:
   melos: ^7.5.0
 
 melos:
-  sdkPath: .fvm/flutter_sdk
   scripts:
     analyze:
       run: dart analyze --fatal-infos
