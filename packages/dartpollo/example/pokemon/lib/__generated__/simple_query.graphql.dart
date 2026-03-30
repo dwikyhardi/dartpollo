@@ -46,12 +46,14 @@ final SIMPLE_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
     OperationType.query,
     'simple_query',
     selections: [
-      DocumentNodeHelpers.field('pokemon', args: {
-        'name': 'Charmander'
-      }, selections: [
-        DocumentNodeHelpers.field('number'),
-        DocumentNodeHelpers.field('types'),
-      ]),
+      DocumentNodeHelpers.field(
+        'pokemon',
+        args: {'name': 'Charmander'},
+        selections: [
+          DocumentNodeHelpers.field('number'),
+          DocumentNodeHelpers.field('types'),
+        ],
+      ),
     ],
   ),
 ]);

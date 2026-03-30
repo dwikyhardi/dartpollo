@@ -14,9 +14,11 @@ class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repos
   SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository();
 
   factory SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository.fromJson(
-          Map<String, dynamic> json) =>
+    Map<String, dynamic> json,
+  ) =>
       _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$RepositoryFromJson(
-          json);
+        json,
+      );
 
   late String name;
 
@@ -26,24 +28,29 @@ class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repos
   @override
   Map<String, dynamic> toJson() =>
       _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$RepositoryToJson(
-          this);
+        this,
+      );
 }
 
 @JsonSerializable(explicitToJson: true)
 class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem
-    extends JsonSerializable with EquatableMixin {
+    extends JsonSerializable
+    with EquatableMixin {
   SearchRepositories$Query$SearchResultItemConnection$SearchResultItem();
 
   factory SearchRepositories$Query$SearchResultItemConnection$SearchResultItem.fromJson(
-      Map<String, dynamic> json) {
+    Map<String, dynamic> json,
+  ) {
     switch (json['__typename'].toString()) {
       case r'Repository':
-        return SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository
-            .fromJson(json);
+        return SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository.fromJson(
+          json,
+        );
       default:
     }
     return _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemFromJson(
-        json);
+      json,
+    );
   }
 
   @JsonKey(name: '__typename')
@@ -62,21 +69,23 @@ class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem
       default:
     }
     return _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemToJson(
-        this);
+      this,
+    );
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class SearchRepositories$Query$SearchResultItemConnection
-    extends JsonSerializable with EquatableMixin {
+    extends JsonSerializable
+    with EquatableMixin {
   SearchRepositories$Query$SearchResultItemConnection();
 
   factory SearchRepositories$Query$SearchResultItemConnection.fromJson(
-          Map<String, dynamic> json) =>
-      _$SearchRepositories$Query$SearchResultItemConnectionFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$SearchRepositories$Query$SearchResultItemConnectionFromJson(json);
 
   List<SearchRepositories$Query$SearchResultItemConnection$SearchResultItem?>?
-      nodes;
+  nodes;
 
   @override
   List<Object?> get props => [nodes];
@@ -120,82 +129,94 @@ class SearchRepositoriesArguments extends JsonSerializable with EquatableMixin {
 }
 
 final SEARCH_REPOSITORIES_QUERY_DOCUMENT_OPERATION_NAME = 'search_repositories';
-final SEARCH_REPOSITORIES_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-    type: OperationType.query,
-    name: NameNode(value: 'search_repositories'),
-    variableDefinitions: [
-      VariableDefinitionNode(
-        variable: VariableNode(name: NameNode(value: 'query')),
-        type: NamedTypeNode(
-          name: NameNode(value: 'String'),
-          isNonNull: true,
+final SEARCH_REPOSITORIES_QUERY_DOCUMENT = DocumentNode(
+  definitions: [
+    OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'search_repositories'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+          variable: VariableNode(name: NameNode(value: 'query')),
+          type: NamedTypeNode(
+            name: NameNode(value: 'String'),
+            isNonNull: true,
+          ),
+          defaultValue: DefaultValueNode(value: null),
+          directives: [],
         ),
-        defaultValue: DefaultValueNode(value: null),
-        directives: [],
-      )
-    ],
-    directives: [],
-    selectionSet: SelectionSetNode(selections: [
-      FieldNode(
-        name: NameNode(value: 'search'),
-        alias: null,
-        arguments: [
-          ArgumentNode(
-            name: NameNode(value: 'first'),
-            value: IntValueNode(value: '10'),
-          ),
-          ArgumentNode(
-            name: NameNode(value: 'type'),
-            value: EnumValueNode(name: NameNode(value: 'REPOSITORY')),
-          ),
-          ArgumentNode(
-            name: NameNode(value: 'query'),
-            value: VariableNode(name: NameNode(value: 'query')),
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(
+        selections: [
+          FieldNode(
+            name: NameNode(value: 'search'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                name: NameNode(value: 'first'),
+                value: IntValueNode(value: '10'),
+              ),
+              ArgumentNode(
+                name: NameNode(value: 'type'),
+                value: EnumValueNode(name: NameNode(value: 'REPOSITORY')),
+              ),
+              ArgumentNode(
+                name: NameNode(value: 'query'),
+                value: VariableNode(name: NameNode(value: 'query')),
+              ),
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(
+              selections: [
+                FieldNode(
+                  name: NameNode(value: 'nodes'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(
+                    selections: [
+                      FieldNode(
+                        name: NameNode(value: '__typename'),
+                        alias: null,
+                        arguments: [],
+                        directives: [],
+                        selectionSet: null,
+                      ),
+                      InlineFragmentNode(
+                        typeCondition: TypeConditionNode(
+                          on: NamedTypeNode(
+                            name: NameNode(value: 'Repository'),
+                            isNonNull: false,
+                          ),
+                        ),
+                        directives: [],
+                        selectionSet: SelectionSetNode(
+                          selections: [
+                            FieldNode(
+                              name: NameNode(value: 'name'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: null,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-            name: NameNode(value: 'nodes'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                name: NameNode(value: '__typename'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null,
-              ),
-              InlineFragmentNode(
-                typeCondition: TypeConditionNode(
-                    on: NamedTypeNode(
-                  name: NameNode(value: 'Repository'),
-                  isNonNull: false,
-                )),
-                directives: [],
-                selectionSet: SelectionSetNode(selections: [
-                  FieldNode(
-                    name: NameNode(value: 'name'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null,
-                  )
-                ]),
-              ),
-            ]),
-          )
-        ]),
-      )
-    ]),
-  )
-]);
+      ),
+    ),
+  ],
+);
 
-class SearchRepositoriesQuery extends GraphQLQuery<SearchRepositories$Query,
-    SearchRepositoriesArguments> {
+class SearchRepositoriesQuery
+    extends
+        GraphQLQuery<SearchRepositories$Query, SearchRepositoriesArguments> {
   SearchRepositoriesQuery({required this.variables});
 
   @override

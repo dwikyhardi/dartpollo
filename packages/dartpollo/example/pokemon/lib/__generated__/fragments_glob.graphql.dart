@@ -27,8 +27,8 @@ class FragmentsGlob$Query$Pokemon$Pokemon extends JsonSerializable
   FragmentsGlob$Query$Pokemon$Pokemon();
 
   factory FragmentsGlob$Query$Pokemon$Pokemon.fromJson(
-          Map<String, dynamic> json) =>
-      _$FragmentsGlob$Query$Pokemon$PokemonFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$FragmentsGlob$Query$Pokemon$PokemonFromJson(json);
 
   @override
   List<Object?> get props => [id, weight, attacks];
@@ -122,14 +122,19 @@ final FRAGMENTS_GLOB_QUERY_DOCUMENT = DocumentNodeHelpers.document([
     OperationType.query,
     '',
     selections: [
-      DocumentNodeHelpers.field('pokemon', args: {
-        'name': 'Pikachu'
-      }, selections: [
-        DocumentNodeHelpers.fragmentSpread('Pokemon'),
-        DocumentNodeHelpers.field('evolutions', selections: [
+      DocumentNodeHelpers.field(
+        'pokemon',
+        args: {'name': 'Pikachu'},
+        selections: [
           DocumentNodeHelpers.fragmentSpread('Pokemon'),
-        ]),
-      ]),
+          DocumentNodeHelpers.field(
+            'evolutions',
+            selections: [
+              DocumentNodeHelpers.fragmentSpread('Pokemon'),
+            ],
+          ),
+        ],
+      ),
     ],
   ),
   DocumentNodeHelpers.fragmentDefinition(
@@ -137,12 +142,18 @@ final FRAGMENTS_GLOB_QUERY_DOCUMENT = DocumentNodeHelpers.document([
     'Pokemon',
     selections: [
       DocumentNodeHelpers.field('id'),
-      DocumentNodeHelpers.field('weight', selections: [
-        DocumentNodeHelpers.fragmentSpread('weight'),
-      ]),
-      DocumentNodeHelpers.field('attacks', selections: [
-        DocumentNodeHelpers.fragmentSpread('pokemonAttack'),
-      ]),
+      DocumentNodeHelpers.field(
+        'weight',
+        selections: [
+          DocumentNodeHelpers.fragmentSpread('weight'),
+        ],
+      ),
+      DocumentNodeHelpers.field(
+        'attacks',
+        selections: [
+          DocumentNodeHelpers.fragmentSpread('pokemonAttack'),
+        ],
+      ),
     ],
   ),
   DocumentNodeHelpers.fragmentDefinition(
@@ -156,9 +167,12 @@ final FRAGMENTS_GLOB_QUERY_DOCUMENT = DocumentNodeHelpers.document([
     'pokemonAttack',
     'PokemonAttack',
     selections: [
-      DocumentNodeHelpers.field('special', selections: [
-        DocumentNodeHelpers.fragmentSpread('attack'),
-      ]),
+      DocumentNodeHelpers.field(
+        'special',
+        selections: [
+          DocumentNodeHelpers.fragmentSpread('attack'),
+        ],
+      ),
     ],
   ),
   DocumentNodeHelpers.fragmentDefinition(

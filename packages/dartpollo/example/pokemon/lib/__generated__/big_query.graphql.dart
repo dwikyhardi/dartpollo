@@ -31,8 +31,8 @@ class BigQuery$Query$Pokemon$Evolutions extends JsonSerializable
   BigQuery$Query$Pokemon$Evolutions();
 
   factory BigQuery$Query$Pokemon$Evolutions.fromJson(
-          Map<String, dynamic> json) =>
-      _$BigQuery$Query$Pokemon$EvolutionsFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$BigQuery$Query$Pokemon$EvolutionsFromJson(json);
 
   String? number;
 
@@ -116,25 +116,32 @@ final BIG_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
       ),
     ],
     selections: [
-      DocumentNodeHelpers.field('pokemon', alias: 'charmander', args: {
-        'name': 'Charmander'
-      }, selections: [
-        DocumentNodeHelpers.field('number'),
-        DocumentNodeHelpers.field('types'),
-      ]),
-      DocumentNodeHelpers.field('pokemons', args: {
-        'first': DocumentNodeHelpers.variable('quantity')
-      }, selections: [
-        DocumentNodeHelpers.field('number'),
-        DocumentNodeHelpers.field('name'),
-        DocumentNodeHelpers.field('types'),
-        DocumentNodeHelpers.field('evolutions',
+      DocumentNodeHelpers.field(
+        'pokemon',
+        alias: 'charmander',
+        args: {'name': 'Charmander'},
+        selections: [
+          DocumentNodeHelpers.field('number'),
+          DocumentNodeHelpers.field('types'),
+        ],
+      ),
+      DocumentNodeHelpers.field(
+        'pokemons',
+        args: {'first': DocumentNodeHelpers.variable('quantity')},
+        selections: [
+          DocumentNodeHelpers.field('number'),
+          DocumentNodeHelpers.field('name'),
+          DocumentNodeHelpers.field('types'),
+          DocumentNodeHelpers.field(
+            'evolutions',
             alias: 'evolutions',
             selections: [
               DocumentNodeHelpers.field('number'),
               DocumentNodeHelpers.field('name'),
-            ]),
-      ]),
+            ],
+          ),
+        ],
+      ),
     ],
   ),
 ]);

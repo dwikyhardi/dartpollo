@@ -33,8 +33,8 @@ class FragmentQuery$Query$Pokemon$Evolutions extends JsonSerializable
   FragmentQuery$Query$Pokemon$Evolutions();
 
   factory FragmentQuery$Query$Pokemon$Evolutions.fromJson(
-          Map<String, dynamic> json) =>
-      _$FragmentQuery$Query$Pokemon$EvolutionsFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$FragmentQuery$Query$Pokemon$EvolutionsFromJson(json);
 
   @override
   List<Object?> get props => [number, name, types];
@@ -109,21 +109,28 @@ final FRAGMENT_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
       ),
     ],
     selections: [
-      DocumentNodeHelpers.field('pokemon', alias: 'charmander', args: {
-        'name': 'Charmander'
-      }, selections: [
-        DocumentNodeHelpers.fragmentSpread('PokemonParts'),
-      ]),
-      DocumentNodeHelpers.field('pokemons', args: {
-        'first': DocumentNodeHelpers.variable('quantity')
-      }, selections: [
-        DocumentNodeHelpers.fragmentSpread('PokemonParts'),
-        DocumentNodeHelpers.field('evolutions',
+      DocumentNodeHelpers.field(
+        'pokemon',
+        alias: 'charmander',
+        args: {'name': 'Charmander'},
+        selections: [
+          DocumentNodeHelpers.fragmentSpread('PokemonParts'),
+        ],
+      ),
+      DocumentNodeHelpers.field(
+        'pokemons',
+        args: {'first': DocumentNodeHelpers.variable('quantity')},
+        selections: [
+          DocumentNodeHelpers.fragmentSpread('PokemonParts'),
+          DocumentNodeHelpers.field(
+            'evolutions',
             alias: 'evolutions',
             selections: [
               DocumentNodeHelpers.fragmentSpread('PokemonParts'),
-            ]),
-      ]),
+            ],
+          ),
+        ],
+      ),
     ],
   ),
   DocumentNodeHelpers.fragmentDefinition(

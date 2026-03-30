@@ -40,31 +40,37 @@ class Viewer$Query extends JsonSerializable with EquatableMixin {
 }
 
 final VIEWER_QUERY_DOCUMENT_OPERATION_NAME = 'Viewer';
-final VIEWER_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-    type: OperationType.query,
-    name: NameNode(value: 'Viewer'),
-    variableDefinitions: [],
-    directives: [],
-    selectionSet: SelectionSetNode(selections: [
-      FieldNode(
-        name: NameNode(value: 'viewer'),
-        alias: null,
-        arguments: [],
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
+final VIEWER_QUERY_DOCUMENT = DocumentNode(
+  definitions: [
+    OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'Viewer'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(
+        selections: [
           FieldNode(
-            name: NameNode(value: 'login'),
+            name: NameNode(value: 'viewer'),
             alias: null,
             arguments: [],
             directives: [],
-            selectionSet: null,
-          )
-        ]),
-      )
-    ]),
-  )
-]);
+            selectionSet: SelectionSetNode(
+              selections: [
+                FieldNode(
+                  name: NameNode(value: 'login'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  ],
+);
 
 class ViewerQuery extends GraphQLQuery<Viewer$Query, JsonSerializable> {
   ViewerQuery();

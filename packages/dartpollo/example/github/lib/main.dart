@@ -30,7 +30,8 @@ Future<void> main() async {
 
   (response.data?.search.nodes ?? [])
       .whereType<
-          SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository>()
+        SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository
+      >()
       .map((r) => r.name)
       .forEach(print);
 }
