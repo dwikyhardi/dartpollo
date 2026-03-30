@@ -1,0 +1,165 @@
+import 'package:dartpollo_generator/generator/data/data.dart';
+import 'package:test/test.dart';
+
+import '../../helpers.dart';
+
+void main() {
+  group('On aliases', () {
+    test(
+      'Objects can be aliased',
+      () => testGenerator(
+        query: query,
+        schema: r'''
+          schema {
+            query: QueryResponse
+          }
+
+          type QueryResponse {
+            s: String
+            o: SomeObject
+            ob: [SomeObject]
+          }
+
+          type SomeObject {
+            st: String
+            str: String
+          }
+        ''',
+        libraryDefinition: libraryDefinition,
+        generatedFile: generatedFile,
+      ),
+    );
+  });
+}
+
+const query = r'''
+  query some_query {
+    s
+    o {
+      st
+    }
+    anotherObject: ob {
+      str
+    }
+  }
+''';
+
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'query.graphql',
+  queries: [
+    QueryDefinition(
+      name: QueryName(name: r'SomeQuery$_QueryResponse'),
+      operationName: r'some_query',
+      classes: [
+        ClassDefinition(
+          name: ClassName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'st'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(name: r'SomeQuery$_QueryResponse$_anotherObject'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r'str'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(name: r'SomeQuery$_QueryResponse'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+            ClassProperty(
+              type: TypeName(name: r'SomeQuery$_QueryResponse$_SomeObject'),
+              name: const ClassPropertyName(name: r'o'),
+            ),
+            ClassProperty(
+              type: ListOfTypeName(
+                typeName: TypeName(
+                  name: r'SomeQuery$_QueryResponse$_anotherObject',
+                ),
+                isNonNull: false,
+              ),
+              name: const ClassPropertyName(name: r'anotherObject'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+      ],
+    ),
+  ],
+);
+
+const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+
+import 'package:equatable/equatable.dart';
+import 'package:gql/ast.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'query.graphql.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+class SomeQuery$QueryResponse$SomeObject extends JsonSerializable
+    with EquatableMixin {
+  SomeQuery$QueryResponse$SomeObject();
+
+  factory SomeQuery$QueryResponse$SomeObject.fromJson(
+          Map<String, dynamic> json) =>
+      _$SomeQuery$QueryResponse$SomeObjectFromJson(json);
+
+  String? st;
+
+  @override
+  List<Object?> get props => [st];
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$SomeQuery$QueryResponse$SomeObjectToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class SomeQuery$QueryResponse$AnotherObject extends JsonSerializable
+    with EquatableMixin {
+  SomeQuery$QueryResponse$AnotherObject();
+
+  factory SomeQuery$QueryResponse$AnotherObject.fromJson(
+          Map<String, dynamic> json) =>
+      _$SomeQuery$QueryResponse$AnotherObjectFromJson(json);
+
+  String? str;
+
+  @override
+  List<Object?> get props => [str];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$SomeQuery$QueryResponse$AnotherObjectToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class SomeQuery$QueryResponse extends JsonSerializable with EquatableMixin {
+  SomeQuery$QueryResponse();
+
+  factory SomeQuery$QueryResponse.fromJson(Map<String, dynamic> json) =>
+      _$SomeQuery$QueryResponseFromJson(json);
+
+  String? s;
+
+  SomeQuery$QueryResponse$SomeObject? o;
+
+  List<SomeQuery$QueryResponse$AnotherObject?>? anotherObject;
+
+  @override
+  List<Object?> get props => [s, o, anotherObject];
+
+  @override
+  Map<String, dynamic> toJson() => _$SomeQuery$QueryResponseToJson(this);
+}
+''';

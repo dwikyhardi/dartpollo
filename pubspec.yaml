@@ -1,44 +1,29 @@
-name: dartpollo
-version: 0.1.0
-
-description: Build dart types from GraphQL schemas and queries (using Introspection Query).
-homepage: https://github.com/dwikyhardi/dartpollo
+name: dartpollo_workspace
+publish_to: none
 
 environment:
   sdk: ^3.9.0
 
-dependencies:
-  build: ^4.0.0
-  build_config: ^1.2.0
-  code_builder: ^4.11.0
-  collection: ^1.19.1
-  crypto: ^3.0.6
-  dart_style: ^3.1.2
-  equatable: ^2.0.7
-  glob: ^2.1.3
-  gql: ^1.0.1
-  gql_code_builder: ^0.15.1
-  gql_dedupe_link: ^4.0.0
-  gql_exec: ^1.1.1-alpha+1699813812660
-  gql_http_link: ^1.2.0
-  gql_link: ^1.1.0
-  hive_ce: ^2.15.1
-  http: ^1.5.0
-  json_annotation: ^4.9.0
-  meta: ^1.16.0
-  path: ^1.9.1
-  pub_semver: ^2.2.0
-  recase: ^4.1.0
-  source_gen: ^4.0.2
-  yaml: ^3.1.3
+workspace:
+  - packages/dartpollo
+  - packages/dartpollo_annotation
+  - packages/dartpollo_generator
 
 dev_dependencies:
-  args: ^2.7.0
-  build_runner: ^2.10.0
-  build_test: ^3.5.0
-  json_serializable: ^6.11.1
-  lints: ^6.0.0
-  logging: ^1.3.0
-  mocktail: ^1.0.4
-  pedantic_mono: ^1.34.0
-  test: ^1.26.3
+  melos: ^7.5.0
+
+melos:
+  sdkPath: .fvm/flutter_sdk
+  scripts:
+    analyze:
+      run: fvm dart analyze --fatal-infos
+      exec:
+        concurrency: 3
+    test:
+      run: fvm dart test
+      exec:
+        concurrency: 1
+    format:
+      run: fvm dart format .
+    pub-get:
+      run: fvm flutter pub get

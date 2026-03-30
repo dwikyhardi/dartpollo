@@ -1,0 +1,29 @@
+import 'dart:async';
+
+import 'package:dartpollo/dartpollo.dart';
+
+import '__generated__/big_query.graphql.dart';
+import '__generated__/simple_query.graphql.dart';
+
+Future<void> main() async {
+  final client = DartpolloClient(
+    'https://graphql-pokemon2.vercel.app',
+  );
+
+  final simpleQuery = SimpleQueryQuery();
+  final bigQuery = BigQueryQuery(variables: BigQueryArguments(quantity: 5));
+
+  final bigQuery2 = BigQueryQuery(variables: BigQueryArguments(quantity: 5));
+
+  print('Equality works: ${bigQuery == bigQuery2}');
+
+  final simpleQueryResponse = await client.execute(simpleQuery);
+  final bigQueryResponse = await client.execute(bigQuery);
+  client.dispose();
+
+  print('Simple query response: ${simpleQueryResponse.data?.pokemon?.number}');
+
+  for (final pokemon in bigQueryResponse.data?.pokemons ?? []) {
+    print('#${pokemon.number}: ${pokemon.name}');
+  }
+}
