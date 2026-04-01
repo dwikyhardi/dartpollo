@@ -124,13 +124,13 @@ void main() {
     group('AppendTypename Processing Errors', () {
       test(
         'should handle AppendTypename processing failure gracefully',
-        () {
+        () async {
           // Create a malformed document that might cause issues
           final document = parseString('query { user { id } }');
           final transformers = [AppendTypename('__typename')];
 
           // This should not throw but should handle any internal errors
-          final results = processor.processBatch([
+          final results = await processor.processBatch([
             document,
           ], transformers);
           expect(results, hasLength(1));

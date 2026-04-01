@@ -28,7 +28,7 @@ query {
 ''';
 
 final LibraryDefinition libraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Query$_Query'),

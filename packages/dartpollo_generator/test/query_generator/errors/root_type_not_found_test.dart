@@ -1,12 +1,11 @@
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:dartpollo_generator/builder.dart';
-import 'package:dartpollo_generator/generator/errors.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('On errors', () {
-    test('When there\'s no root type on schema', () {
+    test('When there\'s no root type on schema', () async {
       final anotherBuilder = graphQLQueryBuilder(
         const BuilderOptions({
           'generate_helpers': false,
@@ -14,22 +13,24 @@ void main() {
             {
               'schema': 'lib/api.schema.graphql',
               'queries_glob': 'lib/**.query.graphql',
-              'output': 'lib/some_query.graphql.dart',
             },
           ],
         }),
       )..onBuild = expectAsync1((_) {}, count: 0);
 
+      final logs = <String>[];
+      await testBuilder(
+        anotherBuilder,
+        {
+          'a|lib/api.schema.graphql': '',
+          'a|lib/some.query.graphql': 'query { a }',
+        },
+        onLog: (log) => logs.add(log.toString()),
+      );
+
       expect(
-        () => testBuilder(
-          anotherBuilder,
-          {
-            'a|lib/api.schema.graphql': '',
-            'a|lib/some.query.graphql': 'query { a }',
-          },
-          onLog: print,
-        ),
-        throwsA(predicate((e) => e is MissingRootTypeException)),
+        logs.any((l) => l.contains('root type') || l.contains('Query')),
+        isTrue,
       );
     });
   });

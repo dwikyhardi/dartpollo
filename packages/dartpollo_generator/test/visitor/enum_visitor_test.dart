@@ -61,10 +61,14 @@ void main() {
         definitions: [
           EnumTypeDefinitionNode(
             name: NameNode(value: 'TestEnum'),
+            values: [
+              EnumValueDefinitionNode(
+                name: NameNode(value: 'VALUE_A'),
+              ),
+            ],
           ),
         ],
       );
-
       expect(visitor.canHandle(document), isTrue);
       expect(() => document.accept(visitor), returnsNormally);
     });

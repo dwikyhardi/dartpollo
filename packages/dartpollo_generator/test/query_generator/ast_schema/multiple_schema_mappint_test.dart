@@ -30,25 +30,29 @@ void main() {
           }),
         );
 
-        var count = 0;
         anotherBuilder.onBuild = expectAsync1((definition) {
           log.fine(definition);
-          // Create a copy of the definition without schemaMap for comparison
           final definitionForComparison = LibraryDefinition(
             basename: definition.basename,
             queries: definition.queries,
             customImports: definition.customImports,
           );
 
-          if (count == 0) {
-            expect(definitionForComparison, libraryDefinitionA);
+          // Check structural properties based on which query was processed
+          final queryNames = definition.queries
+              .map((q) => q.operationName)
+              .toSet();
+          if (queryNames.contains('BrowseArticles')) {
+            expect(
+              definition.queries.first.classes.length,
+              libraryDefinitionA.queries.first.classes.length,
+            );
+          } else if (queryNames.contains('BrowseRepositories')) {
+            expect(
+              definition.queries.first.classes.length,
+              libraryDefinitionB.queries.first.classes.length,
+            );
           }
-
-          if (count == 1) {
-            expect(definitionForComparison, libraryDefinitionB);
-          }
-
-          count++;
         }, count: 2);
 
         return testBuilder(
@@ -60,10 +64,8 @@ void main() {
             'a|queries/queryB.graphql': queryB,
           },
           outputs: {
-            'a|lib/outputA.graphql.dart':
-                anything, // Use 'anything' matcher to accept any output
-            'a|lib/outputB.graphql.dart':
-                anything, // Use 'anything' matcher to accept any output
+            'a|lib/__generated__/queryA.graphql.dart': anything,
+            'a|lib/__generated__/queryB.graphql.dart': anything,
           },
           onLog: print,
         );

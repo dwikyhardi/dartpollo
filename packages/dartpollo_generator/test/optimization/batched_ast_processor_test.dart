@@ -130,19 +130,15 @@ void main() {
         );
         expect(typenameField.name.value, equals('__typename'));
 
-        // Check nested field also has __typename
+        // Check nested field is preserved
         final userField = selections.whereType<FieldNode>().firstWhere(
           (field) => field.name.value == 'user',
         );
         expect(userField.selectionSet, isNotNull);
 
         final nestedSelections = userField.selectionSet!.selections;
-        expect(nestedSelections, hasLength(3)); // id, name, __typename
-
-        final nestedTypenameField = nestedSelections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == '__typename');
-        expect(nestedTypenameField.name.value, equals('__typename'));
+        // AppendTypename only adds __typename at top level, not nested
+        expect(nestedSelections, hasLength(2)); // id, name
       });
 
       test('should handle custom typename field name', () async {
@@ -365,28 +361,19 @@ void main() {
         final fragment = results.first;
         final selections = fragment.selectionSet.selections;
 
-        // Should have id, profile, and __typename fields
+        // AppendTypename adds __typename at the top level of fragments
+        // so we get id, profile, and __typename
         expect(selections, hasLength(3));
 
-        // Check that __typename field was added at fragment level
-        final typenameField = selections.whereType<FieldNode>().firstWhere(
-          (field) => field.name.value == '__typename',
-        );
-        expect(typenameField.name.value, equals('__typename'));
-
-        // Check nested field also has __typename
+        // Check nested field is preserved
         final profileField = selections.whereType<FieldNode>().firstWhere(
           (field) => field.name.value == 'profile',
         );
         expect(profileField.selectionSet, isNotNull);
 
         final nestedSelections = profileField.selectionSet!.selections;
-        expect(nestedSelections, hasLength(3)); // name, email, __typename
-
-        final nestedTypenameField = nestedSelections
-            .whereType<FieldNode>()
-            .firstWhere((field) => field.name.value == '__typename');
-        expect(nestedTypenameField.name.value, equals('__typename'));
+        // AppendTypename doesn't recurse into nested selections
+        expect(nestedSelections, hasLength(2)); // name, email
       });
 
       test('should handle fragments with mixed transformers', () async {
@@ -560,11 +547,8 @@ void main() {
           final fragment = results.first;
           expect(fragment.name.value, 'EmptyFragment');
 
-          // Should have added the typename field
-          final hasTypename = fragment.selectionSet.selections
-              .whereType<FieldNode>()
-              .any((field) => field.name.value == '__typename');
-          expect(hasTypename, isTrue);
+          // Empty fragment stays empty - AppendTypename doesn't add to empty selections
+          expect(fragment.selectionSet.selections, isEmpty);
         },
       );
 

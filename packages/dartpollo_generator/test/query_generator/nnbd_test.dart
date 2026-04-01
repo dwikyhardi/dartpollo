@@ -46,7 +46,7 @@ void main() {
 }
 
 final libraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Query$_Query'),
@@ -97,7 +97,7 @@ class Query$Query extends JsonSerializable with EquatableMixin {
 ''';
 
 final listsLibraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Query$_Query'),

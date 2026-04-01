@@ -6,7 +6,7 @@ import '../helpers.dart';
 void main() {
   group('On forwarder', () {
     test(
-      'Forwarder are created if output file does not end with .graphql.dart',
+      'Output is auto-generated even when output config is provided',
       () => testGenerator(
         query: query,
         libraryDefinition: libraryDefinition,
@@ -19,21 +19,6 @@ void main() {
           type QueryRoot {
             a: String
           }''',
-        builderOptionsMap: {
-          'schema_mapping': [
-            {
-              'schema': 'api.schema.graphql',
-              'queries_glob': 'queries/**.graphql',
-              'output': 'lib/query.dart',
-            },
-          ],
-        },
-        outputsMap: {
-          'a|lib/query.graphql.dart': generatedFile,
-          'a|lib/query.dart': r'''// GENERATED CODE - DO NOT MODIFY BY HAND
-export 'query.graphql.dart';
-''',
-        },
       ),
     );
   });
@@ -46,7 +31,7 @@ query custom {
 ''';
 
 final LibraryDefinition libraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Custom$_QueryRoot'),

@@ -16,7 +16,7 @@ void main() {
     group('End-to-End Generation Workflow', () {
       test(
         'should generate complete code for Pokemon schema with simple query',
-        () {
+        () async {
           const pokemonSchema = '''
           type Query {
             pokemon(name: String): Pokemon
@@ -75,7 +75,6 @@ void main() {
                 {
                   'schema': 'pokemon.schema.graphql',
                   'queries_glob': 'queries/**.graphql',
-                  'output': 'lib/pokemon.graphql.dart',
                   'naming_scheme': 'pathedWithTypes',
                 },
               ],
@@ -87,14 +86,14 @@ void main() {
             capturedDefinition = definition;
           });
 
-          testBuilder(
+          await testBuilder(
             builder,
             {
               'a|pokemon.schema.graphql': pokemonSchema,
               'a|queries/get_pokemon.graphql': query,
             },
             outputs: {
-              'a|lib/pokemon.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
             onLog: (log) {
               if (log.level >= Level.SEVERE) {
@@ -144,7 +143,7 @@ void main() {
 
       test(
         'should generate complete code for Hasura schema with complex relationships',
-        () {
+        () async {
           const hasuraSchema = '''
           type Query {
             profile(where: ProfileBoolExp): [Profile!]!
@@ -209,7 +208,6 @@ void main() {
                 {
                   'schema': 'hasura.schema.graphql',
                   'queries_glob': 'queries/**.graphql',
-                  'output': 'lib/hasura.graphql.dart',
                   'naming_scheme': 'pathedWithTypes',
                 },
               ],
@@ -221,14 +219,14 @@ void main() {
             capturedDefinition = definition;
           });
 
-          testBuilder(
+          await testBuilder(
             builder,
             {
               'a|hasura.schema.graphql': hasuraSchema,
               'a|queries/get_messages.graphql': query,
             },
             outputs: {
-              'a|lib/hasura.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
             onLog: (log) {
               if (log.level >= Level.SEVERE) {
@@ -269,7 +267,7 @@ void main() {
         },
       );
 
-      test('should handle enum generation correctly', () {
+      test('should handle enum generation correctly', () async {
         const schemaWithEnums = '''
           type Query {
             pokemon(type: PokemonType): Pokemon
@@ -315,7 +313,6 @@ void main() {
               {
                 'schema': 'pokemon_enum.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/pokemon_enum.graphql.dart',
                 'naming_scheme': 'pathedWithTypes',
               },
             ],
@@ -327,14 +324,14 @@ void main() {
           capturedDefinition = definition;
         });
 
-        testBuilder(
+        await testBuilder(
           builder,
           {
             'a|pokemon_enum.schema.graphql': schemaWithEnums,
             'a|queries/get_pokemon_enum.graphql': query,
           },
           outputs: {
-            'a|lib/pokemon_enum.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
         );
 
@@ -360,7 +357,7 @@ void main() {
         expect(statusProperty.type.name, contains('PokemonStatus'));
       });
 
-      test('should handle fragment processing correctly', () {
+      test('should handle fragment processing correctly', () async {
         const schemaWithFragments = '''
           type Query {
             user: User
@@ -419,7 +416,6 @@ void main() {
               {
                 'schema': 'user.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/user.graphql.dart',
                 'naming_scheme': 'pathedWithTypes',
               },
             ],
@@ -431,14 +427,14 @@ void main() {
           capturedDefinition = definition;
         });
 
-        testBuilder(
+        await testBuilder(
           builder,
           {
             'a|user.schema.graphql': schemaWithFragments,
             'a|queries/get_user.graphql': queryWithFragments,
           },
           outputs: {
-            'a|lib/user.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
         );
 
@@ -500,7 +496,7 @@ void main() {
     });
 
     group('Error Handling Integration', () {
-      test('should handle schema validation errors gracefully', () {
+      test('should handle schema validation errors gracefully', () async {
         const invalidSchema = '''
           type Query {
             user: NonExistentType
@@ -521,27 +517,30 @@ void main() {
               {
                 'schema': 'invalid.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/invalid.graphql.dart',
               },
             ],
           }),
+        )..onBuild = expectAsync1((_) {}, count: 0);
+
+        // Builder logs errors instead of throwing
+        final logs = <String>[];
+        await testBuilder(
+          builder,
+          {
+            'a|invalid.schema.graphql': invalidSchema,
+            'a|queries/get_user.graphql': query,
+          },
+          outputs: {},
+          onLog: (log) => logs.add(log.toString()),
         );
 
-        // This should fail gracefully
         expect(
-          () => testBuilder(
-            builder,
-            {
-              'a|invalid.schema.graphql': invalidSchema,
-              'a|queries/get_user.graphql': query,
-            },
-            outputs: {},
-          ),
-          throwsA(anything),
+          logs.any((l) => l.contains('NonExistentType') || l.contains('Error')),
+          isTrue,
         );
       });
 
-      test('should handle query validation errors gracefully', () {
+      test('should handle query validation errors gracefully', () async {
         const validSchema = '''
           type Query {
             user: User
@@ -568,29 +567,32 @@ void main() {
               {
                 'schema': 'valid.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/query_error.graphql.dart',
               },
             ],
           }),
+        )..onBuild = expectAsync1((_) {}, count: 0);
+
+        // Builder logs errors instead of throwing
+        final logs = <String>[];
+        await testBuilder(
+          builder,
+          {
+            'a|valid.schema.graphql': validSchema,
+            'a|queries/invalid_query.graphql': invalidQuery,
+          },
+          outputs: {},
+          onLog: (log) => logs.add(log.toString()),
         );
 
-        // This should fail gracefully
         expect(
-          () => testBuilder(
-            builder,
-            {
-              'a|valid.schema.graphql': validSchema,
-              'a|queries/invalid_query.graphql': invalidQuery,
-            },
-            outputs: {},
-          ),
-          throwsA(anything),
+          logs.any((l) => l.contains('nonExistentField') || l.contains('Error')),
+          isTrue,
         );
       });
     });
 
     group('Performance and Regression Tests', () {
-      test('should handle large schemas efficiently', () {
+      test('should handle large schemas efficiently', () async {
         // Generate a large schema programmatically
         final largeSchemaBuffer = StringBuffer()..writeln('type Query {');
 
@@ -638,7 +640,6 @@ void main() {
               {
                 'schema': 'large.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/large.graphql.dart',
               },
             ],
           }),
@@ -651,14 +652,14 @@ void main() {
           capturedDefinition = definition;
         });
 
-        testBuilder(
+        await testBuilder(
           builder,
           {
             'a|large.schema.graphql': largeSchemaBuffer.toString(),
             'a|queries/get_entities.graphql': query,
           },
           outputs: {
-            'a|lib/large.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
         );
 
@@ -677,7 +678,7 @@ void main() {
 
       test(
         'should generate identical output for same input (deterministic)',
-        () {
+        () async {
           const schema = '''
           type Query {
             user: User
@@ -707,7 +708,6 @@ void main() {
               {
                 'schema': 'deterministic.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/deterministic.graphql.dart',
               },
             ],
           });
@@ -721,14 +721,14 @@ void main() {
               firstResult = definition;
             });
 
-          testBuilder(
+          await testBuilder(
             firstBuilder,
             {
               'a|deterministic.schema.graphql': schema,
               'a|queries/deterministic.graphql': query,
             },
             outputs: {
-              'a|lib/deterministic.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
           );
 
@@ -737,14 +737,14 @@ void main() {
               secondResult = definition;
             });
 
-          testBuilder(
+          await testBuilder(
             secondBuilder,
             {
               'a|deterministic.schema.graphql': schema,
               'a|queries/deterministic.graphql': query,
             },
             outputs: {
-              'a|lib/deterministic.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
           );
 
@@ -784,7 +784,7 @@ void main() {
     });
 
     group('Backward Compatibility Tests', () {
-      test('should maintain compatibility with existing API', () {
+      test('should maintain compatibility with existing API', () async {
         const schema = '''
           type Query {
             user: User
@@ -812,7 +812,6 @@ void main() {
               {
                 'schema': 'compat.schema.graphql',
                 'queries_glob': 'queries/**.graphql',
-                'output': 'lib/compat.graphql.dart',
                 'naming_scheme': 'pathedWithTypes',
               },
             ],
@@ -824,14 +823,14 @@ void main() {
           capturedDefinition = definition;
         });
 
-        testBuilder(
+        await testBuilder(
           builder,
           {
             'a|compat.schema.graphql': schema,
             'a|queries/compat.graphql': query,
           },
           outputs: {
-            'a|lib/compat.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
         );
 

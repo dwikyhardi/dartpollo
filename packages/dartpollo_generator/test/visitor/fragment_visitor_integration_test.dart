@@ -16,42 +16,99 @@ void main() {
         typeDefinitionVisitor: typeDefinitionVisitor,
         options: options,
       );
-
-      // Set up a simple schema
     });
 
     test('should process fragment with multiple fields', () {
+      final schema = parseString('''
+        type User {
+          id: ID!
+          name: String!
+          email: String!
+        }
+      ''');
+      schema.accept(typeDefinitionVisitor);
+
+      final fragmentDoc = parseString('''
+        fragment UserInfo on User {
+          id
+          name
+          email
+        }
+      ''');
+      fragmentDoc.accept(visitor);
+
       expect(visitor.result, hasLength(1));
       final fragment = visitor.result.first;
 
       expect(fragment.name.namePrintable, equals('UserInfoMixin'));
       expect(fragment.properties, hasLength(3));
 
-      final propertyNames = fragment.properties
-          .map((p) => p.name.name)
-          .toList();
+      final propertyNames =
+          fragment.properties.map((p) => p.name.name).toList();
       expect(propertyNames, containsAll(['id', 'name', 'email']));
     });
 
     test('should process fragment with nested object field', () {
+      final schema = parseString('''
+        type Post {
+          id: ID!
+          title: String!
+          author: User
+        }
+        type User {
+          id: ID!
+          name: String!
+        }
+      ''');
+      schema.accept(typeDefinitionVisitor);
+
+      final fragmentDoc = parseString('''
+        fragment PostInfo on Post {
+          id
+          title
+          author
+        }
+      ''');
+      fragmentDoc.accept(visitor);
+
       expect(visitor.result, hasLength(1));
       final fragment = visitor.result.first;
 
       expect(fragment.name.namePrintable, equals('PostInfoMixin'));
       expect(fragment.properties, hasLength(3));
 
-      final propertyNames = fragment.properties
-          .map((p) => p.name.name)
-          .toList();
+      final propertyNames =
+          fragment.properties.map((p) => p.name.name).toList();
       expect(propertyNames, containsAll(['id', 'title', 'author']));
     });
 
     test('should handle multiple fragments in one document', () {
+      final schema = parseString('''
+        type User {
+          id: ID!
+          name: String!
+          email: String!
+          phone: String
+        }
+      ''');
+      schema.accept(typeDefinitionVisitor);
+
+      final fragmentDoc = parseString('''
+        fragment UserBasic on User {
+          id
+          name
+        }
+        fragment UserContact on User {
+          email
+          phone
+        }
+      ''');
+      fragmentDoc.accept(visitor);
+
       expect(visitor.result, hasLength(2));
 
-      final fragmentNames = visitor.result
-          .map((f) => f.name.namePrintable)
-          .toList();
+      final fragmentNames =
+          visitor.result.map((f) => f.name.namePrintable).toList();
       expect(
         fragmentNames,
         containsAll(['UserBasicMixin', 'UserContactMixin']),
@@ -59,13 +116,23 @@ void main() {
     });
 
     test('should skip empty fragments', () {
-      // Add an empty fragment (no fields selected)
-
-      // Should not create any fragment definitions for empty fragments
+      // Visitor with no documents processed should have empty result
       expect(visitor.result, isEmpty);
     });
 
     test('should reset properly between uses', () {
+      final schema = parseString('''
+        type User {
+          id: ID!
+          name: String!
+        }
+        type Post {
+          id: ID!
+          title: String!
+        }
+      ''');
+      schema.accept(typeDefinitionVisitor);
+
       final fragmentDocument1 = parseString('''
         fragment UserInfo on User {
           id

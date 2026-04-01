@@ -110,7 +110,7 @@ void main() {
 }
 
 final LibraryDefinition libraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Query$_SomeObject'),
@@ -137,7 +137,7 @@ final LibraryDefinition libraryDefinition = LibraryDefinition(
 
 final LibraryDefinition
 libraryDefinitionWithCustomParserFns = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Query$_SomeObject'),
@@ -163,7 +163,7 @@ libraryDefinitionWithCustomParserFns = LibraryDefinition(
 );
 
 final LibraryDefinition libraryDefinitionWithCustomImports = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Query$_SomeObject'),

@@ -52,7 +52,6 @@ void main() {
                       {
                         'schema': 'benchmark.schema.graphql',
                         'queries_glob': 'queries/**.graphql',
-                        'output': 'lib/benchmark.graphql.dart',
                       },
                     ],
                   }),
@@ -72,7 +71,7 @@ void main() {
               'a|queries/benchmark.graphql': query,
             },
             outputs: {
-              'a|lib/benchmark.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
           );
 
@@ -322,7 +321,6 @@ void main() {
                       {
                         'schema': 'complex.schema.graphql',
                         'queries_glob': 'queries/**.graphql',
-                        'output': 'lib/complex.graphql.dart',
                       },
                     ],
                   }),
@@ -342,7 +340,7 @@ void main() {
               'a|queries/complex.graphql': complexQuery,
             },
             outputs: {
-              'a|lib/complex.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
           );
 
@@ -428,7 +426,6 @@ void main() {
                     {
                       'schema': 'memory.schema.graphql',
                       'queries_glob': 'queries/**.graphql',
-                      'output': 'lib/memory.graphql.dart',
                     },
                   ],
                 }),
@@ -444,7 +441,7 @@ void main() {
             'a|queries/memory.graphql': query,
           },
           outputs: {
-            'a|lib/memory.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
         );
 
@@ -529,7 +526,6 @@ void main() {
                         {
                           'schema': 'scale_$entityCount.schema.graphql',
                           'queries_glob': 'queries/**.graphql',
-                          'output': 'lib/scale_$entityCount.graphql.dart',
                         },
                       ],
                     }),
@@ -549,7 +545,7 @@ void main() {
                 'a|queries/scale_$entityCount.graphql': queryBuffer.toString(),
               },
               outputs: {
-                'a|lib/scale_$entityCount.graphql.dart': anything,
+                'a|lib/__generated__/**.graphql.dart': anything,
               },
             );
 
@@ -634,7 +630,6 @@ void main() {
                       {
                         'schema': 'regression.schema.graphql',
                         'queries_glob': 'queries/**.graphql',
-                        'output': 'lib/regression.graphql.dart',
                       },
                     ],
                   }),
@@ -652,7 +647,7 @@ void main() {
               'a|queries/regression.graphql': query,
             },
             outputs: {
-              'a|lib/regression.graphql.dart': anything,
+              'a|lib/__generated__/**.graphql.dart': anything,
             },
           );
 

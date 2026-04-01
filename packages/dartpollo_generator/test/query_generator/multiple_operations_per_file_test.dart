@@ -62,7 +62,7 @@ query QueData($intsNonNullable: [Int]!, $stringNullable: String) {
 ''';
 
 final LibraryDefinition libraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'MutData$_Mutation'),

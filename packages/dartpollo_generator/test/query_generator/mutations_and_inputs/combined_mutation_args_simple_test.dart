@@ -56,7 +56,7 @@ void main() {
             'a|queries/query.graphql': createUserQuery,
           },
           outputs: {
-            'a|lib/query.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
           onLog: print,
         );
@@ -119,7 +119,7 @@ void main() {
             'a|queries/query.graphql': createUserQuery,
           },
           outputs: {
-            'a|lib/query.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
           onLog: print,
         );
@@ -161,7 +161,7 @@ void main() {
             'a|queries/query.graphql': noArgsQuery,
           },
           outputs: {
-            'a|lib/query.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
           onLog: print,
         );
@@ -207,7 +207,7 @@ void main() {
             'a|queries/query.graphql': optionalArgsQuery,
           },
           outputs: {
-            'a|lib/query.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
           onLog: print,
         );
@@ -263,7 +263,7 @@ void main() {
             'a|queries/query.graphql': complexNestedQuery,
           },
           outputs: {
-            'a|lib/query.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
           onLog: print,
         );
@@ -309,7 +309,7 @@ void main() {
             'a|queries/query.graphql': listNullableQuery,
           },
           outputs: {
-            'a|lib/query.graphql.dart': anything,
+            'a|lib/__generated__/**.graphql.dart': anything,
           },
           onLog: print,
         );

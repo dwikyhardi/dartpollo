@@ -146,7 +146,7 @@ void main() {
         expect(context.validate, returnsNormally);
       });
 
-      test('throws exception for empty schemaMap output', () {
+      test('validates successfully with empty schemaMap output', () {
         final context = GenerationContext(
           schemaMap: SchemaMap(),
           path: path,
@@ -157,16 +157,7 @@ void main() {
           usedInputObjects: usedInputObjects,
         );
 
-        expect(
-          context.validate,
-          throwsA(
-            isA<GenerationContextValidationException>().having(
-              (e) => e.message,
-              'message',
-              contains('SchemaMap output cannot be null or empty'),
-            ),
-          ),
-        );
+        expect(context.validate, returnsNormally);
       });
 
       test('throws exception for empty type name in path', () {

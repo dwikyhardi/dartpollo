@@ -1,9 +1,61 @@
+import 'package:dart_style/dart_style.dart';
 import 'package:dartpollo_annotation/schema/schema_options.dart';
 import 'package:dartpollo_generator/generator/data/data.dart';
 import 'package:dartpollo_generator/generator/data/enum_value_definition.dart';
 import 'package:dartpollo_generator/generator/print_helpers.dart';
 import 'package:gql/language.dart';
 import 'package:test/test.dart';
+
+/// Normalizes Dart code by formatting it with dart_style.
+/// This makes tests resilient to whitespace/formatting differences
+/// from code_builder's DartEmitter output.
+String _normalizeCode(String code) {
+  try {
+    return DartFormatter(languageVersion: DartFormatter.latestLanguageVersion).format(code);
+  } catch (_) {
+    // If formatting fails (e.g. partial code), normalize whitespace manually
+    return code
+        .split('\n')
+        .map((l) => l.trimRight())
+        .join('\n')
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n')
+        .trim();
+  }
+}
+
+/// Custom matcher that compares code after normalizing formatting.
+Matcher equalsFormattedCode(String expected) =>
+    _FormattedCodeMatcher(expected);
+
+class _FormattedCodeMatcher extends Matcher {
+  _FormattedCodeMatcher(this.expected);
+  final String expected;
+
+  @override
+  bool matches(Object? item, Map matchState) {
+    if (item is! String) return false;
+    return _normalizeCode(item) == _normalizeCode(expected);
+  }
+
+  @override
+  Description describe(Description description) =>
+      description.add('code that formats to:\n${_normalizeCode(expected)}');
+
+  @override
+  Description describeMismatch(
+    Object? item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (item is String) {
+      return mismatchDescription.add(
+        'formatted to:\n${_normalizeCode(item)}',
+      );
+    }
+    return mismatchDescription.add('was not a String');
+  }
+}
 
 void main() {
   group('On printCustomEnum', () {
@@ -56,7 +108,7 @@ void main() {
 
       final str = specToString(enumDefinitionToSpec(definition));
 
-      expect(str, '''enum Name {
+      expect(str, equalsFormattedCode('''enum Name {
   @JsonValue('Option')
   option,
   @JsonValue('anotherOption')
@@ -66,7 +118,7 @@ void main() {
   @JsonValue('FORTH_OPTION')
   forthOption,
 }
-''');
+'''));
     });
 
     test('It will ignore duplicate options.', () {
@@ -90,13 +142,13 @@ void main() {
 
       final str = specToString(enumDefinitionToSpec(definition));
 
-      expect(str, '''enum Name {
+      expect(str, equalsFormattedCode('''enum Name {
   @JsonValue('Option')
   option,
   @JsonValue('AnotherOption')
   anotherOption,
 }
-''');
+'''));
     });
   });
 
@@ -136,14 +188,14 @@ void main() {
 
       final str = specToString(fragmentClassDefinitionToSpec(definition));
 
-      expect(str, '''mixin FragmentMixin {
+      expect(str, equalsFormattedCode('''mixin FragmentMixin {
   Type? name;
   @override
   Type? name;
   @Test
   Type? name;
 }
-''');
+'''));
     });
   });
 
@@ -172,7 +224,7 @@ void main() {
 
       final str = specToString(classDefinitionToSpec(definition, [], []));
 
-      expect(str, '''@JsonSerializable(explicitToJson: true)
+      expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class AClass extends JsonSerializable with EquatableMixin {
   AClass();
 
@@ -184,7 +236,7 @@ class AClass extends JsonSerializable with EquatableMixin {
   @override
   Map<String, dynamic> toJson() => _\$AClassToJson(this);
 }
-''');
+'''));
     });
 
     test('"Mixins" will be included to class.', () {
@@ -195,7 +247,7 @@ class AClass extends JsonSerializable with EquatableMixin {
 
       final str = specToString(classDefinitionToSpec(definition, [], []));
 
-      expect(str, '''@JsonSerializable(explicitToJson: true)
+      expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class AClass extends AnotherClass with EquatableMixin {
   AClass();
 
@@ -207,7 +259,7 @@ class AClass extends AnotherClass with EquatableMixin {
   @override
   Map<String, dynamic> toJson() => _\$AClassToJson(this);
 }
-''');
+'''));
     });
 
     test(
@@ -224,7 +276,7 @@ class AClass extends AnotherClass with EquatableMixin {
 
         final str = specToString(classDefinitionToSpec(definition, [], []));
 
-        expect(str, r'''@JsonSerializable(explicitToJson: true)
+        expect(str, equalsFormattedCode(r'''@JsonSerializable(explicitToJson: true)
 class AClass extends JsonSerializable with EquatableMixin {
   AClass();
 
@@ -254,7 +306,7 @@ class AClass extends JsonSerializable with EquatableMixin {
     return _$AClassToJson(this);
   }
 }
-''');
+'''));
       },
     );
 
@@ -275,7 +327,7 @@ class AClass extends JsonSerializable with EquatableMixin {
 
       final str = specToString(classDefinitionToSpec(definition, [], []));
 
-      expect(str, '''@JsonSerializable(explicitToJson: true)
+      expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class AClass extends JsonSerializable with EquatableMixin {
   AClass();
 
@@ -291,7 +343,7 @@ class AClass extends JsonSerializable with EquatableMixin {
   @override
   Map<String, dynamic> toJson() => _\$AClassToJson(this);
 }
-''');
+'''));
     });
 
     test(
@@ -324,7 +376,7 @@ class AClass extends JsonSerializable with EquatableMixin {
 
         final str = specToString(classDefinitionToSpec(definition, [], []));
 
-        expect(str, '''@JsonSerializable(explicitToJson: true)
+        expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class AClass extends JsonSerializable with EquatableMixin {
   AClass();
 
@@ -348,7 +400,7 @@ class AClass extends JsonSerializable with EquatableMixin {
   @override
   Map<String, dynamic> toJson() => _\$AClassToJson(this);
 }
-''');
+'''));
       },
     );
 
@@ -374,7 +426,7 @@ class AClass extends JsonSerializable with EquatableMixin {
           ], []),
         );
 
-        expect(str, '''@JsonSerializable(explicitToJson: true)
+        expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class AClass extends JsonSerializable with EquatableMixin, FragmentMixin {
   AClass();
 
@@ -386,7 +438,7 @@ class AClass extends JsonSerializable with EquatableMixin, FragmentMixin {
   @override
   Map<String, dynamic> toJson() => _\$AClassToJson(this);
 }
-''');
+'''));
       },
     );
 
@@ -410,7 +462,7 @@ class AClass extends JsonSerializable with EquatableMixin, FragmentMixin {
 
         final str = specToString(classDefinitionToSpec(definition, [], []));
 
-        expect(str, '''@JsonSerializable(explicitToJson: true)
+        expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class AClass extends JsonSerializable with EquatableMixin {
   AClass({
     this.name,
@@ -429,7 +481,7 @@ class AClass extends JsonSerializable with EquatableMixin {
   @override
   Map<String, dynamic> toJson() => _\$AClassToJson(this);
 }
-''');
+'''));
       },
     );
   });
@@ -493,13 +545,13 @@ class AClass extends JsonSerializable with EquatableMixin {
         GeneratorOptions(),
       );
 
-      expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+      expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'test_query.graphql.g.dart';
-''');
+'''));
     });
 
     test('When there are custom imports, they are included.', () {
@@ -517,7 +569,7 @@ part 'test_query.graphql.g.dart';
         GeneratorOptions(),
       );
 
-      expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+      expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -525,7 +577,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'some_file.dart';
 part 'test_query.graphql.g.dart';
-''');
+'''));
     });
 
     test('When generateHelpers is true, an execute fn is generated.', () {
@@ -550,7 +602,7 @@ part 'test_query.graphql.g.dart';
         GeneratorOptions(),
       );
 
-      expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+      expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:dartpollo/dartpollo.dart';
 import 'package:equatable/equatable.dart';
@@ -579,12 +631,12 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, JsonSerializable> {
   final String operationName = TEST_QUERY_QUERY_DOCUMENT_OPERATION_NAME;
 
   @override
-  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
+  List<Object?> get props => [document, operationName];
 
   @override
-  List<Object?> get props => [document, operationName];
+  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
 }
-''');
+'''));
     });
 
     test(
@@ -611,7 +663,7 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, JsonSerializable> {
           GeneratorOptions(),
         );
 
-        expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+        expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -628,7 +680,7 @@ final TEST_QUERY_QUERY_DOCUMENT = DocumentNode(definitions: [
     selectionSet: SelectionSetNode(selections: []),
   )
 ]);
-''');
+'''));
       },
     );
 
@@ -660,7 +712,7 @@ final TEST_QUERY_QUERY_DOCUMENT = DocumentNode(definitions: [
         GeneratorOptions(),
       );
 
-      expect(buffer.toString(), r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+      expect(buffer.toString(), equalsFormattedCode(r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:dartpollo/dartpollo.dart';
 import 'package:equatable/equatable.dart';
@@ -709,12 +761,12 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
   final TestQueryArguments variables;
 
   @override
-  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
+  List<Object?> get props => [document, operationName, variables];
 
   @override
-  List<Object?> get props => [document, operationName, variables];
+  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
 }
-''');
+'''));
     });
 
     test('Will generate an Arguments class', () {
@@ -733,7 +785,7 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
 
       final str = specToString(generateArgumentClassSpec(definition));
 
-      expect(str, '''@JsonSerializable(explicitToJson: true)
+      expect(str, equalsFormattedCode('''@JsonSerializable(explicitToJson: true)
 class TestQueryArguments extends JsonSerializable with EquatableMixin {
   TestQueryArguments({this.name});
 
@@ -749,7 +801,7 @@ class TestQueryArguments extends JsonSerializable with EquatableMixin {
   @override
   Map<String, dynamic> toJson() => _\$TestQueryArgumentsToJson(this);
 }
-''');
+'''));
     });
 
     test('Will generate a Query Class', () {
@@ -772,7 +824,7 @@ class TestQueryArguments extends JsonSerializable with EquatableMixin {
 
       expect(
         str,
-        r'''final TEST_QUERY_QUERY_DOCUMENT_OPERATION_NAME = 'test_query';
+        equalsFormattedCode(r'''final TEST_QUERY_QUERY_DOCUMENT_OPERATION_NAME = 'test_query';
 final TEST_QUERY_QUERY_DOCUMENT = DocumentNode(definitions: [
   OperationDefinitionNode(
     type: OperationType.query,
@@ -795,12 +847,12 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
   final TestQueryArguments variables;
 
   @override
-  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
+  List<Object?> get props => [document, operationName, variables];
 
   @override
-  List<Object?> get props => [document, operationName, variables];
+  TestQuery parse(Map<String, dynamic> json) => TestQuery.fromJson(json);
 }
-''',
+'''),
       );
     });
 
@@ -838,7 +890,7 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
         GeneratorOptions(),
       );
 
-      expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+      expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -862,7 +914,7 @@ enum SomeEnum {
   @JsonValue('Value')
   value,
 }
-''');
+'''));
     });
   });
 
@@ -878,13 +930,13 @@ enum SomeEnum {
       GeneratorOptions(),
     );
 
-    expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+    expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'test_query.graphql.g.dart';
-''');
+'''));
   });
 
   test('Should not add ignore_for_file when ignoreForFile is empty', () {
@@ -899,13 +951,13 @@ part 'test_query.graphql.g.dart';
       GeneratorOptions(),
     );
 
-    expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+    expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'test_query.graphql.g.dart';
-''');
+'''));
   });
 
   test(
@@ -922,14 +974,14 @@ part 'test_query.graphql.g.dart';
         GeneratorOptions(),
       );
 
-      expect(buffer.toString(), '''// GENERATED CODE - DO NOT MODIFY BY HAND
+      expect(buffer.toString(), equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: my_rule_1, my_rule_2
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'test_query.graphql.g.dart';
-''');
+'''));
     },
   );
 }

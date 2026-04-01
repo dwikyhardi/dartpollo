@@ -56,7 +56,7 @@ mutation customList($input: [Input!]!) {
 ''';
 
 final LibraryDefinition libraryDefinition = LibraryDefinition(
-  basename: r'query.graphql',
+  basename: r'**.graphql',
   queries: [
     QueryDefinition(
       name: QueryName(name: r'Custom$_Mutation'),

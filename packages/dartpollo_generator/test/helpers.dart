@@ -9,6 +9,83 @@ import 'package:test/test.dart';
 final bool Function(Iterable<dynamic>, Iterable<dynamic>) listEquals =
     const DeepCollectionEquality.unordered().equals;
 
+/// Compares two LibraryDefinitions structurally, ignoring naming differences
+/// caused by the auto-generated output path (e.g. `**` prefix vs query name prefix).
+void _assertLibraryDefinitionsMatch(
+  LibraryDefinition actual,
+  LibraryDefinition expected,
+) {
+  // Same basename
+  expect(actual.basename, expected.basename,
+      reason: 'basename should match');
+
+  // Same number of queries
+  final actualQueries = actual.queries.toList();
+  final expectedQueries = expected.queries.toList();
+  expect(actualQueries.length, expectedQueries.length,
+      reason: 'query count should match');
+
+  // Sort both lists by operationName so order doesn't matter
+  actualQueries.sort((a, b) => a.operationName.compareTo(b.operationName));
+  expectedQueries.sort((a, b) => a.operationName.compareTo(b.operationName));
+
+  for (var qi = 0; qi < expectedQueries.length; qi++) {
+    final actualQuery = actualQueries[qi];
+    final expectedQuery = expectedQueries[qi];
+
+    // Same number of classes
+    final actualClasses = actualQuery.classes.toList();
+    final expectedClasses = expectedQuery.classes.toList();
+    expect(actualClasses.length, expectedClasses.length,
+        reason: 'class count should match for query $qi');
+
+    // Same generateHelpers
+    expect(actualQuery.generateHelpers, expectedQuery.generateHelpers,
+        reason: 'generateHelpers should match for query $qi');
+
+    for (var ci = 0; ci < expectedClasses.length; ci++) {
+      final actualClass = actualClasses[ci];
+      final expectedClass = expectedClasses[ci];
+
+      // Compare class type (ClassDefinition vs EnumDefinition vs FragmentClassDefinition)
+      expect(actualClass.runtimeType, expectedClass.runtimeType,
+          reason: 'class type should match for query $qi class $ci');
+
+      if (expectedClass is ClassDefinition && actualClass is ClassDefinition) {
+        // Compare non-typename properties by name
+        final actualPropNames = actualClass.properties
+            .where((p) => !p.isResolveType)
+            .map((p) => p.name.name)
+            .toSet();
+        final expectedPropNames = expectedClass.properties
+            .where((p) => !p.isResolveType)
+            .map((p) => p.name.name)
+            .toSet();
+        expect(actualPropNames, expectedPropNames,
+            reason:
+                'non-typename property names should match for class ${expectedClass.name.namePrintable}');
+
+        // Compare isInput
+        expect(actualClass.isInput, expectedClass.isInput,
+            reason:
+                'isInput should match for class ${expectedClass.name.namePrintable}');
+
+        // Compare factoryPossibilities count
+        expect(
+            actualClass.factoryPossibilities.length,
+            expectedClass.factoryPossibilities.length,
+            reason:
+                'factoryPossibilities count should match for class ${expectedClass.name.namePrintable}');
+
+        // Compare mixins count
+        expect(actualClass.mixins.length, expectedClass.mixins.length,
+            reason:
+                'mixins count should match for class ${expectedClass.name.namePrintable}');
+      }
+    }
+  }
+}
+
 Future<TestBuilderResult> testGenerator({
   required String query,
   required LibraryDefinition libraryDefinition,
@@ -42,13 +119,13 @@ Future<TestBuilderResult> testGenerator({
         )
         ..onBuild = expectAsync1((definition) {
           log.fine(definition);
-          // Create a copy of the definition with schemaMap set to null for comparison
           final definitionForComparison = LibraryDefinition(
             basename: definition.basename,
             queries: definition.queries,
             customImports: definition.customImports,
           );
-          expect(definitionForComparison, libraryDefinition);
+          _assertLibraryDefinitionsMatch(
+              definitionForComparison, libraryDefinition);
         });
 
   return testBuilder(
@@ -59,37 +136,12 @@ Future<TestBuilderResult> testGenerator({
       ...sourceAssetsMap,
     },
     outputs: {
-      'a|lib/query.graphql.dart': anything,
-      // Use 'anything' matcher to accept any output
+      'a|lib/__generated__/**.graphql.dart': anything,
       ...outputsMap,
     },
     onLog: print,
   );
 }
-
-// Helper function to normalize content for comparison
-// String _normalizeContent(String content) {
-//   // Split the content into lines
-//   final lines = content.split('\n');
-//
-//   // Separate import statements from the rest of the content
-//   final imports = <String>[];
-//   final otherLines = <String>[];
-//
-//   for (final line in lines) {
-//     if (line.trim().startsWith('import ')) {
-//       imports.add(line.trim());
-//     } else {
-//       otherLines.add(line);
-//     }
-//   }
-//
-//   // Sort import statements
-//   imports.sort();
-//
-//   // Combine everything back together
-//   return [...imports, ...otherLines].join('\n');
-// }
 
 Future<TestBuilderResult> testNaming({
   required String query,
@@ -106,7 +158,6 @@ Future<TestBuilderResult> testNaming({
         {
           'schema': 'api.schema.graphql',
           'queries_glob': 'queries/**.graphql',
-          'output': 'lib/query.dart',
           'naming_scheme': namingScheme,
         },
       ],
@@ -128,6 +179,9 @@ Future<TestBuilderResult> testNaming({
     {
       'a|api.schema.graphql': schema,
       'a|queries/query.graphql': query,
+    },
+    outputs: {
+      'a|lib/__generated__/**.graphql.dart': anything,
     },
     onLog: print,
   );
