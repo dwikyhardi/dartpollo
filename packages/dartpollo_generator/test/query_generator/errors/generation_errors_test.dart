@@ -32,8 +32,7 @@ void main() {
       );
     });
 
-    test('When user has not configured an output, auto-generation is used',
-        () {
+    test('When user has not configured an output, auto-generation is used', () {
       // output is no longer required - the builder auto-generates it
       final builder = graphQLQueryBuilder(
         const BuilderOptions({
@@ -192,7 +191,9 @@ void main() {
 
       expect(
         logs.any(
-          (l) => l.contains('non_existent_api.schema.graphql') || l.contains('Missing'),
+          (l) =>
+              l.contains('non_existent_api.schema.graphql') ||
+              l.contains('Missing'),
         ),
         isTrue,
       );

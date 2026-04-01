@@ -16,14 +16,16 @@ void _assertLibraryDefinitionsMatch(
   LibraryDefinition expected,
 ) {
   // Same basename
-  expect(actual.basename, expected.basename,
-      reason: 'basename should match');
+  expect(actual.basename, expected.basename, reason: 'basename should match');
 
   // Same number of queries
   final actualQueries = actual.queries.toList();
   final expectedQueries = expected.queries.toList();
-  expect(actualQueries.length, expectedQueries.length,
-      reason: 'query count should match');
+  expect(
+    actualQueries.length,
+    expectedQueries.length,
+    reason: 'query count should match',
+  );
 
   // Sort both lists by operationName so order doesn't matter
   actualQueries.sort((a, b) => a.operationName.compareTo(b.operationName));
@@ -36,20 +38,29 @@ void _assertLibraryDefinitionsMatch(
     // Same number of classes
     final actualClasses = actualQuery.classes.toList();
     final expectedClasses = expectedQuery.classes.toList();
-    expect(actualClasses.length, expectedClasses.length,
-        reason: 'class count should match for query $qi');
+    expect(
+      actualClasses.length,
+      expectedClasses.length,
+      reason: 'class count should match for query $qi',
+    );
 
     // Same generateHelpers
-    expect(actualQuery.generateHelpers, expectedQuery.generateHelpers,
-        reason: 'generateHelpers should match for query $qi');
+    expect(
+      actualQuery.generateHelpers,
+      expectedQuery.generateHelpers,
+      reason: 'generateHelpers should match for query $qi',
+    );
 
     for (var ci = 0; ci < expectedClasses.length; ci++) {
       final actualClass = actualClasses[ci];
       final expectedClass = expectedClasses[ci];
 
       // Compare class type (ClassDefinition vs EnumDefinition vs FragmentClassDefinition)
-      expect(actualClass.runtimeType, expectedClass.runtimeType,
-          reason: 'class type should match for query $qi class $ci');
+      expect(
+        actualClass.runtimeType,
+        expectedClass.runtimeType,
+        reason: 'class type should match for query $qi class $ci',
+      );
 
       if (expectedClass is ClassDefinition && actualClass is ClassDefinition) {
         // Compare non-typename properties by name
@@ -61,26 +72,36 @@ void _assertLibraryDefinitionsMatch(
             .where((p) => !p.isResolveType)
             .map((p) => p.name.name)
             .toSet();
-        expect(actualPropNames, expectedPropNames,
-            reason:
-                'non-typename property names should match for class ${expectedClass.name.namePrintable}');
+        expect(
+          actualPropNames,
+          expectedPropNames,
+          reason:
+              'non-typename property names should match for class ${expectedClass.name.namePrintable}',
+        );
 
         // Compare isInput
-        expect(actualClass.isInput, expectedClass.isInput,
-            reason:
-                'isInput should match for class ${expectedClass.name.namePrintable}');
+        expect(
+          actualClass.isInput,
+          expectedClass.isInput,
+          reason:
+              'isInput should match for class ${expectedClass.name.namePrintable}',
+        );
 
         // Compare factoryPossibilities count
         expect(
-            actualClass.factoryPossibilities.length,
-            expectedClass.factoryPossibilities.length,
-            reason:
-                'factoryPossibilities count should match for class ${expectedClass.name.namePrintable}');
+          actualClass.factoryPossibilities.length,
+          expectedClass.factoryPossibilities.length,
+          reason:
+              'factoryPossibilities count should match for class ${expectedClass.name.namePrintable}',
+        );
 
         // Compare mixins count
-        expect(actualClass.mixins.length, expectedClass.mixins.length,
-            reason:
-                'mixins count should match for class ${expectedClass.name.namePrintable}');
+        expect(
+          actualClass.mixins.length,
+          expectedClass.mixins.length,
+          reason:
+              'mixins count should match for class ${expectedClass.name.namePrintable}',
+        );
       }
     }
   }
@@ -125,7 +146,9 @@ Future<TestBuilderResult> testGenerator({
             customImports: definition.customImports,
           );
           _assertLibraryDefinitionsMatch(
-              definitionForComparison, libraryDefinition);
+            definitionForComparison,
+            libraryDefinition,
+          );
         });
 
   return testBuilder(

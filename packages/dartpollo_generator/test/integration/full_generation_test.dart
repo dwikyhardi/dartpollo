@@ -585,7 +585,9 @@ void main() {
         );
 
         expect(
-          logs.any((l) => l.contains('nonExistentField') || l.contains('Error')),
+          logs.any(
+            (l) => l.contains('nonExistentField') || l.contains('Error'),
+          ),
           isTrue,
         );
       });

@@ -429,7 +429,9 @@ void main() {
         // Note: RSS measurements are imprecise; allow generous tolerance
         expect(
           batchedMemoryIncrease,
-          lessThanOrEqualTo(individualMemoryIncrease.abs() * 10.0 + 10 * 1024 * 1024),
+          lessThanOrEqualTo(
+            individualMemoryIncrease.abs() * 10.0 + 10 * 1024 * 1024,
+          ),
         ); // Allow generous tolerance for RSS imprecision
       });
 

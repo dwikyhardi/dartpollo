@@ -10,50 +10,45 @@ void main() {
     test(
       'Should search for definitions in correct schema',
       () {
-        final anotherBuilder = graphQLQueryBuilder(
-          const BuilderOptions({
-            'generate_helpers': true,
-            'schema_mapping': [
-              {
-                'schema': 'schemaA.graphql',
-                'queries_glob': 'queries/queryA.graphql',
-                'output': 'lib/outputA.graphql.dart',
-                'naming_scheme': 'pathedWithFields',
-              },
-              {
-                'schema': 'schemaB.graphql',
-                'queries_glob': 'queries/queryB.graphql',
-                'output': 'lib/outputB.graphql.dart',
-                'naming_scheme': 'pathedWithFields',
-              },
-            ],
-          }),
-        );
+        final anotherBuilder =
+            graphQLQueryBuilder(
+                const BuilderOptions({
+                  'generate_helpers': true,
+                  'schema_mapping': [
+                    {
+                      'schema': 'schemaA.graphql',
+                      'queries_glob': 'queries/queryA.graphql',
+                      'output': 'lib/outputA.graphql.dart',
+                      'naming_scheme': 'pathedWithFields',
+                    },
+                    {
+                      'schema': 'schemaB.graphql',
+                      'queries_glob': 'queries/queryB.graphql',
+                      'output': 'lib/outputB.graphql.dart',
+                      'naming_scheme': 'pathedWithFields',
+                    },
+                  ],
+                }),
+              )
+              ..onBuild = expectAsync1((definition) {
+                log.fine(definition);
 
-        anotherBuilder.onBuild = expectAsync1((definition) {
-          log.fine(definition);
-          final definitionForComparison = LibraryDefinition(
-            basename: definition.basename,
-            queries: definition.queries,
-            customImports: definition.customImports,
-          );
-
-          // Check structural properties based on which query was processed
-          final queryNames = definition.queries
-              .map((q) => q.operationName)
-              .toSet();
-          if (queryNames.contains('BrowseArticles')) {
-            expect(
-              definition.queries.first.classes.length,
-              libraryDefinitionA.queries.first.classes.length,
-            );
-          } else if (queryNames.contains('BrowseRepositories')) {
-            expect(
-              definition.queries.first.classes.length,
-              libraryDefinitionB.queries.first.classes.length,
-            );
-          }
-        }, count: 2);
+                // Check structural properties based on which query was processed
+                final queryNames = definition.queries
+                    .map((q) => q.operationName)
+                    .toSet();
+                if (queryNames.contains('BrowseArticles')) {
+                  expect(
+                    definition.queries.first.classes.length,
+                    libraryDefinitionA.queries.first.classes.length,
+                  );
+                } else if (queryNames.contains('BrowseRepositories')) {
+                  expect(
+                    definition.queries.first.classes.length,
+                    libraryDefinitionB.queries.first.classes.length,
+                  );
+                }
+              }, count: 2);
 
         return testBuilder(
           anotherBuilder,
