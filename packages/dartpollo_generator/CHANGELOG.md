@@ -1,4 +1,4 @@
-## 0.1.0
+## 0.1.0-alpha.1
 
 - Initial release as standalone package
 - Code generator extracted from `dartpollo` monolith
