@@ -1,5 +1,5 @@
 name: dartpollo_annotation
-version: 0.1.0
+version: 0.1.0-alpha.1
 
 description: Shared types and annotations for the dartpollo GraphQL client and generator.
 repository: https://github.com/dwikyhardi/dartpollo
