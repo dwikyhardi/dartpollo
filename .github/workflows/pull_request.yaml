@@ -3,50 +3,35 @@ on: pull_request
 name: CI
 
 jobs:
-  check-version-and-changelog:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: comigor/actions/check-version-and-changelog@master
-        with:
-          repo_token: ${{ github.token }}
-          base_ref: ${{ github.base_ref }}
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Check formatting
-        if: always() && steps.install.outcome == 'success'
-        run: dart format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed packages/
+
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Test
-        if: always() && steps.install.outcome == 'success'
-        run: dart test
+        run: melos run test
+
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Analyze
-        if: always() && steps.install.outcome == 'success'
-        run: dart analyze
+        run: melos run analyze

@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - master
-      - beta
+      - main
 
 name: CI
 
@@ -10,82 +10,53 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Check formatting
-        if: always() && steps.install.outcome == 'success'
-        run: dart format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed packages/
+
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Test
-        if: always() && steps.install.outcome == 'success'
-        run: dart test
+        run: melos run test
+
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Analyze
-        if: always() && steps.install.outcome == 'success'
-        run: dart analyze
-  create-tag-and-release:
+        run: melos run analyze
+
+  deploy:
     needs:
       - lint
       - test
       - analyze
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/beta'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@master
-      - id: check_version_and_changelog
-        name: Check if version on pubspec.yaml was changed and if there's an entry for this new version on CHANGELOG
-        uses: comigor/actions/check-version-and-changelog@master
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
         with:
-          base_ref: "${{ github.ref }}"
-      - name: Push tag
-        uses: anothrNick/github-tag-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: "v${{ steps.check_version_and_changelog.outputs.package_version }}"
-      - name: Create release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: "v${{ steps.check_version_and_changelog.outputs.package_version }}"
-          release_name: "Release v${{ steps.check_version_and_changelog.outputs.package_version }}"
-  deploy:
-    needs: create-tag-and-release
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/beta'
-    steps:
-      - uses: actions/checkout@master
-      - uses: dart-lang/setup-dart@v1.3
-        with:
-          sdk: stable
-      - id: install
-        name: Install dependencies
-        run: dart pub get
+          sdk: 3.9.2
+      - uses: bluefireteam/melos-action@v3
       - name: Publish to pub.dev
         run: |
           mkdir -p ~/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.config/dart/pub-credentials.json
-          dart pub publish --force
+          cd packages/dartpollo_annotation && dart pub publish --force
+          cd ../../packages/dartpollo && dart pub publish --force
+          cd ../../packages/dartpollo_generator && dart pub publish --force

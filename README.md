@@ -1,128 +1,108 @@
-# DartPollo
 
-[![Pub](https://img.shields.io/pub/v/dartpollo.svg)](https://pub.dev/packages/dartpollo)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Dartpollo
 
-Build Dart types from GraphQL schemas and queries using Introspection Query.
+A Dart GraphQL client and code generator that builds dart types from GraphQL schemas and queries using Introspection Query.
 
-## Overview
+## Packages
 
-DartPollo is a code generator that builds Dart types from GraphQL schemas and queries. It helps you integrate GraphQL into your Dart and Flutter applications by generating type-safe models from your GraphQL operations.
+This repository is a monorepo managed with [Melos](https://melos.invertase.dev), containing the following packages:
 
-## Features
+| Package | Description | Pub |
+|---|---|---|
+| [dartpollo](packages/dartpollo/) | GraphQL client with caching support | [![pub package](https://img.shields.io/pub/v/dartpollo.svg)](https://pub.dev/packages/dartpollo) |
+| [dartpollo_generator](packages/dartpollo_generator/) | Code generator that builds Dart types from GraphQL schemas | [![pub package](https://img.shields.io/pub/v/dartpollo_generator.svg)](https://pub.dev/packages/dartpollo_generator) |
+| [dartpollo_annotation](packages/dartpollo_annotation/) | Shared types and annotations used by both client and generator | [![pub package](https://img.shields.io/pub/v/dartpollo_annotation.svg)](https://pub.dev/packages/dartpollo_annotation) |
 
-- Generate Dart classes from GraphQL schemas and queries
-- Support for GraphQL fragments
-- Support for GraphQL mutations and subscriptions
-- Custom scalar mapping
-- Integration with json_serializable for JSON serialization
-- Type-safe GraphQL operations
+## Getting Started
 
-## Installation
+### Installation
 
-Add DartPollo to your `pubspec.yaml`:
+Add the client as a dependency and the generator as a dev dependency:
 
 ```yaml
 dependencies:
-  dartpollo: ^0.0.1
+  dartpollo: ^0.1.0
 
 dev_dependencies:
-  build_runner: ^2.4.15
+  build_runner: ^2.10.0
+  dartpollo_generator: ^0.1.0
 ```
 
-## Usage
+> **Note:** `dartpollo_annotation` is automatically included as a transitive dependency — you don't need to add it manually.
 
-### Basic Setup
+### Setup
 
-1. Create a `build.yaml` file in your project root:
+1. **Define your GraphQL schema** (e.g., `schema.graphql`)
+
+2. **Create a `build.yaml`** in your project root:
 
 ```yaml
 targets:
   $default:
+    sources:
+      - $package$
+      - lib/**
+      - schema.graphql
     builders:
-      dartpollo:
+      dartpollo_generator|dartpollo:
         options:
           schema_mapping:
-            - schema: your_schema.graphql
-              queries_glob: lib/graphql/**.graphql
-              output: lib/graphql/generated/
+            - schema: schema.graphql
+              queries_glob: lib/**/*.graphql
 ```
 
-2. Create your GraphQL schema file (or use introspection to generate it)
+3. **Write your GraphQL queries** as `.graphql` files in `lib/`
 
-3. Write your GraphQL queries in `.graphql` files:
-
-Example GraphQL query file (`lib/graphql/get_user.graphql`):
-
-```
-# Replace this with your actual GraphQL query based on your schema
-query GetUser($id: ID!) {
-  # Fields will depend on your specific GraphQL schema
-}
-```
-
-4. Run the build_runner to generate Dart code:
+4. **Run the code generator:**
 
 ```bash
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
-5. Use the generated code in your application:
+5. **Use the generated types with the client:**
 
 ```dart
-import 'package:your_package/graphql/generated/get_user.graphql.dart';
+import 'package:dartpollo/dartpollo.dart';
 
-void main() {
-  final query = GetUserQuery(variables: GetUserArguments(id: '123'));
-  // Use the query with your GraphQL client
-}
-```
-
-### Configuration Options
-
-DartPollo can be configured with various options in your `build.yaml` file:
-
-```yaml
-targets:
-  $default:
-    builders:
-      dartpollo:
-        options:
-          schema_mapping:
-            - schema: your_schema.graphql
-              queries_glob: lib/graphql/**.graphql
-              output: lib/graphql/generated/
-          scalar_mapping:
-            - graphql_type: Date
-              dart_type: DateTime
-          custom_parser_import: 'package:your_package/graphql/parsers.dart'
-          fragments_glob: 'lib/graphql/fragments/**.graphql'
-          naming_scheme: pathedWithTypes # or simple
+final client = DartpolloClient(link: yourLink);
+final response = await client.execute(YourGeneratedQuery());
 ```
 
 ## Examples
 
-Check the `example` directory for complete examples of using DartPollo with different GraphQL servers.
+See the [example/](example/) directory for complete working examples:
 
-## Custom Scalars
+- **[github](example/github/)** — GitHub GraphQL API (requires a personal access token)
+- **[pokemon](example/pokemon/)** — Pokémon GraphQL API
 
-You can map GraphQL scalar types to Dart types using the `scalar_mapping` configuration:
+## Development
 
-```yaml
-scalar_mapping:
-  - graphql_type: Date
-    dart_type: DateTime
-    use_custom_parser: true
-  - graphql_type: JSON
-    dart_type: Map<String, dynamic>
+### Prerequisites
+
+- Dart SDK `^3.9.0`
+- [Melos](https://melos.invertase.dev) `^7.0.0`
+
+### Setup
+
+```bash
+dart pub global activate melos
+dart pub get
+melos bootstrap
 ```
 
-If `use_custom_parser` is set to `true`, you need to provide custom parsing functions in a separate file and reference it with `custom_parser_import`.
+### Common Commands
 
-## Contributing
+```bash
+# Run all tests
+melos run test
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+# Analyze all packages
+melos run analyze
+
+# Format all packages
+melos run format
+```
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+See [LICENSE](LICENSE) for details.

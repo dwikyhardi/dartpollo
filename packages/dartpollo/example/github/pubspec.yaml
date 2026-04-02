@@ -1,0 +1,19 @@
+name: github_example
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  dartpollo:
+    path: ../../
+  http:
+
+dev_dependencies:
+  build_runner:
+  dartpollo_generator:
+    path: ../../../dartpollo_generator
+  json_serializable:
+  lints: ^6.1.0
+  test:

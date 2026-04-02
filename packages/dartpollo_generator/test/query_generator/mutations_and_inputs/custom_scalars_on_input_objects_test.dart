@@ -1,0 +1,332 @@
+import 'package:dartpollo_generator/generator/data/data.dart';
+import 'package:test/test.dart';
+
+import '../../helpers.dart';
+
+void main() {
+  group('On input objects', () {
+    test(
+      'Custom scalars should be coerced',
+      () => testGenerator(
+        query: query,
+        schema: r'''
+          scalar MyUuid
+
+          schema {
+            mutation: MutationRoot
+          }
+
+          type MutationRoot {
+            mut(input: Input!, previousId: MyUuid, listIds: [MyUuid]): MutationResponse
+          } 
+
+          type MutationResponse {
+            s: String
+          }
+
+          input Input {
+            id: MyUuid!
+            idNullabe: MyUuid
+          }
+          ''',
+        libraryDefinition: libraryDefinition,
+        generatedFile: generatedFile,
+        generateHelpers: true,
+        builderOptionsMap: {
+          'scalar_mapping': [
+            {
+              'graphql_type': 'MyUuid',
+              'custom_parser_import': 'package:example/src/custom_parser.dart',
+              'dart_type': {
+                'name': 'MyUuid',
+                'imports': ['package:uuid/uuid.dart'],
+              },
+            },
+          ],
+        },
+      ),
+    );
+  });
+}
+
+const query = r'''
+mutation custom($input: Input!, $previousId: MyUuid, $listIds: [MyUuid]) {
+  mut(input: $input, previousId: $previousId, listIds: $listIds) {
+    s
+  }
+}
+''';
+
+final LibraryDefinition libraryDefinition = LibraryDefinition(
+  basename: r'**.graphql',
+  queries: [
+    QueryDefinition(
+      name: QueryName(name: r'Custom$_MutationRoot'),
+      operationName: r'custom',
+      classes: [
+        ClassDefinition(
+          name: ClassName(name: r'Custom$_MutationRoot$_MutationResponse'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'String'),
+              name: const ClassPropertyName(name: r's'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(name: r'Custom$_MutationRoot'),
+          properties: [
+            ClassProperty(
+              type: TypeName(name: r'Custom$_MutationRoot$_MutationResponse'),
+              name: const ClassPropertyName(name: r'mut'),
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+        ),
+        ClassDefinition(
+          name: ClassName(name: r'Input'),
+          properties: [
+            ClassProperty(
+              type: DartTypeName(name: r'MyUuid', isNonNull: true),
+              name: const ClassPropertyName(name: r'id'),
+              annotations: const [
+                r'JsonKey(fromJson: fromGraphQLMyUuidToDartMyUuid, toJson: fromDartMyUuidToGraphQLMyUuid)',
+              ],
+            ),
+            ClassProperty(
+              type: DartTypeName(name: r'MyUuid'),
+              name: const ClassPropertyName(name: r'idNullabe'),
+              annotations: const [
+                r'JsonKey(fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable, toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)',
+              ],
+            ),
+          ],
+          typeNameField: const ClassPropertyName(name: r'__typename'),
+          isInput: true,
+        ),
+      ],
+      inputs: [
+        QueryInput(
+          type: TypeName(name: r'Input', isNonNull: true),
+          name: const QueryInputName(name: r'input'),
+        ),
+        QueryInput(
+          type: DartTypeName(name: r'MyUuid'),
+          name: const QueryInputName(name: r'previousId'),
+          annotations: const [
+            r'JsonKey(fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable, toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)',
+          ],
+        ),
+        QueryInput(
+          type: ListOfTypeName(
+            typeName: DartTypeName(name: r'MyUuid'),
+            isNonNull: false,
+          ),
+          name: const QueryInputName(name: r'listIds'),
+          annotations: const [
+            r'JsonKey(fromJson: fromGraphQLListNullableMyUuidNullableToDartListNullableMyUuidNullable, toJson: fromDartListNullableMyUuidNullableToGraphQLListNullableMyUuidNullable)',
+          ],
+        ),
+      ],
+      generateHelpers: true,
+      suffix: r'Mutation',
+    ),
+  ],
+  customImports: const [
+    r'package:uuid/uuid.dart',
+    r'package:example/src/custom_parser.dart',
+  ],
+);
+
+const generatedFile = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+
+import 'package:dartpollo/dartpollo.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:gql/ast.dart';
+import 'package:uuid/uuid.dart';
+import 'package:example/src/custom_parser.dart';
+part 'query.graphql.g.dart';
+
+@JsonSerializable(explicitToJson: true)
+class Custom$MutationRoot$MutationResponse extends JsonSerializable
+    with EquatableMixin {
+  Custom$MutationRoot$MutationResponse();
+
+  factory Custom$MutationRoot$MutationResponse.fromJson(
+          Map<String, dynamic> json) =>
+      _$Custom$MutationRoot$MutationResponseFromJson(json);
+
+  String? s;
+
+  @override
+  List<Object?> get props => [s];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$Custom$MutationRoot$MutationResponseToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Custom$MutationRoot extends JsonSerializable with EquatableMixin {
+  Custom$MutationRoot();
+
+  factory Custom$MutationRoot.fromJson(Map<String, dynamic> json) =>
+      _$Custom$MutationRootFromJson(json);
+
+  Custom$MutationRoot$MutationResponse? mut;
+
+  @override
+  List<Object?> get props => [mut];
+  @override
+  Map<String, dynamic> toJson() => _$Custom$MutationRootToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Input extends JsonSerializable with EquatableMixin {
+  Input({
+    required this.id,
+    this.idNullabe,
+  });
+
+  factory Input.fromJson(Map<String, dynamic> json) => _$InputFromJson(json);
+
+  @JsonKey(
+      fromJson: fromGraphQLMyUuidToDartMyUuid,
+      toJson: fromDartMyUuidToGraphQLMyUuid)
+  late MyUuid id;
+
+  @JsonKey(
+      fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable,
+      toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)
+  MyUuid? idNullabe;
+
+  @override
+  List<Object?> get props => [id, idNullabe];
+  @override
+  Map<String, dynamic> toJson() => _$InputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CustomArguments extends JsonSerializable with EquatableMixin {
+  CustomArguments({
+    required this.input,
+    this.previousId,
+    this.listIds,
+  });
+
+  @override
+  factory CustomArguments.fromJson(Map<String, dynamic> json) =>
+      _$CustomArgumentsFromJson(json);
+
+  late Input input;
+
+  @JsonKey(
+      fromJson: fromGraphQLMyUuidNullableToDartMyUuidNullable,
+      toJson: fromDartMyUuidNullableToGraphQLMyUuidNullable)
+  final MyUuid? previousId;
+
+  @JsonKey(
+      fromJson:
+          fromGraphQLListNullableMyUuidNullableToDartListNullableMyUuidNullable,
+      toJson:
+          fromDartListNullableMyUuidNullableToGraphQLListNullableMyUuidNullable)
+  final List<MyUuid?>? listIds;
+
+  @override
+  List<Object?> get props => [input, previousId, listIds];
+  @override
+  Map<String, dynamic> toJson() => _$CustomArgumentsToJson(this);
+}
+
+final CUSTOM_MUTATION_DOCUMENT_OPERATION_NAME = 'custom';
+final CUSTOM_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+    type: OperationType.mutation,
+    name: NameNode(value: 'custom'),
+    variableDefinitions: [
+      VariableDefinitionNode(
+        variable: VariableNode(name: NameNode(value: 'input')),
+        type: NamedTypeNode(
+          name: NameNode(value: 'Input'),
+          isNonNull: true,
+        ),
+        defaultValue: DefaultValueNode(value: null),
+        directives: [],
+      ),
+      VariableDefinitionNode(
+        variable: VariableNode(name: NameNode(value: 'previousId')),
+        type: NamedTypeNode(
+          name: NameNode(value: 'MyUuid'),
+          isNonNull: false,
+        ),
+        defaultValue: DefaultValueNode(value: null),
+        directives: [],
+      ),
+      VariableDefinitionNode(
+        variable: VariableNode(name: NameNode(value: 'listIds')),
+        type: ListTypeNode(
+          type: NamedTypeNode(
+            name: NameNode(value: 'MyUuid'),
+            isNonNull: false,
+          ),
+          isNonNull: false,
+        ),
+        defaultValue: DefaultValueNode(value: null),
+        directives: [],
+      ),
+    ],
+    directives: [],
+    selectionSet: SelectionSetNode(selections: [
+      FieldNode(
+        name: NameNode(value: 'mut'),
+        alias: null,
+        arguments: [
+          ArgumentNode(
+            name: NameNode(value: 'input'),
+            value: VariableNode(name: NameNode(value: 'input')),
+          ),
+          ArgumentNode(
+            name: NameNode(value: 'previousId'),
+            value: VariableNode(name: NameNode(value: 'previousId')),
+          ),
+          ArgumentNode(
+            name: NameNode(value: 'listIds'),
+            value: VariableNode(name: NameNode(value: 'listIds')),
+          ),
+        ],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+            name: NameNode(value: 's'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null,
+          )
+        ]),
+      )
+    ]),
+  )
+]);
+
+class CustomMutation
+    extends GraphQLQuery<Custom$MutationRoot, CustomArguments> {
+  CustomMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CUSTOM_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = CUSTOM_MUTATION_DOCUMENT_OPERATION_NAME;
+
+  @override
+  final CustomArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  Custom$MutationRoot parse(Map<String, dynamic> json) =>
+      Custom$MutationRoot.fromJson(json);
+}
+''';
