@@ -2,24 +2,25 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dartpollo/dartpollo.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 import '__generated__/search_repositories.graphql.dart';
 
-class AuthenticatedClient extends http.BaseClient {
-  final http.Client _inner = http.Client();
-
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
-    request.headers['Authorization'] =
-        'Bearer ${Platform.environment['GITHUB_TOKEN']}';
-    return _inner.send(request);
-  }
-}
-
 Future<void> main() async {
+  final dio = Dio();
+  dio.interceptors.add(
+    InterceptorsWrapper(
+      onRequest: (options, handler) {
+        options.headers['Authorization'] =
+            'Bearer ${Platform.environment['GITHUB_TOKEN']}';
+        handler.next(options);
+      },
+    ),
+  );
+
   final client = DartpolloClient(
     'https://api.github.com/graphql',
-    httpClient: AuthenticatedClient(),
+    client: dio,
   );
 
   final query = SearchRepositoriesQuery(
