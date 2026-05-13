@@ -46,8 +46,7 @@ void main() {
     });
 
     test('withCacheTtl adds ttl to context', () {
-      final context =
-          const Context().withCacheTtl(const Duration(minutes: 10));
+      final context = const Context().withCacheTtl(const Duration(minutes: 10));
       final entry = context.entry<CacheTtlEntry>();
 
       expect(entry, isNotNull);
@@ -79,8 +78,10 @@ void main() {
         policy: CachePolicy.networkOnly,
       );
 
-      expect(context.entry<CachePolicyEntry>()!.policy,
-          CachePolicy.networkOnly);
+      expect(
+        context.entry<CachePolicyEntry>()!.policy,
+        CachePolicy.networkOnly,
+      );
       expect(context.entry<CacheTtlEntry>(), isNull);
     });
 
