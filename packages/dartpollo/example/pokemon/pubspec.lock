@@ -159,21 +159,38 @@ packages:
       path: "../.."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.0-alpha.1"
   dartpollo_annotation:
     dependency: transitive
     description:
-      path: "../../../dartpollo_annotation"
-      relative: true
-    source: path
-    version: "0.1.0"
+      name: dartpollo_annotation
+      sha256: df92f8fa56aae9773bfa3f1bf95f094a28393f045cc55d2e9c2dfda2babfc397
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0-alpha.1"
   dartpollo_generator:
     dependency: "direct dev"
     description:
       path: "../../../dartpollo_generator"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.0-alpha.1"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      sha256: aff32c08f92787a557dd5c0145ac91536481831a01b4648136373cddb0e64f8c
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.9.2"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "2f9e64323a7c3c7ef69567d5c800424a11f8337b8b228bad02524c9fb3c1f340"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   equatable:
     dependency: transitive
     description:
@@ -254,6 +271,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  gql_dio_link:
+    dependency: transitive
+    description:
+      name: gql_dio_link
+      sha256: "158c101663247c02d17c6ee3475361845047509fb1ec15e956608bdf27dfee50"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   gql_exec:
     dependency: transitive
     description:
@@ -262,14 +287,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1-alpha+1699813812660"
-  gql_http_link:
-    dependency: transitive
-    description:
-      name: gql_http_link
-      sha256: "07635e85a4f313836904961904417fd27844fe8f68f77b410a4e6b81d8e9202e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   gql_link:
     dependency: transitive
     description:
@@ -302,14 +319,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.19.3"
-  http:
-    dependency: "direct main"
-    description:
-      name: http
-      sha256: "87721a4a50b19c7f1d49001e51409bddc46303966ce89a65af4f4e6004896412"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.0"
   http_multi_server:
     dependency: transitive
     description:

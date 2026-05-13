@@ -199,17 +199,24 @@ class HiveCacheStore implements CacheStore {
     expiredKeys.forEach(delete);
   }
 
+  /// Whether the underlying Hive box is currently open.
+  bool get isOpen => _box.isOpen;
+
   /// Closes the underlying Hive box.
   ///
   /// Call this when you're done with the store to release resources.
   /// After closing, the store cannot be used anymore.
+  ///
+  /// This method is idempotent: calling it on an already-closed store is a
+  /// no-op and will not throw.
   ///
   /// Example:
   /// ```dart
   /// await store.close();
   /// ```
   Future<void> close() async {
-    await _storageBox.close();
+    if (!_box.isOpen) return;
+    await _box.close();
   }
 
   /// Compacts the underlying Hive box to reclaim disk space.

@@ -5,57 +5,238 @@ A Dart GraphQL client with built-in caching support. Executes typed GraphQL quer
 ## Features
 
 - **Typed GraphQL execution** — Execute generated query classes and get typed responses
+- **Streaming support** — Stream query responses for real-time updates
 - **Caching** — Built-in cache layer with pluggable stores (in-memory, Hive)
-- **Cache policies** — Control caching behavior per-query (cache-first, network-only, etc.)
-- **GQL link support** — Built on top of the `gql_link` ecosystem
+- **Cache policies** — Control caching behavior per-query (`cacheFirst`, `networkFirst`, `cacheOnly`, `networkOnly`, `cacheAndNetwork`)
+- **Configurable TTL** — Set time-to-live for cache entries globally or per-request
+- **Direct cache access** — Read, write, evict, and clear cache entries programmatically
+- **Request cancellation** — Cancel in-flight requests using Dio's `CancelToken`
+- **Typed error handling** — Re-exported DioLink exception types for precise error catching
+- **GQL link support** — Built on top of the `gql_link` ecosystem with Dio as the HTTP client
 
 ## Installation
 
 ```yaml
 dependencies:
-  dartpollo: ^0.1.0
+  dartpollo: ^0.1.0-alpha.2
 
 dev_dependencies:
   build_runner: ^2.10.0
-  dartpollo_generator: ^0.1.0
+  dartpollo_generator: ^0.1.0-alpha.1
 ```
 
 ## Usage
 
+### Basic Client
+
 ```dart
 import 'package:dartpollo/dartpollo.dart';
 
-// Basic client
-final client = DartpolloClient(link: yourHttpLink);
+final client = DartpolloClient('https://api.example.com/graphql');
 final response = await client.execute(MyQuery());
 print(response.data);
 
-// Cached client
-final cachedClient = DartpolloCachedClient(
-  link: yourHttpLink,
-  cacheStore: InMemoryCacheStore(),
+// Don't forget to dispose when done
+client.dispose();
+```
+
+### Default Headers
+
+```dart
+final client = DartpolloClient(
+  'https://api.example.com/graphql',
+  defaultHeaders: {'Authorization': 'Bearer token'},
 );
-final response = await cachedClient.execute(
+```
+
+### Custom Dio Instance
+
+```dart
+import 'package:dio/dio.dart';
+
+final dio = Dio()
+  ..options.headers['Authorization'] = 'Bearer token';
+
+final client = DartpolloClient(
+  'https://api.example.com/graphql',
+  client: dio,
+);
+```
+
+### GET Requests for Queries
+
+```dart
+// Useful for CDN caching
+final client = DartpolloClient(
+  'https://api.example.com/graphql',
+  useGETForQueries: true,
+);
+```
+
+### Request Cancellation
+
+```dart
+final cancelToken = CancelToken();
+final response = await client.execute(
   MyQuery(),
-  cachePolicy: CachePolicy.cacheFirst,
+  context: Context().withCancelToken(cancelToken),
 );
+
+// Cancel the request (e.g., on widget dispose)
+cancelToken.cancel('Widget disposed');
+```
+
+### Error Handling
+
+```dart
+try {
+  final response = await client.execute(MyQuery());
+} on DioLinkServerException catch (e) {
+  print('Server error: ${e.statusCode}');
+} on DioLinkTimeoutException {
+  print('Request timed out');
+} on DioLinkCanceledException {
+  print('Request was cancelled');
+} on DioLinkParserException {
+  print('Failed to parse response');
+}
+```
+
+### From Custom Link
+
+```dart
+final client = DartpolloClient.fromLink(
+  Link.from([
+    DedupeLink(),
+    DioLink('https://api.example.com/graphql'),
+  ]),
+);
+```
+
+### Cached Client
+
+```dart
+final client = DartpolloCachedClient(
+  'https://api.example.com/graphql',
+  cacheStore: InMemoryCacheStore(maxSize: 100),
+  defaultCachePolicy: CachePolicy.cacheFirst,
+  defaultCacheTtl: Duration(minutes: 5),
+);
+
+// Execute with default cache policy
+final response = await client.execute(MyQuery());
+
+// Override cache policy per-request
+final freshResponse = await client.execute(
+  MyQuery(),
+  context: Context().withCachePolicy(CachePolicy.networkOnly),
+);
+
+// Override both policy and TTL
+final customResponse = await client.execute(
+  MyQuery(),
+  context: Context().withCache(
+    policy: CachePolicy.cacheFirst,
+    ttl: Duration(hours: 1),
+  ),
+);
+```
+
+### Streaming Responses
+
+```dart
+// Useful with cacheAndNetwork to get cached data first, then fresh data
+client.stream(
+  MyQuery(),
+  context: Context().cacheAndNetwork(),
+).listen((response) {
+  // First emission: cached data (if available)
+  // Second emission: fresh network data
+  print(response.data);
+});
+```
+
+### Direct Cache Management
+
+```dart
+// Read from cache
+final cached = await client.readCache(MyQuery());
+
+// Write to cache (e.g., optimistic updates)
+await client.writeCache(
+  MyQuery(),
+  {'user': {'id': '123', 'name': 'John Doe'}},
+  ttl: Duration(minutes: 10),
+);
+
+// Evict a specific query from cache
+await client.evictCache(MyQuery());
+
+// Clear all cache
+await client.clearCache();
+
+// Get cache statistics
+final stats = client.getCacheStats();
+print('Cache size: ${stats['size']}');
 ```
 
 ## API
 
 ### Clients
 
-- `DartpolloClient` — Standard GraphQL client
-- `DartpolloCachedClient` — Client with caching support
+- `DartpolloClient(String graphQLEndpoint, {Dio? client, Map<String, String> defaultHeaders, bool useGETForQueries, bool serializableErrors})` — Standard GraphQL client with Dio
+- `DartpolloClient.fromLink(Link link)` — Client from a custom link chain
+- `DartpolloCachedClient(String graphQLEndpoint, {Dio? client, CacheStore? cacheStore, CachePolicy defaultCachePolicy, Duration? defaultCacheTtl, Map<String, String> defaultHeaders, bool useGETForQueries, bool serializableErrors})` — Client with caching support
+- `DartpolloCachedClient.fromLink(Link link, {required CacheLink cacheLink, DioLink? dioLink})` — Cached client from a custom link chain
+
+### Client Methods
+
+| Method | Available On | Description |
+|--------|-------------|-------------|
+| `execute(query, {context})` | Both | Execute a query and return a typed response |
+| `stream(query, {context})` | Both | Stream typed responses (useful with `cacheAndNetwork`) |
+| `readCache(query)` | `DartpolloCachedClient` | Read cached data for a query |
+| `writeCache(query, data, {ttl})` | `DartpolloCachedClient` | Write data to cache |
+| `evictCache(query)` | `DartpolloCachedClient` | Remove a query from cache |
+| `clearCache()` | `DartpolloCachedClient` | Clear all cached data |
+| `getCacheStats()` | `DartpolloCachedClient` | Get cache size and configuration info |
+| `dispose()` | Both | Close the Dio client and release resources |
 
 ### Cache
 
 - `CacheStore` — Abstract cache store interface
-- `InMemoryCacheStore` — In-memory cache implementation
+- `InMemoryCacheStore` — In-memory cache implementation with optional max size
 - `HiveCacheStore` — Persistent cache using Hive
-- `CachePolicy` — Cache behavior policies
-- `CacheEntry` — Individual cache entries
-- `CacheContext` — Cache context for requests
+- `CacheLink` — GQL link that intercepts requests for caching
+- `CachePolicy` — Cache behavior policies (`cacheFirst`, `networkFirst`, `cacheOnly`, `networkOnly`, `cacheAndNetwork`)
+- `CacheEntry` — Individual cache entries with data, timestamp, and TTL
+- `CacheContext` — Context entries and extensions for per-request cache configuration
+
+### Context Extensions
+
+The `CacheContextExtension` on `Context` provides a fluent API for per-request cache configuration:
+
+| Extension | Description |
+|-----------|-------------|
+| `withCachePolicy(CachePolicy)` | Override cache policy |
+| `withCacheTtl(Duration?)` | Override cache TTL |
+| `withCache({policy, ttl})` | Override both policy and TTL |
+| `withoutCache()` | Shorthand for `networkOnly` |
+| `cacheOnly()` | Shorthand for `cacheOnly` |
+| `cacheAndNetwork()` | Shorthand for `cacheAndNetwork` |
+| `withCancelToken(CancelToken)` | Attach a Dio `CancelToken` to cancel the request |
+
+### DioLink Exceptions
+
+The following exception types are re-exported from `gql_dio_link` for typed error handling:
+
+| Exception | When |
+|-----------|------|
+| `DioLinkServerException` | HTTP status >= 300 or missing data+errors |
+| `DioLinkTimeoutException` | Connect/send/receive timeout |
+| `DioLinkCanceledException` | Request cancelled via `CancelToken` |
+| `DioLinkParserException` | Response parsing failed |
+| `DioLinkUnkownException` | Any other Dio error |
 
 ## Migration Guide
 
@@ -78,11 +259,11 @@ dev_dependencies:
 **After:**
 ```yaml
 dependencies:
-  dartpollo: ^0.1.0
+  dartpollo: ^0.1.0-alpha.2
 
 dev_dependencies:
   build_runner: ^2.10.0
-  dartpollo_generator: ^0.1.0  # ← NEW: generator is now a separate package
+  dartpollo_generator: ^0.1.0-alpha.1  # ← NEW: generator is now a separate package
 ```
 
 > **Note:** `dartpollo_annotation` is automatically included as a transitive dependency — you don't need to add it manually.

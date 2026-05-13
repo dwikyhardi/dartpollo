@@ -1,3 +1,19 @@
+## 0.1.0-alpha.2
+
+- Migrated HTTP layer from `gql_http_link` / `http` to `gql_dio_link` / `dio` for both `DartpolloClient` and `DartpolloCachedClient`
+- Added support for custom `Dio` instance via `client` parameter (replaces `httpClient`)
+- Added `defaultHeaders` parameter to both clients for convenient header configuration
+- Added `useGETForQueries` parameter to send queries as GET requests (useful for CDN caching)
+- Added `serializableErrors` parameter for Flutter isolate compatibility
+- Added `withCancelToken(CancelToken)` context extension for request cancellation
+- Re-exported DioLink exception types (`DioLinkServerException`, `DioLinkTimeoutException`, `DioLinkCanceledException`, `DioLinkParserException`, `DioLinkUnkownException`) for typed error handling
+- Re-exported `Dio` and `CancelToken` from `dartpollo.dart` barrel file
+- Fixed `dispose()` to use `DioLink.close()` instead of `DioLink.client.close()` for proper cleanup
+- Updated `DartpolloCachedClient.fromLink` to accept `DioLink` instead of `HttpLink`
+- Updated example projects (GitHub, Pokémon) to use Dio-based client
+- Improved DartDoc documentation across all public APIs
+- Updated README with comprehensive usage examples and API reference
+
 ## 0.1.0-alpha.1
 
 ### Breaking Changes

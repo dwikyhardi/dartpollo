@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:dartpollo_annotation/schema/graphql_query.dart';
 import 'package:dartpollo_annotation/schema/graphql_response.dart';
+import 'package:dio/dio.dart';
 import 'package:gql_dedupe_link/gql_dedupe_link.dart';
+import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:gql_exec/gql_exec.dart';
-import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
-import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 
 /// Used to execute a GraphQL query or mutation and return its typed response.
@@ -15,27 +15,34 @@ import 'package:json_annotation/json_annotation.dart';
 class DartpolloClient {
   /// Instantiate an [DartpolloClient].
   ///
-  /// [DedupeLink] and [HttpLink] are included.
+  /// [DedupeLink] and [DioLink] are included.
   /// To use different [Link] create an [DartpolloClient] with [DartpolloClient.fromLink].
   factory DartpolloClient(
     String graphQLEndpoint, {
-    http.Client? httpClient,
+    Dio? client,
+    Map<String, String> defaultHeaders = const {},
+    bool useGETForQueries = false,
+    bool serializableErrors = false,
   }) {
-    final httpLink = HttpLink(
+    final dioLink = DioLink(
       graphQLEndpoint,
-      httpClient: httpClient,
+      client: client ?? Dio(),
+      defaultHeaders: defaultHeaders,
+      useGETForQueries: useGETForQueries,
+      serializableErrors: serializableErrors,
     );
     return DartpolloClient.fromLink(
       Link.from([
         DedupeLink(),
-        httpLink,
+        dioLink,
       ]),
-    ).._httpLink = httpLink;
+    ).._dioLink = dioLink;
   }
 
   /// Create an [DartpolloClient] from [Link].
   DartpolloClient.fromLink(this._link);
-  HttpLink? _httpLink;
+
+  DioLink? _dioLink;
   final Link _link;
 
   /// Executes a [GraphQLQuery], returning a typed response.
@@ -88,12 +95,10 @@ class DartpolloClient {
         );
   }
 
-  /// Close the inline [http.Client].
+  /// Close the inline [Dio] client.
   ///
   /// Keep in mind this will not close clients whose Dartpollo client
   /// was instantiated from [DartpolloClient.fromLink]. If you're using
   /// this constructor, you need to close your own links.
-  void dispose() {
-    _httpLink?.dispose();
-  }
+  void dispose() => _dioLink?.close();
 }
