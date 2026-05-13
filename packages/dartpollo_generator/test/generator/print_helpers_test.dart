@@ -1118,28 +1118,31 @@ part 'test_query.graphql.g.dart';
       );
     });
 
-    test('makes dart format a no-op on writeLibraryDefinitionToBuffer output',
-        () {
-      final buffer = StringBuffer();
-      writeLibraryDefinitionToBuffer(
-        buffer,
-        const <String>[],
-        LibraryDefinition(basename: r'test_query.graphql'),
-        GeneratorOptions(),
-      );
+    test(
+      'makes dart format a no-op on writeLibraryDefinitionToBuffer output',
+      () {
+        final buffer = StringBuffer();
+        writeLibraryDefinitionToBuffer(
+          buffer,
+          const <String>[],
+          LibraryDefinition(basename: r'test_query.graphql'),
+          GeneratorOptions(),
+        );
 
-      final output = buffer.toString();
-      final formatted = DartFormatter(
-        languageVersion: DartFormatter.latestLanguageVersion,
-      ).format(output);
+        final output = buffer.toString();
+        final formatted = DartFormatter(
+          languageVersion: DartFormatter.latestLanguageVersion,
+        ).format(output);
 
-      expect(
-        formatted,
-        equals(output),
-        reason: 'Running `dart format` on generated output must produce no '
-            'changes (the `// dart format off` marker opts the body out).',
-      );
-    });
+        expect(
+          formatted,
+          equals(output),
+          reason:
+              'Running `dart format` on generated output must produce no '
+              'changes (the `// dart format off` marker opts the body out).',
+        );
+      },
+    );
 
     test('makes dart format a no-op on writeLibraryForwarder output', () {
       final output = writeLibraryForwarder(
@@ -1153,7 +1156,8 @@ part 'test_query.graphql.g.dart';
       expect(
         formatted,
         equals(output),
-        reason: 'Running `dart format` on the forwarder must produce no '
+        reason:
+            'Running `dart format` on the forwarder must produce no '
             'changes (the `// dart format off` marker opts the body out).',
       );
     });
