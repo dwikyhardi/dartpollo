@@ -1,110 +1,79 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-import 'package:dartpollo/dartpollo.dart';
-import 'package:equatable/equatable.dart';
-import 'package:gql/ast.dart';
-import 'package:json_annotation/json_annotation.dart';
+// dart format off
+import 'package:dartpollo/dartpollo.dart';import 'package:equatable/equatable.dart';import 'package:gql/ast.dart';import 'package:json_annotation/json_annotation.dart';part 'big_query.graphql.g.dart';@JsonSerializable(explicitToJson: true) class BigQuery$Query$Charmander extends JsonSerializable with EquatableMixin {BigQuery$Query$Charmander();
 
-part 'big_query.graphql.g.dart';
+factory BigQuery$Query$Charmander.fromJson(Map<String, dynamic> json) => _$BigQuery$Query$CharmanderFromJson(json);
 
-@JsonSerializable(explicitToJson: true)
-class BigQuery$Query$Charmander extends JsonSerializable with EquatableMixin {
-  BigQuery$Query$Charmander();
+String? number;
 
-  factory BigQuery$Query$Charmander.fromJson(Map<String, dynamic> json) =>
-      _$BigQuery$Query$CharmanderFromJson(json);
+List<String?>? types;
 
-  String? number;
+@override List<Object?> get props => [number, types];
 
-  List<String?>? types;
+@override Map<String, dynamic> toJson() => _$BigQuery$Query$CharmanderToJson(this);
 
-  @override
-  List<Object?> get props => [number, types];
+ }
+@JsonSerializable(explicitToJson: true) class BigQuery$Query$Pokemon$Evolutions extends JsonSerializable with EquatableMixin {BigQuery$Query$Pokemon$Evolutions();
 
-  @override
-  Map<String, dynamic> toJson() => _$BigQuery$Query$CharmanderToJson(this);
-}
+factory BigQuery$Query$Pokemon$Evolutions.fromJson(Map<String, dynamic> json) => _$BigQuery$Query$Pokemon$EvolutionsFromJson(json);
 
-@JsonSerializable(explicitToJson: true)
-class BigQuery$Query$Pokemon$Evolutions extends JsonSerializable
-    with EquatableMixin {
-  BigQuery$Query$Pokemon$Evolutions();
+String? number;
 
-  factory BigQuery$Query$Pokemon$Evolutions.fromJson(
-    Map<String, dynamic> json,
-  ) => _$BigQuery$Query$Pokemon$EvolutionsFromJson(json);
+String? name;
 
-  String? number;
+@override List<Object?> get props => [number, name];
 
-  String? name;
+@override Map<String, dynamic> toJson() => _$BigQuery$Query$Pokemon$EvolutionsToJson(this);
 
-  @override
-  List<Object?> get props => [number, name];
+ }
+@JsonSerializable(explicitToJson: true) class BigQuery$Query$Pokemon extends JsonSerializable with EquatableMixin {BigQuery$Query$Pokemon();
 
-  @override
-  Map<String, dynamic> toJson() =>
-      _$BigQuery$Query$Pokemon$EvolutionsToJson(this);
-}
+factory BigQuery$Query$Pokemon.fromJson(Map<String, dynamic> json) => _$BigQuery$Query$PokemonFromJson(json);
 
-@JsonSerializable(explicitToJson: true)
-class BigQuery$Query$Pokemon extends JsonSerializable with EquatableMixin {
-  BigQuery$Query$Pokemon();
+String? number;
 
-  factory BigQuery$Query$Pokemon.fromJson(Map<String, dynamic> json) =>
-      _$BigQuery$Query$PokemonFromJson(json);
+String? name;
 
-  String? number;
+List<String?>? types;
 
-  String? name;
+List<BigQuery$Query$Pokemon$Evolutions?>? evolutions;
 
-  List<String?>? types;
+@override List<Object?> get props => [number, name, types, evolutions];
 
-  List<BigQuery$Query$Pokemon$Evolutions?>? evolutions;
+@override Map<String, dynamic> toJson() => _$BigQuery$Query$PokemonToJson(this);
 
-  @override
-  List<Object?> get props => [number, name, types, evolutions];
+ }
+@JsonSerializable(explicitToJson: true) class BigQuery$Query extends JsonSerializable with EquatableMixin {BigQuery$Query();
 
-  @override
-  Map<String, dynamic> toJson() => _$BigQuery$Query$PokemonToJson(this);
-}
+factory BigQuery$Query.fromJson(Map<String, dynamic> json) => _$BigQuery$QueryFromJson(json);
 
-@JsonSerializable(explicitToJson: true)
-class BigQuery$Query extends JsonSerializable with EquatableMixin {
-  BigQuery$Query();
+BigQuery$Query$Charmander? charmander;
 
-  factory BigQuery$Query.fromJson(Map<String, dynamic> json) =>
-      _$BigQuery$QueryFromJson(json);
+List<BigQuery$Query$Pokemon?>? pokemons;
 
-  BigQuery$Query$Charmander? charmander;
+@override List<Object?> get props => [charmander, pokemons];
 
-  List<BigQuery$Query$Pokemon?>? pokemons;
+@override Map<String, dynamic> toJson() => _$BigQuery$QueryToJson(this);
 
-  @override
-  List<Object?> get props => [charmander, pokemons];
+ }
+@JsonSerializable(explicitToJson: true) class BigQueryArguments extends JsonSerializable with EquatableMixin {BigQueryArguments({required this.quantity});
 
-  @override
-  Map<String, dynamic> toJson() => _$BigQuery$QueryToJson(this);
-}
+@override factory BigQueryArguments.fromJson(Map<String, dynamic> json) => _$BigQueryArgumentsFromJson(json);
 
-@JsonSerializable(explicitToJson: true)
-class BigQueryArguments extends JsonSerializable with EquatableMixin {
-  BigQueryArguments({required this.quantity});
+late int quantity;
 
-  @override
-  factory BigQueryArguments.fromJson(Map<String, dynamic> json) =>
-      _$BigQueryArgumentsFromJson(json);
+@override List<Object?> get props => [quantity];
 
-  late int quantity;
+@override Map<String, dynamic> toJson() => _$BigQueryArgumentsToJson(this);
 
-  @override
-  List<Object?> get props => [quantity];
-
-  @override
-  Map<String, dynamic> toJson() => _$BigQueryArgumentsToJson(this);
-}
-
+ }
 final BIG_QUERY_QUERY_DOCUMENT_OPERATION_NAME = 'big_query';
-final BIG_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
+final BIG_QUERY_QUERY_DOCUMENT = 
+DocumentNodeHelpers.document([
   DocumentNodeHelpers.operation(
     OperationType.query,
     'big_query',
@@ -116,52 +85,33 @@ final BIG_QUERY_QUERY_DOCUMENT = DocumentNodeHelpers.document([
       ),
     ],
     selections: [
-      DocumentNodeHelpers.field(
-        'pokemon',
-        alias: 'charmander',
-        args: {'name': 'Charmander'},
-        selections: [
-          DocumentNodeHelpers.field('number'),
-          DocumentNodeHelpers.field('types'),
-        ],
-      ),
-      DocumentNodeHelpers.field(
-        'pokemons',
-        args: {'first': DocumentNodeHelpers.variable('quantity')},
-        selections: [
+      DocumentNodeHelpers.field('pokemon', alias: 'charmander', args: {'name': 'Charmander'}, selections: [
+        DocumentNodeHelpers.field('number'),
+        DocumentNodeHelpers.field('types'),
+      ]),
+      DocumentNodeHelpers.field('pokemons', args: {'first': DocumentNodeHelpers.variable('quantity')}, selections: [
+        DocumentNodeHelpers.field('number'),
+        DocumentNodeHelpers.field('name'),
+        DocumentNodeHelpers.field('types'),
+        DocumentNodeHelpers.field('evolutions', alias: 'evolutions', selections: [
           DocumentNodeHelpers.field('number'),
           DocumentNodeHelpers.field('name'),
-          DocumentNodeHelpers.field('types'),
-          DocumentNodeHelpers.field(
-            'evolutions',
-            alias: 'evolutions',
-            selections: [
-              DocumentNodeHelpers.field('number'),
-              DocumentNodeHelpers.field('name'),
-            ],
-          ),
-        ],
-      ),
+        ]),
+      ]),
     ],
   ),
-]);
+])
 
-class BigQueryQuery extends GraphQLQuery<BigQuery$Query, BigQueryArguments> {
-  BigQueryQuery({required this.variables});
+;class BigQueryQuery extends GraphQLQuery<BigQuery$Query, BigQueryArguments> {BigQueryQuery({required this.variables});
 
-  @override
-  final DocumentNode document = BIG_QUERY_QUERY_DOCUMENT;
+@override final DocumentNode document = BIG_QUERY_QUERY_DOCUMENT;
 
-  @override
-  final String operationName = BIG_QUERY_QUERY_DOCUMENT_OPERATION_NAME;
+@override final String operationName = BIG_QUERY_QUERY_DOCUMENT_OPERATION_NAME;
 
-  @override
-  final BigQueryArguments variables;
+@override final BigQueryArguments variables;
 
-  @override
-  List<Object?> get props => [document, operationName, variables];
+@override List<Object?> get props => [document, operationName, variables];
 
-  @override
-  BigQuery$Query parse(Map<String, dynamic> json) =>
-      BigQuery$Query.fromJson(json);
-}
+@override BigQuery$Query parse(Map<String, dynamic> json) => BigQuery$Query.fromJson(json);
+
+ }

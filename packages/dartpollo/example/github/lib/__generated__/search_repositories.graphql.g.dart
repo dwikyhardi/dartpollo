@@ -33,9 +33,7 @@ _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemFromJson(
 Map<String, dynamic>
 _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemToJson(
   SearchRepositories$Query$SearchResultItemConnection$SearchResultItem instance,
-) => <String, dynamic>{
-  '__typename': instance.$$typename,
-};
+) => <String, dynamic>{'__typename': instance.$$typename};
 
 SearchRepositories$Query$SearchResultItemConnection
 _$SearchRepositories$Query$SearchResultItemConnectionFromJson(
@@ -60,26 +58,19 @@ _$SearchRepositories$Query$SearchResultItemConnectionToJson(
 
 SearchRepositories$Query _$SearchRepositories$QueryFromJson(
   Map<String, dynamic> json,
-) =>
-    SearchRepositories$Query()
-      ..search = SearchRepositories$Query$SearchResultItemConnection.fromJson(
-        json['search'] as Map<String, dynamic>,
-      );
+) => SearchRepositories$Query()
+  ..search = SearchRepositories$Query$SearchResultItemConnection.fromJson(
+    json['search'] as Map<String, dynamic>,
+  );
 
 Map<String, dynamic> _$SearchRepositories$QueryToJson(
   SearchRepositories$Query instance,
-) => <String, dynamic>{
-  'search': instance.search.toJson(),
-};
+) => <String, dynamic>{'search': instance.search.toJson()};
 
 SearchRepositoriesArguments _$SearchRepositoriesArgumentsFromJson(
   Map<String, dynamic> json,
-) => SearchRepositoriesArguments(
-  query: json['query'] as String,
-);
+) => SearchRepositoriesArguments(query: json['query'] as String);
 
 Map<String, dynamic> _$SearchRepositoriesArgumentsToJson(
   SearchRepositoriesArguments instance,
-) => <String, dynamic>{
-  'query': instance.query,
-};
+) => <String, dynamic>{'query': instance.query};

@@ -16,10 +16,7 @@ BigQuery$Query$Charmander _$BigQuery$Query$CharmanderFromJson(
 
 Map<String, dynamic> _$BigQuery$Query$CharmanderToJson(
   BigQuery$Query$Charmander instance,
-) => <String, dynamic>{
-  'number': instance.number,
-  'types': instance.types,
-};
+) => <String, dynamic>{'number': instance.number, 'types': instance.types};
 
 BigQuery$Query$Pokemon$Evolutions _$BigQuery$Query$Pokemon$EvolutionsFromJson(
   Map<String, dynamic> json,
@@ -29,10 +26,7 @@ BigQuery$Query$Pokemon$Evolutions _$BigQuery$Query$Pokemon$EvolutionsFromJson(
 
 Map<String, dynamic> _$BigQuery$Query$Pokemon$EvolutionsToJson(
   BigQuery$Query$Pokemon$Evolutions instance,
-) => <String, dynamic>{
-  'number': instance.number,
-  'name': instance.name,
-};
+) => <String, dynamic>{'number': instance.number, 'name': instance.name};
 
 BigQuery$Query$Pokemon _$BigQuery$Query$PokemonFromJson(
   Map<String, dynamic> json,
@@ -81,11 +75,7 @@ Map<String, dynamic> _$BigQuery$QueryToJson(BigQuery$Query instance) =>
     };
 
 BigQueryArguments _$BigQueryArgumentsFromJson(Map<String, dynamic> json) =>
-    BigQueryArguments(
-      quantity: (json['quantity'] as num).toInt(),
-    );
+    BigQueryArguments(quantity: (json['quantity'] as num).toInt());
 
 Map<String, dynamic> _$BigQueryArgumentsToJson(BigQueryArguments instance) =>
-    <String, dynamic>{
-      'quantity': instance.quantity,
-    };
+    <String, dynamic>{'quantity': instance.quantity};

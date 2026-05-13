@@ -5,6 +5,7 @@ import 'package:dartpollo_generator/generator/data/data.dart';
 import 'package:dartpollo_generator/generator/data/enum_value_definition.dart';
 import 'package:dartpollo_generator/generator/errors.dart';
 import 'package:gql/ast.dart';
+
 // ignore: implementation_imports
 import 'package:gql_code_builder/src/ast.dart' as dart;
 import 'package:recase/recase.dart';
@@ -735,13 +736,22 @@ String specToString(Spec spec) {
 
 /// Generate Dart code typings from a query or mutation and its response from
 /// a [QueryDefinition] into a buffer.
+///
+/// The output is intentionally emitted as-is (no `dart_style` post-processing)
+/// so that the generated file looks like a plain, freezed-style generated
+/// artifact. Consumers should rely on the header comments below to skip lints
+/// and coverage for the file rather than on a specific whitespace layout.
 void writeLibraryDefinitionToBuffer(
   StringBuffer buffer,
   List<String> ignoreForFile,
   LibraryDefinition definition,
   GeneratorOptions options,
 ) {
-  buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
+  buffer
+    ..writeln('// GENERATED CODE - DO NOT MODIFY BY HAND')
+    ..writeln('// coverage:ignore-file')
+    ..writeln('// ignore_for_file: type=lint')
+    ..writeln('// ignore_for_file: $_defaultIgnoreForFile');
   if (ignoreForFile.isNotEmpty) {
     buffer.writeln(
       '// ignore_for_file: ${Set<String>.from(ignoreForFile).join(', ')}',
@@ -749,12 +759,24 @@ void writeLibraryDefinitionToBuffer(
   }
   buffer
     ..write('\n')
+    ..writeln('// dart format off')
     ..write(specToString(generateLibrarySpec(definition, options)));
 }
+
+/// The default set of analyzer/lint rules ignored in every generated file.
+///
+/// Mirrors what freezed-generated files emit, so the produced code does not
+/// surface lints or skew coverage reports for consumers.
+const String _defaultIgnoreForFile =
+    'unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark';
 
 /// Generate an empty file just exporting the library. This is used to avoid
 /// a breaking change on file generation.
 String writeLibraryForwarder(LibraryDefinition definition) =>
     '''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: $_defaultIgnoreForFile
+// dart format off
 export '${definition.basename}.dart';
 ''';
