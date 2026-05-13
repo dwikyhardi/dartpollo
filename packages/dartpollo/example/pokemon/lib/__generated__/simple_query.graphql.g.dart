@@ -16,10 +16,7 @@ SimpleQuery$Query$Pokemon _$SimpleQuery$Query$PokemonFromJson(
 
 Map<String, dynamic> _$SimpleQuery$Query$PokemonToJson(
   SimpleQuery$Query$Pokemon instance,
-) => <String, dynamic>{
-  'number': instance.number,
-  'types': instance.types,
-};
+) => <String, dynamic>{'number': instance.number, 'types': instance.types};
 
 SimpleQuery$Query _$SimpleQuery$QueryFromJson(Map<String, dynamic> json) =>
     SimpleQuery$Query()
@@ -30,6 +27,4 @@ SimpleQuery$Query _$SimpleQuery$QueryFromJson(Map<String, dynamic> json) =>
             );
 
 Map<String, dynamic> _$SimpleQuery$QueryToJson(SimpleQuery$Query instance) =>
-    <String, dynamic>{
-      'pokemon': instance.pokemon?.toJson(),
-    };
+    <String, dynamic>{'pokemon': instance.pokemon?.toJson()};

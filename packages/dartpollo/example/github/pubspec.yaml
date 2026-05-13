@@ -15,5 +15,3 @@ dev_dependencies:
   dartpollo_generator:
     path: ../../../dartpollo_generator
   json_serializable:
-  lints: ^6.1.0
-  test:

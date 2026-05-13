@@ -23,4 +23,4 @@ melos:
       exec:
         concurrency: 1
     format:
-      run: dart format .
+      run: dart format packages/

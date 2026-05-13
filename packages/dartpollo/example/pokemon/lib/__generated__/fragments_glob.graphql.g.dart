@@ -72,9 +72,7 @@ FragmentsGlob$Query _$FragmentsGlob$QueryFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$FragmentsGlob$QueryToJson(
   FragmentsGlob$Query instance,
-) => <String, dynamic>{
-  'pokemon': instance.pokemon?.toJson(),
-};
+) => <String, dynamic>{'pokemon': instance.pokemon?.toJson()};
 
 PokemonMixin$PokemonDimension _$PokemonMixin$PokemonDimensionFromJson(
   Map<String, dynamic> json,
@@ -82,9 +80,7 @@ PokemonMixin$PokemonDimension _$PokemonMixin$PokemonDimensionFromJson(
 
 Map<String, dynamic> _$PokemonMixin$PokemonDimensionToJson(
   PokemonMixin$PokemonDimension instance,
-) => <String, dynamic>{
-  'minimum': instance.minimum,
-};
+) => <String, dynamic>{'minimum': instance.minimum};
 
 PokemonMixin$PokemonAttack _$PokemonMixin$PokemonAttackFromJson(
   Map<String, dynamic> json,
@@ -109,6 +105,4 @@ PokemonAttackMixin$Attack _$PokemonAttackMixin$AttackFromJson(
 
 Map<String, dynamic> _$PokemonAttackMixin$AttackToJson(
   PokemonAttackMixin$Attack instance,
-) => <String, dynamic>{
-  'name': instance.name,
-};
+) => <String, dynamic>{'name': instance.name};

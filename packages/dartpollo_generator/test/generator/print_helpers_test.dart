@@ -9,14 +9,23 @@ import 'package:test/test.dart';
 /// Normalizes Dart code by formatting it with dart_style.
 /// This makes tests resilient to whitespace/formatting differences
 /// from code_builder's DartEmitter output.
+///
+/// The `// dart format off` / `// dart format on` marker comments — which the
+/// generator emits so consumers' `dart format` runs leave generated files
+/// untouched — are stripped before formatting so the formatter can still
+/// normalize whitespace differences between the hand-written expected
+/// strings and code_builder's emitter output.
 String _normalizeCode(String code) {
+  final stripped = code
+      .replaceAll('// dart format off\n', '')
+      .replaceAll('// dart format on\n', '');
   try {
     return DartFormatter(
       languageVersion: DartFormatter.latestLanguageVersion,
-    ).format(code);
+    ).format(stripped);
   } on FormatterException catch (_) {
     // If formatting fails (e.g. partial code), normalize whitespace manually
-    return code
+    return stripped
         .split('\n')
         .map((l) => l.trimRight())
         .join('\n')
@@ -580,6 +589,9 @@ class AClass extends JsonSerializable with EquatableMixin {
       expect(
         buffer.toString(),
         equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -607,6 +619,9 @@ part 'test_query.graphql.g.dart';
       expect(
         buffer.toString(),
         equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -643,6 +658,9 @@ part 'test_query.graphql.g.dart';
       expect(
         buffer.toString(),
         equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:dartpollo/dartpollo.dart';
 import 'package:equatable/equatable.dart';
@@ -707,6 +725,9 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, JsonSerializable> {
         expect(
           buffer.toString(),
           equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -759,6 +780,9 @@ final TEST_QUERY_QUERY_DOCUMENT = DocumentNode(definitions: [
       expect(
         buffer.toString(),
         equalsFormattedCode(r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:dartpollo/dartpollo.dart';
 import 'package:equatable/equatable.dart';
@@ -945,6 +969,9 @@ class TestQueryQuery extends GraphQLQuery<TestQuery, TestQueryArguments> {
       expect(
         buffer.toString(),
         equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -988,6 +1015,9 @@ enum SomeEnum {
     expect(
       buffer.toString(),
       equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -1012,6 +1042,9 @@ part 'test_query.graphql.g.dart';
     expect(
       buffer.toString(),
       equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 import 'package:equatable/equatable.dart';
 import 'package:gql/ast.dart';
@@ -1038,6 +1071,9 @@ part 'test_query.graphql.g.dart';
       expect(
         buffer.toString(),
         equalsFormattedCode('''// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 // ignore_for_file: my_rule_1, my_rule_2
 
 import 'package:equatable/equatable.dart';
@@ -1048,4 +1084,82 @@ part 'test_query.graphql.g.dart';
       );
     },
   );
+
+  group('// dart format off marker', () {
+    test('is emitted by writeLibraryDefinitionToBuffer', () {
+      final buffer = StringBuffer();
+      writeLibraryDefinitionToBuffer(
+        buffer,
+        const <String>[],
+        LibraryDefinition(basename: r'test_query.graphql'),
+        GeneratorOptions(),
+      );
+
+      expect(
+        buffer.toString(),
+        contains('// dart format off'),
+        reason:
+            'Generated files must opt out of dart_style so consumers running '
+            '`dart format` see no changes (mirroring freezed behaviour).',
+      );
+    });
+
+    test('is emitted by writeLibraryForwarder', () {
+      final output = writeLibraryForwarder(
+        LibraryDefinition(basename: r'test_query.graphql'),
+      );
+
+      expect(
+        output,
+        contains('// dart format off'),
+        reason:
+            'Forwarder files must opt out of dart_style so `dart format` is a '
+            'no-op on them.',
+      );
+    });
+
+    test(
+      'makes dart format a no-op on writeLibraryDefinitionToBuffer output',
+      () {
+        final buffer = StringBuffer();
+        writeLibraryDefinitionToBuffer(
+          buffer,
+          const <String>[],
+          LibraryDefinition(basename: r'test_query.graphql'),
+          GeneratorOptions(),
+        );
+
+        final output = buffer.toString();
+        final formatted = DartFormatter(
+          languageVersion: DartFormatter.latestLanguageVersion,
+        ).format(output);
+
+        expect(
+          formatted,
+          equals(output),
+          reason:
+              'Running `dart format` on generated output must produce no '
+              'changes (the `// dart format off` marker opts the body out).',
+        );
+      },
+    );
+
+    test('makes dart format a no-op on writeLibraryForwarder output', () {
+      final output = writeLibraryForwarder(
+        LibraryDefinition(basename: r'test_query.graphql'),
+      );
+
+      final formatted = DartFormatter(
+        languageVersion: DartFormatter.latestLanguageVersion,
+      ).format(output);
+
+      expect(
+        formatted,
+        equals(output),
+        reason:
+            'Running `dart format` on the forwarder must produce no '
+            'changes (the `// dart format off` marker opts the body out).',
+      );
+    });
+  });
 }

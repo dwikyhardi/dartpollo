@@ -1,238 +1,88 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-import 'package:dartpollo/dartpollo.dart';
-import 'package:equatable/equatable.dart';
-import 'package:gql/ast.dart';
-import 'package:json_annotation/json_annotation.dart';
+// dart format off
+import 'package:dartpollo/dartpollo.dart';import 'package:equatable/equatable.dart';import 'package:gql/ast.dart';import 'package:json_annotation/json_annotation.dart';part 'search_repositories.graphql.g.dart';@JsonSerializable(explicitToJson: true) class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository extends SearchRepositories$Query$SearchResultItemConnection$SearchResultItem with EquatableMixin {SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository();
 
-part 'search_repositories.graphql.g.dart';
+factory SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository.fromJson(Map<String, dynamic> json) => _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$RepositoryFromJson(json);
 
-@JsonSerializable(explicitToJson: true)
-class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository
-    extends SearchRepositories$Query$SearchResultItemConnection$SearchResultItem
-    with EquatableMixin {
-  SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository();
+late String name;
 
-  factory SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository.fromJson(
-    Map<String, dynamic> json,
-  ) =>
-      _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$RepositoryFromJson(
-        json,
-      );
+@override List<Object?> get props => [name];
 
-  late String name;
+@override Map<String, dynamic> toJson() => _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$RepositoryToJson(this);
 
-  @override
-  List<Object?> get props => [name];
+ }
+@JsonSerializable(explicitToJson: true) class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem extends JsonSerializable with EquatableMixin {SearchRepositories$Query$SearchResultItemConnection$SearchResultItem();
 
-  @override
-  Map<String, dynamic> toJson() =>
-      _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$RepositoryToJson(
-        this,
-      );
-}
-
-@JsonSerializable(explicitToJson: true)
-class SearchRepositories$Query$SearchResultItemConnection$SearchResultItem
-    extends JsonSerializable
-    with EquatableMixin {
-  SearchRepositories$Query$SearchResultItemConnection$SearchResultItem();
-
-  factory SearchRepositories$Query$SearchResultItemConnection$SearchResultItem.fromJson(
-    Map<String, dynamic> json,
-  ) {
-    switch (json['__typename'].toString()) {
+factory SearchRepositories$Query$SearchResultItemConnection$SearchResultItem.fromJson(Map<String, dynamic> json) { switch (json['__typename'].toString()) {
       case r'Repository':
-        return SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository.fromJson(
-          json,
-        );
+        return SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository.fromJson(json);
       default:
     }
-    return _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemFromJson(
-      json,
-    );
-  }
+    return _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemFromJson(json);
+ }
 
-  @JsonKey(name: '__typename')
-  String? $$typename;
+@JsonKey(name: '__typename') String? $$typename;
 
-  @override
-  List<Object?> get props => [$$typename];
+@override List<Object?> get props => [$$typename];
 
-  @override
-  Map<String, dynamic> toJson() {
-    switch ($$typename) {
+@override Map<String, dynamic> toJson() { switch ($$typename) {
       case r'Repository':
-        return (this
-                as SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository)
-            .toJson();
+        return (this as SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository).toJson();
       default:
     }
-    return _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemToJson(
-      this,
-    );
-  }
-}
+    return _$SearchRepositories$Query$SearchResultItemConnection$SearchResultItemToJson(this);
+ } 
+ }
+@JsonSerializable(explicitToJson: true) class SearchRepositories$Query$SearchResultItemConnection extends JsonSerializable with EquatableMixin {SearchRepositories$Query$SearchResultItemConnection();
 
-@JsonSerializable(explicitToJson: true)
-class SearchRepositories$Query$SearchResultItemConnection
-    extends JsonSerializable
-    with EquatableMixin {
-  SearchRepositories$Query$SearchResultItemConnection();
+factory SearchRepositories$Query$SearchResultItemConnection.fromJson(Map<String, dynamic> json) => _$SearchRepositories$Query$SearchResultItemConnectionFromJson(json);
 
-  factory SearchRepositories$Query$SearchResultItemConnection.fromJson(
-    Map<String, dynamic> json,
-  ) => _$SearchRepositories$Query$SearchResultItemConnectionFromJson(json);
+List<SearchRepositories$Query$SearchResultItemConnection$SearchResultItem?>? nodes;
 
-  List<SearchRepositories$Query$SearchResultItemConnection$SearchResultItem?>?
-  nodes;
+@override List<Object?> get props => [nodes];
 
-  @override
-  List<Object?> get props => [nodes];
+@override Map<String, dynamic> toJson() => _$SearchRepositories$Query$SearchResultItemConnectionToJson(this);
 
-  @override
-  Map<String, dynamic> toJson() =>
-      _$SearchRepositories$Query$SearchResultItemConnectionToJson(this);
-}
+ }
+@JsonSerializable(explicitToJson: true) class SearchRepositories$Query extends JsonSerializable with EquatableMixin {SearchRepositories$Query();
 
-@JsonSerializable(explicitToJson: true)
-class SearchRepositories$Query extends JsonSerializable with EquatableMixin {
-  SearchRepositories$Query();
+factory SearchRepositories$Query.fromJson(Map<String, dynamic> json) => _$SearchRepositories$QueryFromJson(json);
 
-  factory SearchRepositories$Query.fromJson(Map<String, dynamic> json) =>
-      _$SearchRepositories$QueryFromJson(json);
+late SearchRepositories$Query$SearchResultItemConnection search;
 
-  late SearchRepositories$Query$SearchResultItemConnection search;
+@override List<Object?> get props => [search];
 
-  @override
-  List<Object?> get props => [search];
+@override Map<String, dynamic> toJson() => _$SearchRepositories$QueryToJson(this);
 
-  @override
-  Map<String, dynamic> toJson() => _$SearchRepositories$QueryToJson(this);
-}
+ }
+@JsonSerializable(explicitToJson: true) class SearchRepositoriesArguments extends JsonSerializable with EquatableMixin {SearchRepositoriesArguments({required this.query});
 
-@JsonSerializable(explicitToJson: true)
-class SearchRepositoriesArguments extends JsonSerializable with EquatableMixin {
-  SearchRepositoriesArguments({required this.query});
+@override factory SearchRepositoriesArguments.fromJson(Map<String, dynamic> json) => _$SearchRepositoriesArgumentsFromJson(json);
 
-  @override
-  factory SearchRepositoriesArguments.fromJson(Map<String, dynamic> json) =>
-      _$SearchRepositoriesArgumentsFromJson(json);
+late String query;
 
-  late String query;
+@override List<Object?> get props => [query];
 
-  @override
-  List<Object?> get props => [query];
+@override Map<String, dynamic> toJson() => _$SearchRepositoriesArgumentsToJson(this);
 
-  @override
-  Map<String, dynamic> toJson() => _$SearchRepositoriesArgumentsToJson(this);
-}
-
+ }
 final SEARCH_REPOSITORIES_QUERY_DOCUMENT_OPERATION_NAME = 'search_repositories';
-final SEARCH_REPOSITORIES_QUERY_DOCUMENT = DocumentNode(
-  definitions: [
-    OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'search_repositories'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-          variable: VariableNode(name: NameNode(value: 'query')),
-          type: NamedTypeNode(
-            name: NameNode(value: 'String'),
-            isNonNull: true,
-          ),
-          defaultValue: DefaultValueNode(value: null),
-          directives: [],
-        ),
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(
-        selections: [
-          FieldNode(
-            name: NameNode(value: 'search'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                name: NameNode(value: 'first'),
-                value: IntValueNode(value: '10'),
-              ),
-              ArgumentNode(
-                name: NameNode(value: 'type'),
-                value: EnumValueNode(name: NameNode(value: 'REPOSITORY')),
-              ),
-              ArgumentNode(
-                name: NameNode(value: 'query'),
-                value: VariableNode(name: NameNode(value: 'query')),
-              ),
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(
-              selections: [
-                FieldNode(
-                  name: NameNode(value: 'nodes'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(
-                    selections: [
-                      FieldNode(
-                        name: NameNode(value: '__typename'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null,
-                      ),
-                      InlineFragmentNode(
-                        typeCondition: TypeConditionNode(
-                          on: NamedTypeNode(
-                            name: NameNode(value: 'Repository'),
-                            isNonNull: false,
-                          ),
-                        ),
-                        directives: [],
-                        selectionSet: SelectionSetNode(
-                          selections: [
-                            FieldNode(
-                              name: NameNode(value: 'name'),
-                              alias: null,
-                              arguments: [],
-                              directives: [],
-                              selectionSet: null,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  ],
-);
+final SEARCH_REPOSITORIES_QUERY_DOCUMENT = 
+DocumentNode(definitions: [OperationDefinitionNode(type: OperationType.query, name: NameNode(value: 'search_repositories'), variableDefinitions: [VariableDefinitionNode(variable: VariableNode(name: NameNode(value: 'query')), type: NamedTypeNode(name: NameNode(value: 'String'), isNonNull: true, ), defaultValue: DefaultValueNode(value: null), directives: [], )], directives: [], selectionSet: SelectionSetNode(selections: [FieldNode(name: NameNode(value: 'search'), alias: null, arguments: [ArgumentNode(name: NameNode(value: 'first'), value: IntValueNode(value: '10'), ), ArgumentNode(name: NameNode(value: 'type'), value: EnumValueNode(name: NameNode(value: 'REPOSITORY')), ), ArgumentNode(name: NameNode(value: 'query'), value: VariableNode(name: NameNode(value: 'query')), ), ], directives: [], selectionSet: SelectionSetNode(selections: [FieldNode(name: NameNode(value: 'nodes'), alias: null, arguments: [], directives: [], selectionSet: SelectionSetNode(selections: [FieldNode(name: NameNode(value: '__typename'), alias: null, arguments: [], directives: [], selectionSet: null, ), InlineFragmentNode(typeCondition: TypeConditionNode(on: NamedTypeNode(name: NameNode(value: 'Repository'), isNonNull: false, )), directives: [], selectionSet: SelectionSetNode(selections: [FieldNode(name: NameNode(value: 'name'), alias: null, arguments: [], directives: [], selectionSet: null, )]), ), ]), )]), )]), )])
+;class SearchRepositoriesQuery extends GraphQLQuery<SearchRepositories$Query, SearchRepositoriesArguments> {SearchRepositoriesQuery({required this.variables});
 
-class SearchRepositoriesQuery
-    extends
-        GraphQLQuery<SearchRepositories$Query, SearchRepositoriesArguments> {
-  SearchRepositoriesQuery({required this.variables});
+@override final DocumentNode document = SEARCH_REPOSITORIES_QUERY_DOCUMENT;
 
-  @override
-  final DocumentNode document = SEARCH_REPOSITORIES_QUERY_DOCUMENT;
+@override final String operationName = SEARCH_REPOSITORIES_QUERY_DOCUMENT_OPERATION_NAME;
 
-  @override
-  final String operationName =
-      SEARCH_REPOSITORIES_QUERY_DOCUMENT_OPERATION_NAME;
+@override final SearchRepositoriesArguments variables;
 
-  @override
-  final SearchRepositoriesArguments variables;
+@override List<Object?> get props => [document, operationName, variables];
 
-  @override
-  List<Object?> get props => [document, operationName, variables];
+@override SearchRepositories$Query parse(Map<String, dynamic> json) => SearchRepositories$Query.fromJson(json);
 
-  @override
-  SearchRepositories$Query parse(Map<String, dynamic> json) =>
-      SearchRepositories$Query.fromJson(json);
-}
+ }
