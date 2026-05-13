@@ -14,7 +14,7 @@ import 'in_memory_cache_store.dart';
 ///
 /// CacheLink intercepts GraphQL requests and responses, storing them according
 /// to the configured [CachePolicy]. It integrates seamlessly into the gql_link
-/// chain and can be combined with other links like DedupeLink and HttpLink.
+/// chain and can be combined with other links like DedupeLink and DioLink.
 ///
 /// Example:
 /// ```dart
@@ -27,7 +27,7 @@ import 'in_memory_cache_store.dart';
 /// final link = Link.from([
 ///   DedupeLink(),
 ///   cacheLink,
-///   HttpLink('https://api.example.com/graphql'),
+///   DioLink('https://api.example.com/graphql'),
 /// ]);
 /// ```
 class CacheLink extends Link {

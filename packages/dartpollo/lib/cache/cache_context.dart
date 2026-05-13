@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:gql_exec/gql_exec.dart';
 
 import 'cache_policy.dart';
@@ -163,5 +165,24 @@ extension CacheContextExtension on Context {
   /// ```
   Context cacheAndNetwork() {
     return withCachePolicy(CachePolicy.cacheAndNetwork);
+  }
+
+  /// Attaches a Dio [CancelToken] to this request context.
+  ///
+  /// This allows cancelling in-flight GraphQL requests, which is especially
+  /// useful in Flutter when a widget is disposed.
+  ///
+  /// Example:
+  /// ```dart
+  /// final cancelToken = CancelToken();
+  /// final response = await client.execute(
+  ///   query,
+  ///   context: Context().withCancelToken(cancelToken),
+  /// );
+  /// // Later, to cancel:
+  /// cancelToken.cancel('Widget disposed');
+  /// ```
+  Context withCancelToken(CancelToken token) {
+    return withEntry(DioLinkCancelTokenContextEntry(token));
   }
 }

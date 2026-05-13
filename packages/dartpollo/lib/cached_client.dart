@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:dartpollo_annotation/schema/graphql_query.dart';
 import 'package:dartpollo_annotation/schema/graphql_response.dart';
+import 'package:dio/dio.dart';
 import 'package:gql_dedupe_link/gql_dedupe_link.dart';
+import 'package:gql_dio_link/gql_dio_link.dart';
 import 'package:gql_exec/gql_exec.dart';
-import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_link/gql_link.dart';
-import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 
 import 'cache/cache_link.dart';
@@ -49,20 +49,26 @@ class DartpolloCachedClient {
   /// Creates a cached GraphQL client.
   ///
   /// [graphQLEndpoint] is the GraphQL API endpoint URL.
-  /// [httpClient] is an optional custom HTTP client.
+  /// [client] is an optional custom [Dio] instance.
   /// [cacheStore] is the cache storage backend. Defaults to [InMemoryCacheStore].
   /// [defaultCachePolicy] is the default caching strategy. Defaults to [CachePolicy.cacheFirst].
   /// [defaultCacheTtl] is the default time-to-live for cached entries.
   factory DartpolloCachedClient(
     String graphQLEndpoint, {
-    http.Client? httpClient,
+    Dio? client,
     CacheStore? cacheStore,
     CachePolicy defaultCachePolicy = CachePolicy.cacheFirst,
     Duration? defaultCacheTtl,
+    Map<String, String> defaultHeaders = const {},
+    bool useGETForQueries = false,
+    bool serializableErrors = false,
   }) {
-    final httpLink = HttpLink(
+    final dioLink = DioLink(
       graphQLEndpoint,
-      httpClient: httpClient,
+      client: client ?? Dio(),
+      defaultHeaders: defaultHeaders,
+      useGETForQueries: useGETForQueries,
+      serializableErrors: serializableErrors,
     );
 
     final cacheLink = CacheLink(
@@ -74,13 +80,13 @@ class DartpolloCachedClient {
     final link = Link.from([
       DedupeLink(),
       cacheLink,
-      httpLink,
+      dioLink,
     ]);
 
     return DartpolloCachedClient.fromLink(
       link,
       cacheLink: cacheLink,
-      httpLink: httpLink,
+      dioLink: dioLink,
     );
   }
 
@@ -91,13 +97,13 @@ class DartpolloCachedClient {
   DartpolloCachedClient.fromLink(
     this._link, {
     required CacheLink cacheLink,
-    HttpLink? httpLink,
+    DioLink? dioLink,
   }) : _cacheLink = cacheLink,
-       _httpLink = httpLink;
+       _dioLink = dioLink;
 
   final Link _link;
   final CacheLink _cacheLink;
-  final HttpLink? _httpLink;
+  final DioLink? _dioLink;
 
   /// Executes a [GraphQLQuery], returning a typed response.
   ///
@@ -269,9 +275,7 @@ class DartpolloCachedClient {
   /// // On user logout
   /// await client.clearCache();
   /// ```
-  Future<void> clearCache() async {
-    _cacheLink.clear();
-  }
+  Future<void> clearCache() async => _cacheLink.clear();
 
   /// Returns cache statistics.
   ///
@@ -283,19 +287,15 @@ class DartpolloCachedClient {
   /// print('Cache size: ${stats['size']}');
   /// print('Default policy: ${stats['defaultPolicy']}');
   /// ```
-  Map<String, dynamic> getCacheStats() {
-    return _cacheLink.getStats();
-  }
+  Map<String, dynamic> getCacheStats() => _cacheLink.getStats();
 
   /// Accesses the underlying cache store directly.
   ///
   /// Use this for advanced cache operations not covered by the convenience methods.
   CacheStore get cacheStore => _cacheLink.store;
 
-  /// Closes the HTTP client and releases resources.
+  /// Closes the [Dio] client and releases resources.
   ///
   /// Call this when you're done with the client to prevent resource leaks.
-  void dispose() {
-    _httpLink?.dispose();
-  }
+  void dispose() => _dioLink?.close();
 }
