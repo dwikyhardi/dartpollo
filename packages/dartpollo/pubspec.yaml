@@ -1,5 +1,5 @@
 name: dartpollo
-version: 0.1.0-alpha.2
+version: 0.1.0-alpha.3
 
 description: A Dart GraphQL client with caching support. Build dart types from GraphQL schemas and queries.
 repository: https://github.com/dwikyhardi/dartpollo
@@ -18,7 +18,7 @@ resolution: workspace
 
 dependencies:
   crypto: ^3.0.6
-  dartpollo_annotation: ^0.1.0-alpha.1
+  dartpollo_annotation: ^0.1.0-alpha.3
   dio: ^5.9.2
   gql: ^1.0.1
   gql_dedupe_link: ^4.0.0
