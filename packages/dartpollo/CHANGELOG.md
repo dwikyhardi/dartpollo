@@ -1,3 +1,9 @@
+## 0.1.0-alpha.3
+
+- Dropped unused workspace dependencies from `pubspec.yaml`
+- Bumped `dartpollo_annotation` constraint to `^0.1.0-alpha.3`
+- Updated example projects (GitHub, Pokémon) to consume the latest generator output (Freezed-style headers, `// dart format off`)
+
 ## 0.1.0-alpha.2
 
 - Migrated HTTP layer from `gql_http_link` / `http` to `gql_dio_link` / `dio` for both `DartpolloClient` and `DartpolloCachedClient`
