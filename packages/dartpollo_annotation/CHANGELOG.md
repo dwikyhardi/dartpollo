@@ -1,3 +1,9 @@
+## 0.1.0-alpha.4
+
+- Raised minimum Dart SDK constraint to `^3.10.0`
+- Bumped `json_annotation` to `^4.12.0`
+- Bumped dev dependency `pedantic_mono` to `^1.35.0`
+
 ## 0.1.0-alpha.3
 
 - Dropped unused workspace dependencies from `pubspec.yaml`
