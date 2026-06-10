@@ -16,10 +16,10 @@ import 'package:gql/language.dart';
 import 'package:pub_semver/pub_semver.dart' show Version;
 import 'package:source_gen/source_gen.dart';
 
-import './generator.dart';
-import './generator/print_helpers.dart';
+import 'generator.dart';
 import 'generator/data/library_definition.dart';
 import 'generator/errors.dart';
+import 'generator/print_helpers.dart';
 import 'optimization/batched_ast_processor.dart';
 import 'optimization/streaming_file_processor.dart';
 import 'transformer/add_typename_transformer.dart';

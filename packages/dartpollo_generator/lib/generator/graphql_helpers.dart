@@ -3,7 +3,7 @@ import 'package:dartpollo_generator/generator/errors.dart';
 import 'package:dartpollo_generator/visitor/type_definition_node_visitor.dart';
 import 'package:gql/ast.dart';
 
-import '../generator/data/data.dart';
+import 'data/data.dart';
 
 /// Get a full [TypeDefinitionNode] from a type node.
 TypeDefinitionNode getTypeByName(
