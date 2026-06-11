@@ -10,7 +10,7 @@ import 'package:gql/ast.dart';
 import 'package:gql_code_builder/src/ast.dart' as dart;
 import 'package:recase/recase.dart';
 
-import '../generator/helpers.dart';
+import 'helpers.dart';
 
 /// Generates a [Spec] of a single enum definition.
 Spec enumDefinitionToSpec(EnumDefinition definition) => CodeExpression(

@@ -12,7 +12,7 @@ import 'package:dartpollo_generator/visitor/canonical_visitor.dart';
 import 'package:dartpollo_generator/visitor/type_definition_node_visitor.dart';
 import 'package:gql/ast.dart';
 
-import './generator/ephemeral_data.dart';
+import 'generator/ephemeral_data.dart';
 
 /// Callback function type for handling new class discoveries during generation.
 ///

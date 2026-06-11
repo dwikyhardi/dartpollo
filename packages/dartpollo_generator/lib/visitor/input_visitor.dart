@@ -4,8 +4,8 @@ import 'package:gql/ast.dart';
 import '../generator/data/class_definition.dart';
 import '../generator/data/class_property.dart';
 import '../generator/graphql_helpers.dart';
-import '../visitor/type_definition_node_visitor.dart';
 import 'base_visitor.dart';
+import 'type_definition_node_visitor.dart';
 
 /// Specialized visitor for handling GraphQL input object type definitions.
 /// Processes input object nodes and generates input class definitions.

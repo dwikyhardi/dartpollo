@@ -1,3 +1,10 @@
+## 0.1.0-alpha.4
+
+- Raised minimum Dart SDK constraint to `^3.10.0`
+- Bumped `build` to `^4.0.6`, `dart_style` to `^3.1.7`, `source_gen` to `^4.2.3`, and `json_annotation` to `^4.12.0`
+- Pinned `gql_code_builder` to `0.13.4`
+- Bumped dev dependencies: `build_test` to `^3.5.15`, `pedantic_mono` to `^1.35.0`, `test` to `^1.31.1`
+
 ## 0.1.0-alpha.3
 
 - Emit Freezed-style headers in generated code: `// coverage:ignore-file`, `// ignore_for_file: type=lint` with the freezed lint list, so consumers don't see lints or coverage hits on generated files

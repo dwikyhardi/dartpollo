@@ -2,7 +2,7 @@ name: dartpollo_workspace
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.12.1
 
 workspace:
   - packages/dartpollo
@@ -10,7 +10,7 @@ workspace:
   - packages/dartpollo_generator
 
 dev_dependencies:
-  melos: ^7.5.0
+  melos: ^7.8.1
 
 melos:
   scripts:
