@@ -1,16 +1,18 @@
-
 # Dartpollo
 
-A Dart GraphQL client and code generator that builds dart types from GraphQL schemas and queries using Introspection Query.
+A Dart GraphQL client and code generator that builds dart types from GraphQL schemas and queries using Introspection
+Query.
 
 ## Packages
 
-This repository is a monorepo managed with [Melos](https://melos.invertase.dev), containing the following packages:
+This repository is a
+monorepo [![melos](https://img.shields.io/badge/maintained%20with-melos-f700ff.svg?style=flat-square)](https://github.com/invertase/melos),
+containing the following packages:
 
-| Package | Description | Pub |
-|---|---|---|
-| [dartpollo](packages/dartpollo/) | GraphQL client with caching support | [![pub package](https://img.shields.io/pub/v/dartpollo.svg)](https://pub.dev/packages/dartpollo) |
-| [dartpollo_generator](packages/dartpollo_generator/) | Code generator that builds Dart types from GraphQL schemas | [![pub package](https://img.shields.io/pub/v/dartpollo_generator.svg)](https://pub.dev/packages/dartpollo_generator) |
+| Package                                                | Description                                                    | Pub                                                                                                                    |
+|--------------------------------------------------------|----------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| [dartpollo](packages/dartpollo/)                       | GraphQL client with caching support                            | [![pub package](https://img.shields.io/pub/v/dartpollo.svg)](https://pub.dev/packages/dartpollo)                       |
+| [dartpollo_generator](packages/dartpollo_generator/)   | Code generator that builds Dart types from GraphQL schemas     | [![pub package](https://img.shields.io/pub/v/dartpollo_generator.svg)](https://pub.dev/packages/dartpollo_generator)   |
 | [dartpollo_annotation](packages/dartpollo_annotation/) | Shared types and annotations used by both client and generator | [![pub package](https://img.shields.io/pub/v/dartpollo_annotation.svg)](https://pub.dev/packages/dartpollo_annotation) |
 
 ## Getting Started
@@ -28,7 +30,8 @@ dev_dependencies:
   dartpollo_generator: ^0.1.0
 ```
 
-> **Note:** `dartpollo_annotation` is automatically included as a transitive dependency — you don't need to add it manually.
+> **Note:** `dartpollo_annotation` is automatically included as a transitive dependency — you don't need to add it
+> manually.
 
 ### Setup
 
