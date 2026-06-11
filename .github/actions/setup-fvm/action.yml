@@ -1,0 +1,32 @@
+name: Setup FVM
+description: >-
+  Install FVM, restore the cached Flutter SDK and link it for the project
+  (.fvm/flutter_sdk), then expose the Dart/Flutter SDK on PATH.
+
+runs:
+  using: composite
+  steps:
+    - name: Cache FVM & Flutter SDK
+      uses: actions/cache@v4
+      with:
+        # FVM stores the FVM binary, the git cache and the installed
+        # Flutter SDKs under ~/fvm. Caching it avoids re-downloading the SDK.
+        path: ~/fvm
+        key: fvm-${{ runner.os }}-${{ hashFiles('.fvmrc') }}
+        restore-keys: |
+          fvm-${{ runner.os }}-
+
+    - name: Install FVM
+      shell: bash
+      run: |
+        curl -fsSL https://fvm.app/install.sh | bash
+        echo "$HOME/fvm/bin" >> "$GITHUB_PATH"
+
+    - name: Set up project Flutter SDK
+      shell: bash
+      run: |
+        export PATH="$HOME/fvm/bin:$PATH"
+        # Reads the version pinned in .fvmrc, installs it (cached on reruns)
+        # and creates the .fvm/flutter_sdk symlink used by melos.sdkPath.
+        fvm install --setup
+        echo "$GITHUB_WORKSPACE/.fvm/flutter_sdk/bin" >> "$GITHUB_PATH"

@@ -7,9 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: 3.12.1
+      - uses: ./.github/actions/setup-fvm
       - uses: bluefireteam/melos-action@v3
       - name: Check formatting
         run: dart format --set-exit-if-changed packages/
@@ -18,9 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: 3.12.1
+      - uses: ./.github/actions/setup-fvm
       - uses: bluefireteam/melos-action@v3
       - name: Test
         run: melos run test
@@ -29,9 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: 3.12.1
+      - uses: ./.github/actions/setup-fvm
       - uses: bluefireteam/melos-action@v3
       - name: Analyze
         run: melos run analyze
