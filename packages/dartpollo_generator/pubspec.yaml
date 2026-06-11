@@ -1,5 +1,5 @@
 name: dartpollo_generator
-version: 0.1.0-alpha.5
+version: 0.1.0-alpha.6
 
 description: Code generator for the dartpollo GraphQL client. Builds Dart types from GraphQL schemas and queries.
 repository: https://github.com/dwikyhardi/dartpollo

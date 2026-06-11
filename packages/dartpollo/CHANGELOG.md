@@ -1,3 +1,7 @@
+## 0.1.0-alpha.6
+
+- Version bump to keep the monorepo packages aligned (no functional changes)
+
 ## 0.1.0-alpha.4
 
 - Raised minimum Dart SDK constraint to `^3.10.0`
