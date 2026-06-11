@@ -1,0 +1,98 @@
+name: Auto Tag Release
+
+# When a package's `version` in its pubspec.yaml changes on master/main,
+# validate it with a dry-run publish and, if it passes, create & push the
+# matching release tag. That tag push triggers the per-package publish-*
+# workflow (keyless OIDC publishing to pub.dev).
+#
+# Flow:
+#   detect version change -> dart pub publish --dry-run
+#       -> pass -> create tag -> publish-<package> workflow triggered
+#       -> fail -> job fails
+#
+# IMPORTANT: the tag is pushed using `secrets.RELEASE_PAT` (a Personal Access
+# Token or fine-grained token with `contents: write`). The default
+# `GITHUB_TOKEN` cannot trigger another workflow, so a tag pushed with it
+# would NOT start the publish workflow.
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'packages/*/pubspec.yaml'
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so we can diff against the previous commit, and a PAT
+          # so that pushed tags trigger the publish-* workflows.
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.9.2
+
+      - uses: bluefireteam/melos-action@v3
+
+      - name: Detect version changes, dry-run and tag
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          packages="dartpollo dartpollo_annotation dartpollo_generator"
+
+          read_version() {
+            # $1 = pubspec content on stdin source already captured
+            grep -E '^version:' | head -n1 | sed -E 's/^version:[[:space:]]*//; s/[[:space:]]*$//'
+          }
+
+          tagged_any=false
+
+          for pkg in $packages; do
+            file="packages/$pkg/pubspec.yaml"
+
+            current="$(read_version < "$file")"
+
+            if previous_content="$(git show "$BEFORE_SHA:$file" 2>/dev/null)"; then
+              previous="$(printf '%s\n' "$previous_content" | read_version)"
+            else
+              previous=""
+            fi
+
+            if [ "$current" = "$previous" ]; then
+              echo "::notice::$pkg: version unchanged ($current) - skipping."
+              continue
+            fi
+
+            tag="$pkg-v$current"
+            echo "::notice::$pkg: version changed '$previous' -> '$current' (tag: $tag)"
+
+            if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+              echo "::warning::$pkg: tag $tag already exists - skipping."
+              continue
+            fi
+
+            echo "::group::Dry-run publish for $pkg"
+            ( cd "packages/$pkg" && dart pub publish --dry-run )
+            echo "::endgroup::"
+
+            echo "Dry-run passed - creating and pushing tag $tag"
+            git tag "$tag"
+            git push origin "refs/tags/$tag"
+            tagged_any=true
+          done
+
+          if [ "$tagged_any" = "false" ]; then
+            echo "::notice::No new package versions to tag."
+          fi

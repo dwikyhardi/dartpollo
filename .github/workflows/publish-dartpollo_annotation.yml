@@ -1,0 +1,20 @@
+name: Publish dartpollo_annotation
+
+# Tag-triggered, keyless (OIDC) publishing for the `dartpollo_annotation`
+# package. The tag is created automatically by `auto-tag.yml` when the
+# package version changes (pub.dev tag-pattern: dartpollo_annotation-v{{version}}).
+on:
+  push:
+    tags:
+      # Stable releases, e.g. dartpollo_annotation-v1.2.3
+      - 'dartpollo_annotation-v[0-9]+.[0-9]+.[0-9]+'
+      # Pre-releases, e.g. dartpollo_annotation-v0.1.0-alpha.3
+      - 'dartpollo_annotation-v[0-9]+.[0-9]+.[0-9]+-*'
+
+jobs:
+  publish:
+    permissions:
+      id-token: write # Required for OIDC authentication with pub.dev.
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: packages/dartpollo_annotation
