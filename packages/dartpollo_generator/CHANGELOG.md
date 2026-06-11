@@ -1,3 +1,7 @@
+## 0.1.0-alpha.6
+
+- Loosened `gql_code_builder` constraint to `^0.13.4` (was pinned to `0.13.4`) so it can be used alongside other packages depending on `gql_code_builder`
+
 ## 0.1.0-alpha.4
 
 - Raised minimum Dart SDK constraint to `^3.10.0`
