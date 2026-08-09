@@ -1,9 +1,9 @@
 # Dartpollo Documentation Design
 
-The documentation uses a typed field-guide visual system mapped directly from the user-provided Islands Dark editor scheme: `#191A1C` canvas, `#27282B` surfaces, `#CED0D6` text, `#56A8F5` paths, `#C77DBB` secondary nodes, and `#73BD79` success state. Figtree carries prose and Martian Mono is reserved for code, versions, and data labels.
+The documentation follows the user-provided Islands Dark editor scheme: `#191A1C` canvas, `#1F2024` active surface, `#27282B` raised content, `#CED0D6` text, `#56A8F5` links, `#73BD79` success, and `#C77DBB` secondary syntax. Platform sans is used for reading and platform monospace for code; there is no external font request.
 
-The schema-to-response pipeline is the signature composition. Connected nodes explain the product mechanism before readers enter the long-form guide. Documentation uses a sticky local table of contents, 65–75 character prose measure, generous section breaks, dark code specimens, and restrained callouts.
+The interface behaves like a developer reference pane, not a product landing page. A compact sticky header, persistent section index, 70-character reading measure, flat rules, and real code samples carry the hierarchy. The product mechanism appears once as a four-file trace: schema, operation, generator, typed client.
 
-Controls use 9–14px corners. Elevation belongs only to interactive emphasis, code samples, and the workflow specimens. Mobile collapses the split hero into one vertical connected path and turns the local navigation into a horizontal scroll strip.
+Corners are 4–7px. Shadows, gradients, decorative diagrams, marketing metrics, alternating cards, and oversized calls to action are excluded. Mobile turns the section index into a horizontal sticky strip and keeps code locally scrollable.
 
-Accessibility requirements: semantic landmarks, keyboard-visible focus, a skip link, WCAG AA text contrast, reduced-motion support, and no meaning communicated by color alone.
+Accessibility requirements: semantic landmarks, keyboard-visible focus, a skip link, WCAG AA text contrast, 44px navigation targets, reduced-motion support, and no meaning communicated by color alone.
