@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Dartpollo documentation: generate typed Dart models from GraphQL and execute them with caching, streaming, and cancellation."><link rel="icon" type="image/svg+xml" href="/dartpollo/favicon.svg"><title>Dartpollo Docs — Typed GraphQL for Dart</title><link rel="stylesheet" href="/dartpollo/_astro/index.BbJ4Vz8M.css"></head><body><!--
+      DIRECTION: Typed field guide
+      MODE: Read — developers should understand the schema-to-response path immediately.
+      WORLD: Technical field notes with connected specimens and precise code typography.
+      SIGNATURE: A vertical GraphQL pipeline turns schema, query, generated type, and response into one visible system.
+      RESPONSIVE: The split field guide becomes a single connected reading path on small screens.
+    --><a class="skip-link" href="#main">Skip to documentation</a><header class="topbar"><div class="topbar-inner"><a class="brand" href="/dartpollo" aria-label="Dartpollo documentation home"><img class="brand-mark" src="/dartpollo/favicon.svg" alt=""><span>Dartpollo</span><span class="version">v0.1.0-alpha.6</span></a><nav class="nav-links" aria-label="Primary navigation"><a href="#quickstart">Quickstart</a><a href="#caching">Caching</a><a href="https://pub.dev/packages/dartpollo">pub.dev</a><a class="github-link" href="https://github.com/dwikyhardi/dartpollo">GitHub ↗</a></nav></div></header><main id="main"><section class="hero"><div class="hero-inner"><div class="hero-copy"><h1>GraphQL in. <span>Typed Dart</span> out.</h1><p>Dartpollo generates Dart models from your schema and operations, then executes them through a focused client with caching, streaming, and cancellation built in.</p><div class="actions"><a class="button primary" href="#quickstart">Start building</a><a class="button" href="#packages">Explore packages</a></div><p class="prerelease"><strong>Prerelease</strong> · APIs may change before 1.0.</p></div><div class="flow" aria-label="Dartpollo workflow: schema to typed response"><div class="flow-line" aria-hidden="true"></div><div class="flow-node"><code>schema.graphql</code><strong>Define the contract</strong><p>Your GraphQL schema is the source of truth.</p></div><div class="flow-node"><code>get_user.graphql</code><strong>Write the operation</strong><p>Queries stay readable and tool-friendly.</p></div><div class="flow-node"><code>build_runner</code><strong>Generate Dart types</strong><p>Models, variables, fragments, and helpers.</p></div><div class="flow-node"><code>DartpolloClient</code><strong>Execute with confidence</strong><p>Receive a typed response, optionally cached.</p></div></div></div></section><div class="docs-shell"><aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#quickstart">Quickstart</a><a href="#packages">Packages</a><a href="#client">Client</a><a href="#caching">Caching</a><a href="#configuration">Generator config</a></aside><article class="content"><section id="quickstart"><h2>From zero to typed query</h2><p class="lead">Install two packages, map your schema to your operations, and let the generator create the Dart surface your app consumes.</p><ol class="steps"><li><h3>Add the runtime and generator</h3><pre><code>dependencies:
+  dartpollo: ^0.1.0-alpha.6
+
+dev_dependencies:
+  build_runner: ^2.10.0
+  dartpollo_generator: ^0.1.0-alpha.6</code></pre></li><li><h3>Connect schema and queries</h3><p>Create <code>build.yaml</code> at your project root.</p><pre><code>targets:
+  $default:
+    sources:
+      - $package$
+      - lib/**
+      - schema.graphql
+    builders:
+      dartpollo_generator|dartpollo:
+        options:
+          schema_mapping:
+            - schema: schema.graphql
+              queries_glob: lib/**/*.graphql</code></pre></li><li><h3>Generate the Dart types</h3><pre><code>dart run build_runner build --delete-conflicting-outputs</code></pre></li><li><h3>Execute the generated query</h3><pre><code>import 'package:dartpollo/dartpollo.dart';
+
+final client = DartpolloClient(
+  'https://api.example.com/graphql',
+);
+
+final response = await client.execute(GetUserQuery());
+print(response.data);
+
+client.dispose();</code></pre></li></ol></section><section id="packages"><h2>Three packages, one contract</h2><p>The workspace separates runtime code from build-time tooling while sharing the types that keep both sides aligned.</p><div class="package-map"><div class="package"><a href="https://pub.dev/packages/dartpollo">dartpollo ↗</a><p>The runtime client: typed execution, streaming, cancellation, link composition, and cache stores.</p></div><div class="package"><a href="https://pub.dev/packages/dartpollo_generator">generator ↗</a><p>The build-time generator for queries, response models, inputs, enums, and fragments.</p></div><div class="package"><a href="https://pub.dev/packages/dartpollo_annotation">annotation ↗</a><p>The shared contract. It arrives transitively, so most applications do not add it directly.</p></div></div></section><section id="client"><h2>Use the client you need</h2><p><code>DartpolloClient</code> is the direct path. Supply an endpoint, optional default headers or a custom Dio client, and execute generated query objects.</p><pre><code>final client = DartpolloClient(
+  'https://api.example.com/graphql',
+  defaultHeaders: &#123;'Authorization': 'Bearer $token'&#125;,
+  useGETForQueries: true,
+);
+
+final cancelToken = CancelToken();
+final response = await client.execute(
+  GetUserQuery(),
+  context: Context().withCancelToken(cancelToken),
+);</code></pre><div class="callout"><strong>Bring your own link chain</strong><p>Use <code>DartpolloClient.fromLink</code> when your transport needs deduplication, custom middleware, or an existing <code>gql_link</code> composition.</p></div></section><section id="caching"><h2>Caching stays explicit</h2><p>Create <code>DartpolloCachedClient</code> when the application benefits from caching. Choose an in-memory store or persistent Hive storage, then override policy and TTL per request.</p><pre><code>final client = DartpolloCachedClient(
+  'https://api.example.com/graphql',
+  cacheStore: InMemoryCacheStore(maxSize: 100),
+  defaultCachePolicy: CachePolicy.cacheFirst,
+  defaultCacheTtl: Duration(minutes: 5),
+);
+
+final response = await client.execute(
+  GetUserQuery(),
+  context: Context().cacheAndNetwork(),
+);</code></pre><table class="policy-table"><thead><tr><th>Policy</th><th>Behavior</th></tr></thead><tbody><tr><td><code>cacheFirst</code></td><td>Use a valid cached response; otherwise request the network.</td></tr><tr><td><code>networkFirst</code></td><td>Try the network, falling back to cache when necessary.</td></tr><tr><td><code>cacheOnly</code></td><td>Read locally without making a network request.</td></tr><tr><td><code>networkOnly</code></td><td>Skip the cache and fetch fresh data.</td></tr><tr><td><code>cacheAndNetwork</code></td><td>Stream cached data first, followed by the network response.</td></tr></tbody></table></section><section id="configuration"><h2>Shape generated output</h2><p>Generator options live under <code>dartpollo_generator|dartpollo</code> in <code>build.yaml</code>. Start with defaults and configure only what your schema needs.</p><pre><code>options:
+  optimize_document_nodes: true
+  scalar_mapping:
+    - graphql_type: DateTime
+      dart_type:
+        name: DateTime
+    - graphql_type: JSON
+      dart_type:
+        name: Map&lt;String, dynamic&gt;
+  schema_mapping:
+    - schema: schema.graphql
+      queries_glob: lib/**/*.graphql
+      naming_scheme: pathedWithTypes
+      append_type_name: false</code></pre><p>Multiple schema mappings, shared fragment globs, custom scalar imports, enum conversion, naming schemes, and generated-file lint ignores are supported.</p><div class="next"><a href="https://github.com/dwikyhardi/dartpollo/tree/main/packages/dartpollo/example">Browse examples ↗</a><a href="https://github.com/dwikyhardi/dartpollo/issues">Report an issue ↗</a></div></section></article></div></main><footer><div class="footer-inner"><span>Dartpollo is available under the MIT License.</span><span>Built for Dart and Flutter developers.</span></div></footer></body></html>
