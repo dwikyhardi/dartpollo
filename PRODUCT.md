@@ -20,7 +20,7 @@ Dartpollo combines GraphQL code generation with a Dart client so developers can 
 
 ## Positioning
 
-One monorepo provides the build-time generator, the runtime client, and their shared typed contract, with cache policies and streaming built into the client workflow.
+The generator is the core product: it turns local GraphQL SDL and operations into typed Dart models and optional operation documents. Applications may use any compatible GraphQL transport. The Dartpollo runtime client and cache layer are optional integrations supplied by the same monorepo.
 
 ## Operating Context
 
@@ -40,7 +40,7 @@ Repository README files, package source, tests, example applications, changelogs
 
 ## Product Principles
 
-- Lead with the shortest path from schema to typed response.
+- Lead with the shortest generator-only path from schema to typed response.
 - Keep generated types and runtime execution understandable as one workflow.
-- Make caching optional and explicit.
+- Keep the runtime client and caching optional and explicit.
 - Prefer working examples over marketing claims.
