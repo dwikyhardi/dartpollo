@@ -1,20 +1,22 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Generated output
-description: Understand the Dart models, arguments, documents, and helpers produced by Dartpollo Generator.
+description: Read generated response models, arguments, serializers, documents, helpers, and output paths.
 ---
 
 <header class="page-lead">
 
 # Generated output
 
-One operation produces a library containing only the response graph and inputs that operation uses.
+Identify every generated artifact and predict its Dart shape from the operation's fields, aliases, lists, and nullability.
 
 </header>
 
-## Response models
+## Response models follow the selection
 
-For this operation:
+Use generated response types instead of recreating API models by hand.
+
+<span class="filename">lib/graphql/viewer.graphql</span>
 
 ```graphql
 query Viewer {
@@ -24,69 +26,85 @@ query Viewer {
 }
 ```
 
-The generator creates nested JSON-serializable types similar to:
+The committed GitHub output exposes `Viewer$Query`. Nested type names depend on the configured naming scheme and the path through the selection set.
+
+<span class="filename">lib/main.dart</span>
 
 ```dart
-@JsonSerializable(explicitToJson: true)
-class Viewer$Query extends JsonSerializable with EquatableMixin {
-  late Viewer$Query$User viewer;
-
-  factory Viewer$Query.fromJson(Map<String, dynamic> json) =>
-      _$Viewer$QueryFromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class Viewer$Query$User extends JsonSerializable with EquatableMixin {
-  late String login;
-}
+final data = Viewer$Query.fromJson(json);
+print(data.viewer.login);
+final roundTrip = data.toJson();
 ```
 
-Class names depend on `naming_scheme`, aliases, and the path through the selection set.
+Response classes provide `fromJson`, `toJson`, and equality props through generated serialization and Equatable support.
 
-## Arguments and input objects
+## Nullability stays visible
 
-Operations with variables generate an argument type. Input objects and enums referenced by those variables are emitted alongside it.
+- GraphQL non-null fields become required, non-null Dart fields.
+- Nullable fields become nullable Dart fields.
+- List nullability and item nullability are modeled independently.
+- GraphQL non-null input values become required named constructor parameters.
+
+<span class="filename">schema.graphql</span>
 
 ```graphql
-query Repository($owner: String!, $name: String!) {
-  repository(owner: $owner, name: $name) {
-    id
-  }
+type Query {
+  names: [String!]!
+  nicknames: [String]
 }
 ```
 
-With helpers enabled, construct the generated query using its generated arguments. With helpers disabled, serialize the generated argument object and pass the map to your client.
+The generated shapes are equivalent to `List<String>` for `names` and `List<String?>?` for `nicknames`.
 
-## Operation constants
+## Aliases become Dart paths
 
-When `generate_queries` or `generate_helpers` is enabled, the library includes:
+The Pokémon `big_query` aliases a selected Pokémon as `charmander`:
 
-- a `DocumentNode` containing the operation AST;
-- the operation name;
-- an argument class when variables exist.
+<span class="filename">big_query.query.graphql</span>
 
-`optimize_document_nodes: true` changes how the AST is printed, not the GraphQL operation's behavior.
-
-## Dartpollo query helper
-
-When `generate_helpers` is enabled, a generated class extends:
-
-```dart
-GraphQLQuery<ResponseType, VariablesType>
+```graphql
+charmander: pokemon(name: "Charmander") {
+  name
+}
 ```
 
-It exposes:
+The response property follows the alias, so application code reads `data.charmander`. Aliases can also resolve generated-name collisions without changing the wire field selected from the server.
 
-| Member | Purpose |
-|---|---|
-| `document` | Generated GraphQL AST. |
-| `operationName` | Name from the operation definition. |
-| `variables` | Typed generated arguments, when present. |
-| `getVariablesMap()` | JSON-ready variable map. |
-| `parse(json)` | Converts response data into the generated response type. |
+## Arguments and constants
 
-## Generated headers
+With `generate_queries: true`, the GitHub output includes:
 
-Generated files deliberately include `// GENERATED CODE`, coverage exclusion, lint exclusions, and `// dart format off`. Do not edit them; change the schema, operation, or generator options and rebuild.
+- `SearchRepositoriesArguments` for variables;
+- `SEARCH_REPOSITORIES_QUERY_DOCUMENT` for the AST;
+- `SEARCH_REPOSITORIES_QUERY_DOCUMENT_OPERATION_NAME` for operation selection.
 
-<nav class="page-nav"><a href="../configuration/">← Configuration</a><a href="../graphql-features/">GraphQL features →</a></nav>
+<span class="filename">lib/main.dart</span>
+
+```dart
+final variables = SearchRepositoriesArguments(query: 'flutter');
+final document = SEARCH_REPOSITORIES_QUERY_DOCUMENT;
+```
+
+The document is already a `DocumentNode`; do not wrap it with `gql()`.
+
+## Optional wrappers
+
+With helpers enabled, `ViewerQuery` and `SearchRepositoriesQuery` extend the Dartpollo `GraphQLQuery` boundary. They expose the document, operation name, serialized variables, and response parser.
+
+<span class="filename">lib/main.dart</span>
+
+```dart
+final response = await client.execute(
+  SearchRepositoriesQuery(
+    variables: SearchRepositoriesArguments(query: 'flutter'),
+  ),
+);
+```
+
+Disable helpers for client-independent output. In `alpha.7`, optimized documents are not compatible with that generator-only import set.
+
+## Generated files are disposable
+
+`lib/graphql/viewer.graphql` maps to `lib/__generated__/viewer.graphql.dart` and `lib/__generated__/viewer.graphql.g.dart`. The main file contains generated headers, annotations, models, and documents; the part file contains serializers. Never edit either file directly—change schema, operations, or configuration and rebuild.
+
+Continue with [fragments](../fragments/) and [GraphQL features](../graphql-features/), or use the [generated API reference](../reference/generated-api/) for exact naming patterns.

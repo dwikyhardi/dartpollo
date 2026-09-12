@@ -1,52 +1,62 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Troubleshooting
-description: Resolve common Dartpollo Generator configuration, schema, fragment, scalar, and naming errors.
+description: Resolve source-backed Dartpollo Generator, serializer, integration, and cache failures.
 ---
 
 <header class="page-lead">
 
 # Troubleshooting
 
-Most generator failures identify a broken boundary between `build.yaml`, the schema, and the operation glob.
+Match an exact generator or runtime symptom to the smallest configuration, source, or cache correction.
 
 </header>
 
-## Missing `schema_mapping`
+## Missing required configuration
 
-**Message:** `Missing schema_mapping configuration option`
+**Message:** ``Missing `schema_mapping` configuration option. check `build.yaml` configuration``
 
-Add at least one entry under the builder's `options`. Every entry needs both `schema` and `queries_glob`.
+Add at least one mapping under the builder's `options`.
 
-## Missing files for a glob
+**Message:** ``Missing `schema` configuration option. check `build.yaml` configuration``
+
+**Message:** ``Missing `queries_glob` configuration option. check `build.yaml` configuration``
+
+Every mapping requires both local SDL and an operation path or glob.
+
+<span class="filename">build.yaml</span>
+
+```yaml
+schema_mapping:
+  - schema: schema.graphql
+    queries_glob: lib/graphql/viewer.graphql
+```
+
+## No files match a glob
 
 **Message:** `Missing files for <pattern>`
 
-Check all three places:
+Confirm the path is package-relative, at least one file matches, and the build target's `sources` includes it. Reduce wildcards to one exact file while diagnosing.
 
-1. the path is relative to the package root;
-2. at least one file matches the glob;
-3. the target's `sources` includes the matched files.
+## Schema matched as an operation
 
-Use exact operation paths while debugging broad globs.
+**Message:** ``One of your `queries_glob` configuration contains the path to the `schema` file!``
 
-## Query glob includes the schema
-
-**Message:** `queries_glob configuration contains the path to the schema file`
-
-Move the schema outside the operation directory or narrow `queries_glob`. A schema document cannot also be processed as an operation.
+Move the schema outside the operation path or narrow `queries_glob`. A schema document cannot also be generated as an operation.
 
 ## Unknown scalar
 
-**Message:** `schema file contains "X" scalar, but this scalar is not configured`
+**Message:** ``Your `schema` file contains "X" scalar, but this scalar is not configured on `build.yaml`!``
 
-Add `X` to `scalar_mapping`. Built-in mappings cover `Boolean`, `Float`, `ID`, `UUID`, `JSONString`, `Int`, `GenericScalar`, and `String`.
+Add `X` to `scalar_mapping`. Built-ins cover `Boolean`, `Float`, `ID`, `UUID`, `JSONString`, `Int`, `GenericScalar`, and `String`.
 
-## Missing root type
+## Missing operation root
 
-**Message:** `Can't find the "Query" root type`
+**Message:** `Can't find the "Query" root type.`
 
-Ensure the schema defines `Query`, `Mutation`, or `Subscription`, or declares custom roots explicitly:
+The same exception may name `Mutation` or `Subscription`. Ensure the SDL defines the required root or declares its custom name:
+
+<span class="filename">schema.graphql</span>
 
 ```graphql
 schema {
@@ -57,52 +67,82 @@ schema {
 
 ## Missing fragment
 
-**Message:** `Can't find the "FragmentName" in "ClassName"`
+**Message:** `Can't find the "FragmentName" in "ClassName".`
 
-The fragment must be in the operation document, the mapping's `fragments_glob`, or the global `fragments_glob`. Confirm the fragment file is also included by target `sources`.
+Place the fragment in the operation file, mapping-level `fragments_glob`, or global `fragments_glob`, and include the file in target `sources`.
 
 ## Duplicate generated classes
 
-**Message:** `Two classes were generated with the same name`
+**Message:** ``Two classes were generated with the same name `Name` but with different selection set.``
 
-Two different selection sets resolved to one Dart class name. Prefer `pathedWithTypes` or `pathedWithFields`, add GraphQL aliases, or separate the operations into different mappings.
+Prefer `pathedWithTypes` or `pathedWithFields`, add meaningful GraphQL aliases, or split operations into distinct mapped files. The `simple` naming scheme is the most collision-prone.
 
-## No operation in a GraphQL file
+## GraphQL file has no operation
 
-Files matched by `queries_glob` need a query, mutation, or subscription. Fragment-only files belong in `fragments_glob`.
+**Message:** `GraphQL file contains no operations (query, mutation, or subscription).`
 
-## Missing `.g.dart`
+Files matched by `queries_glob` need at least one operation. Move fragment-only files to `fragments_glob`.
 
-Generated response files contain a `part` directive for JSON serializers. Run the complete builder chain:
+## Missing serializer part
+
+**Symptom:** The generated `.graphql.dart` references a `.graphql.g.dart` file that does not exist.
+
+Run the complete builder chain, not the Dartpollo builder alone:
+
+<span class="filename">Terminal</span>
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart pub get
+dart run build_runner build
 ```
 
-Do not run the Dartpollo builder in isolation.
+## Stale output
 
-## Generated code imports Dartpollo unexpectedly
+**Symptom:** Generated types no longer match the schema or operation after a change.
 
-`generate_helpers` defaults to `true`. For another client, set:
+Do not edit generated files. Clean and rebuild the builder graph:
+
+<span class="filename">Terminal</span>
+
+```bash
+dart run build_runner clean
+dart pub get
+dart run build_runner build
+```
+
+Then reduce the mapping to one exact schema and operation if stale conflicts remain.
+
+## Unexpected Dartpollo import
+
+**Symptom:** Generator-only output imports `package:dartpollo/dartpollo.dart`.
+
+`generate_helpers` defaults to true. Disable it and rebuild:
+
+<span class="filename">build.yaml</span>
 
 ```yaml
 options:
   generate_helpers: false
   generate_queries: true
+  optimize_document_nodes: false
 ```
 
-Rebuild after changing the option.
+## Optimized generator-only import failure
 
-## Stale output after schema changes
+**Symptom:** Output references `DocumentNodeHelpers` without the import that defines it.
 
-Delete conflicts through `build_runner` rather than editing generated files:
+This is an `alpha.7` limitation when `optimize_document_nodes: true` is combined with `generate_helpers: false`. Leave optimization false for client-independent generation.
 
-```bash
-dart run build_runner clean
-dart pub get
-dart run build_runner build --delete-conflicting-outputs
-```
+## `cacheOnly` execution miss
 
-If the error remains, reduce the mapping to one exact schema and one exact operation, then expand it again.
+**Symptom:** `execute` throws `StateError` with `CachePolicy.cacheOnly`.
 
-<nav class="page-nav"><a href="../examples/">← Examples</a><a href="https://github.com/dwikyhardi/dartpollo/issues">Open an issue ↗</a></nav>
+A cache miss is an empty stream, and `execute` waits for its first event. Use `stream` when an empty result is valid, or choose a policy that can reach the network.
+
+## Cached data crosses users or endpoints
+
+**Symptom:** A response written under one identity or endpoint appears for another.
+
+Cache keys include operation name, printed document, and JSON variables. They exclude endpoint, headers, authenticated user, and arbitrary context. Never share a store namespace across users or endpoints; clear or isolate it when identity changes.
+
+For configuration details, use the [generator option reference](../reference/generator-options/). For runtime behavior, continue with [caching](../caching/).

@@ -8,11 +8,13 @@ description: Understand DartpolloCachedClient policies, TTL, stores, invalidatio
 
 # Caching
 
-`DartpolloCachedClient` caches whole operation responses. It is not a normalized entity cache and does not merge fields or invalidate mutations automatically.
+Use `DartpolloCachedClient` when whole-operation response caching is sufficient and you can manage freshness, isolation, and mutation invalidation explicitly.
 
 </header>
 
 ## Create a cached client
+
+<span class="filename">lib/graphql_client.dart</span>
 
 ```dart
 final client = DartpolloCachedClient(
@@ -41,6 +43,8 @@ Use `stream`, not `execute`, for `cacheAndNetwork`; `execute` returns only the f
 
 ## Per-request policy and TTL
 
+<span class="filename">lib/viewer_request.dart</span>
+
 ```dart
 final response = await client.execute(
   ViewerQuery(),
@@ -57,7 +61,9 @@ Current limitation: `withCacheTtl(null)` leaves the context unchanged, so it can
 
 ## Mutations and invalidation
 
-The cache link does not distinguish queries from mutations. With the default `cacheFirst`, a mutation can be cached under its operation and variables. Prefer `networkOnly` for mutations, then evict affected query entries explicitly.
+The cache link does not distinguish queries from mutations. With the default `cacheFirst`, a mutation can be cached under its operation and variables. Bypass cache reads with `networkOnly` for mutations, then evict affected query entries explicitly; mutation results do not invalidate or merge cached query data automatically.
+
+<span class="filename">lib/update_viewer.dart</span>
 
 ```dart
 await client.execute(
@@ -69,6 +75,8 @@ await client.evictCache(ViewerQuery());
 ```
 
 ## Direct cache access
+
+<span class="filename">lib/cache_maintenance.dart</span>
 
 ```dart
 final cached = await client.readCache(ViewerQuery());
@@ -94,6 +102,8 @@ final stats = client.getCacheStats();
 
 ### Hive
 
+<span class="filename">lib/graphql_cache.dart</span>
+
 ```dart
 Hive.init(appDataPath);
 final store = await HiveCacheStore.open('graphql_cache');
@@ -113,5 +123,3 @@ Implement synchronous `get`, `set`, `delete`, `clear`, and `getAll` on `CacheSto
 ## Cache isolation
 
 The key hashes operation name, printed document, and JSON variables. It does **not** include endpoint, headers, authenticated user, or arbitrary request context. Do not share one store namespace across users or endpoints; clear or isolate stores when identity changes.
-
-<nav class="page-nav"><a href="../dartpollo-client/">← Dartpollo client</a><a href="../examples/">Examples →</a></nav>

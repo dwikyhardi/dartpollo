@@ -1,50 +1,31 @@
 ---
 import '../styles/global.css';
+import { navigation, navigationItems } from '../data/navigation';
 
 interface Props {
   title: string;
   description?: string;
 }
 
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
 const { title, description = 'Dartpollo generator documentation' } = Astro.props.frontmatter ?? Astro.props;
+const headings = ((Astro.props.headings ?? []) as Heading[]).filter(({ depth }) => depth === 2 || depth === 3);
 const base = import.meta.env.BASE_URL;
 const relativePath = Astro.url.pathname.startsWith(base) ? Astro.url.pathname.slice(base.length) : Astro.url.pathname;
 const path = relativePath || '/';
-const groups = [
-  {
-    label: 'Introduction',
-    links: [
-      ['/', 'Overview'],
-      ['/getting-started/', 'Getting started'],
-      ['/integration-modes/', 'Integration modes'],
-    ],
-  },
-  {
-    label: 'Generator',
-    links: [
-      ['/configuration/', 'Configuration'],
-      ['/generated-output/', 'Generated output'],
-      ['/graphql-features/', 'GraphQL features'],
-    ],
-  },
-  {
-    label: 'Optional client',
-    links: [
-      ['/dartpollo-client/', 'Dartpollo client'],
-      ['/caching/', 'Caching'],
-    ],
-  },
-  {
-    label: 'Learn',
-    links: [
-      ['/examples/', 'Examples'],
-      ['/troubleshooting/', 'Troubleshooting'],
-    ],
-  },
-];
 
 const hrefFor = (href: string) => href === '/' ? `${base}/` : `${base}${href}`;
 const active = (href: string) => href === '/' ? path === '/' || path === '' : path === href;
+const currentIndex = navigationItems.findIndex(({ href }) => active(href));
+const previous = currentIndex > 0 ? navigationItems[currentIndex - 1] : undefined;
+const next = currentIndex >= 0 && currentIndex < navigationItems.length - 1
+  ? navigationItems[currentIndex + 1]
+  : undefined;
 ---
 
 <!doctype html>
@@ -73,19 +54,24 @@ const active = (href: string) => href === '/' ? path === '/' || path === '' : pa
     <details class="mobile-nav">
       <summary>Documentation</summary>
       <nav aria-label="Mobile documentation navigation">
-        {groups.flatMap((group) => group.links).map(([href, label]) => (
-          <a href={hrefFor(href)} aria-current={active(href) ? 'page' : undefined}>{label}</a>
+        {navigation.map((group) => (
+          <section>
+            <h2>{group.label}</h2>
+            {group.links.map(({ href, label }) => (
+              <a href={hrefFor(href)} aria-current={active(href) ? 'page' : undefined}>{label}</a>
+            ))}
+          </section>
         ))}
       </nav>
     </details>
 
     <div class="docs-grid">
       <aside class="sidebar" aria-label="Documentation navigation">
-        {groups.map((group) => (
+        {navigation.map((group) => (
           <section>
             <h2>{group.label}</h2>
             <nav>
-              {group.links.map(([href, label]) => (
+              {group.links.map(({ href, label }) => (
                 <a href={hrefFor(href)} aria-current={active(href) ? 'page' : undefined}>{label}</a>
               ))}
             </nav>
@@ -94,8 +80,37 @@ const active = (href: string) => href === '/' ? path === '/' || path === '' : pa
       </aside>
 
       <main id="content" class="prose">
+        {headings.length > 0 && (
+          <details class="mobile-toc">
+            <summary>On this page</summary>
+            <nav aria-label="On this page">
+              {headings.map((heading) => (
+                <a class:list={{ nested: heading.depth === 3 }} href={`#${heading.slug}`}>{heading.text}</a>
+              ))}
+            </nav>
+          </details>
+        )}
         <slot />
+        {(previous || next) && (
+          <nav class="page-nav" aria-label="Previous and next pages">
+            {previous
+              ? <a class="previous" href={hrefFor(previous.href)}><span>Previous</span>{previous.label}</a>
+              : <span />}
+            {next && <a class="next" href={hrefFor(next.href)}><span>Next</span>{next.label}</a>}
+          </nav>
+        )}
       </main>
+
+      {headings.length > 0 && (
+        <aside class="toc" aria-label="On this page">
+          <h2>On this page</h2>
+          <nav>
+            {headings.map((heading) => (
+              <a class:list={{ nested: heading.depth === 3 }} href={`#${heading.slug}`}>{heading.text}</a>
+            ))}
+          </nav>
+        </aside>
+      )}
     </div>
 
     <footer>

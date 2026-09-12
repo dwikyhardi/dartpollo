@@ -1,26 +1,32 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Getting started
-description: Install Dartpollo Generator and generate typed Dart models from a GraphQL operation.
+description: Configure Dartpollo Generator and produce typed Dart models from one local GraphQL operation.
 ---
 
 <header class="page-lead">
 
 # Getting started
 
-Generate typed Dart models from one schema and one operation. This path does **not** require the Dartpollo runtime client.
+Generate and verify typed Dart models and a `DocumentNode` without installing the Dartpollo runtime client.
 
 </header>
 
-## Requirements
+## Prerequisites
+
+Use this path when you have a local GraphQL SDL schema and want generated types for an existing client.
 
 - Dart SDK `^3.10.0`
-- A GraphQL schema in SDL format
-- One or more named GraphQL operations
+- One local schema in SDL format
+- One named query, mutation, or subscription
 
-## Install the generator
+Normal builds do not fetch a remote schema. If your API exposes only introspection, download the SDL before this workflow.
 
-Add the generator and `build_runner` as development dependencies. Generated models directly reference `equatable`, `gql`, and `json_annotation`, so declare those as runtime dependencies when you use the models without `package:dartpollo`.
+## Add generator dependencies
+
+`dartpollo_generator` and the two builders are development dependencies. Generated source imports `equatable`, `gql`, and `json_annotation`, so declare those packages directly. `dartpollo_annotation` remains transitive.
+
+<span class="filename">pubspec.yaml</span>
 
 ```yaml
 dependencies:
@@ -34,14 +40,11 @@ dev_dependencies:
   json_serializable: ^6.11.0
 ```
 
-> `dartpollo_generator` currently brings some of these packages transitively, but declaring packages imported by generated source keeps your dependency boundary explicit.
+## Create the schema and operation
 
-## Add a schema and operation
-
-Save your schema somewhere included by the build target:
+<span class="filename">schema.graphql</span>
 
 ```graphql
-# schema.graphql
 type Query {
   viewer: User!
 }
@@ -52,10 +55,9 @@ type User {
 }
 ```
 
-Create a named operation:
+<span class="filename">lib/graphql/viewer.graphql</span>
 
 ```graphql
-# lib/graphql/viewer.graphql
 query Viewer {
   viewer {
     id
@@ -64,9 +66,13 @@ query Viewer {
 }
 ```
 
-## Configure `build.yaml`
+Named operations produce predictable classes and constants. Anonymous operations have a fallback name, but are harder to identify in generated APIs and logs.
 
-This configuration generates models and operation documents without generating a Dartpollo client helper.
+## Configure the builder
+
+Client-independent generation requires `generate_helpers: false`. Keep `generate_queries: true` to emit the AST, operation-name constant, and argument class when variables exist.
+
+<span class="filename">build.yaml</span>
 
 ```yaml
 targets:
@@ -80,20 +86,26 @@ targets:
         options:
           generate_helpers: false
           generate_queries: true
+          optimize_document_nodes: false
           schema_mapping:
             - schema: schema.graphql
-              queries_glob: lib/graphql/*.graphql
+              queries_glob: lib/graphql/viewer.graphql
 ```
 
-The schema must not match `queries_glob`. The query glob must resolve to at least one operation file.
+Prefer one exact operation path per mapping while learning. There is no supported `output` option; output placement is derived from `queries_glob`.
 
-## Run the builders
+## Run both builders
+
+<span class="filename">Terminal</span>
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+dart pub get
+dart run build_runner build
 ```
 
-The generator derives an output under `lib/__generated__/` from the query glob. `json_serializable` then creates the paired `.g.dart` serializers.
+Dartpollo Generator writes the main library, then `json_serializable` writes its part file:
+
+<span class="filename">Expected files</span>
 
 ```text
 lib/
@@ -104,17 +116,23 @@ lib/
     └── viewer.graphql.g.dart
 ```
 
-## Use the generated model
+If the `.g.dart` file is absent, run the complete builder chain rather than the Dartpollo builder in isolation.
 
-After your GraphQL client returns a JSON data map, deserialize it with the generated response type:
+## Verify the generated API
+
+The main output should contain:
+
+- `Viewer$Query`, with `fromJson`, `toJson`, and equality props;
+- `VIEWER_QUERY_DOCUMENT`, already typed as a `DocumentNode`;
+- `VIEWER_QUERY_DOCUMENT_OPERATION_NAME`, whose value is `Viewer`.
+
+<span class="filename">lib/main.dart</span>
 
 ```dart
 import 'package:your_app/__generated__/viewer.graphql.dart';
 
-final data = Viewer$Query.fromJson(result.data!);
-print(data.viewer.login);
+final viewer = Viewer$Query.fromJson(responseData);
+print(viewer.viewer.login);
 ```
 
-The exact way you send `ViewerQueryDocument` depends on the GraphQL client you choose. See [Integration modes](../integration-modes/) for the boundaries Dartpollo can generate.
-
-<nav class="page-nav"><a href="../">← Overview</a><a href="../integration-modes/">Integration modes →</a></nav>
+Successful generation means both files compile and your editor resolves typed `viewer.login`. Continue with the [mental model](../mental-model/) or connect the output to [`package:graphql`](../graphql-client/). For every option and caveat, use the [generator option reference](../reference/generator-options/).

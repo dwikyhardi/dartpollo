@@ -1,20 +1,22 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Examples
-description: Learn Dartpollo Generator through the repository Pokémon, GitHub, and multi-operation examples.
+description: Choose between the runnable Pokémon and GitHub GraphQL tutorials.
 ---
 
 <header class="page-lead">
 
 # Examples
 
-The repository examples are executable references. Each one demonstrates a different generator concern.
+Choose a repository-backed tutorial based on whether you need a token-free first run or a real authenticated API integration.
 
 </header>
 
-## Pokémon
+## Pokémon: local and token-free
 
-Use the Pokémon example first. It has a committed schema and operations, so no API token or schema download is required.
+Use [the Pokémon tutorial](../guides/pokemon/) first when learning the generator. Its SDL, operations, fragments, and generated output are committed, so it works without network schema preparation or credentials.
+
+<span class="filename">Terminal</span>
 
 ```bash
 cd packages/dartpollo/example/pokemon
@@ -23,45 +25,28 @@ dart run build_runner build --delete-conflicting-outputs
 dart run lib/main.dart
 ```
 
-It demonstrates:
+You will inspect `SimpleQuery$Query`, `SIMPLE_QUERY_QUERY_DOCUMENT`, `SimpleQueryQuery`, `BigQueryArguments(quantity: 5)`, shared fragments, and the alias-generated `charmander` property.
 
-- multiple mappings against one schema;
-- operation variables;
-- shared fragments;
-- optimized document output;
-- generated response parsing and execution.
+## GitHub: external schema and authentication
 
-Review [`packages/dartpollo/example/pokemon/build.yaml`](https://github.com/dwikyhardi/dartpollo/tree/main/packages/dartpollo/example/pokemon) beside its `graphql/` and `lib/__generated__/` directories.
+Use [the GitHub tutorial](../guides/github/) after the local flow works. It adds schema fetching, token handling, custom scalars, typed variables, union parsing, and two execution clients.
 
-## GitHub GraphQL API
-
-The GitHub example adds real authentication, a large external schema, custom scalars, and a custom Dio instance.
+<span class="filename">Terminal</span>
 
 ```bash
-dart run tool/fetch_schema.dart \
+GITHUB_TOKEN=your_token dart run tool/fetch_schema.dart \
   -e https://api.github.com/graphql \
   -o packages/dartpollo/example/github/github.schema.graphql \
-  -a "Bearer YOUR_GITHUB_TOKEN"
-
-cd packages/dartpollo/example/github
-dart run build_runner build --delete-conflicting-outputs
-GITHUB_TOKEN=your_token dart run lib/main.dart
+  -a "Bearer $GITHUB_TOKEN"
 ```
 
-The generator consumes the downloaded SDL file; it does not fetch a remote schema during normal builds.
+The schema download is preparation, not part of normal generation. The tutorial never prints or commits the token.
 
-## Multiple operations and deeper paths
+## Compare the outcomes
 
-The `monit` fixture exercises mutations, shared fragments, multiple operation files, and deeper operation directories. Its generated `__generated__` folder shows how automatic output placement follows the query glob.
+| Tutorial | Schema | Authentication | Main concepts |
+|---|---|---|---|
+| Pokémon | Committed local SDL | None | mappings, variables, aliases, fragments, helpers |
+| GitHub | Fetched local SDL | bearer token | custom scalars, unions, typed variables, two clients |
 
-## Build your own guide
-
-When adapting an example:
-
-1. Replace the schema.
-2. Add one named operation.
-3. Use an exact query path for the first `schema_mapping`.
-4. Generate and inspect the symbols.
-5. Broaden globs only after output placement is clear.
-
-<nav class="page-nav"><a href="../caching/">← Caching</a><a href="../troubleshooting/">Troubleshooting →</a></nav>
+Both tutorials end with generated `.graphql.dart` and `.graphql.g.dart` files plus a typed runtime result. If either build fails, use the [troubleshooting reference](../troubleshooting/) before broadening globs or changing generated code.

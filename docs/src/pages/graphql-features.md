@@ -1,71 +1,101 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: GraphQL features
-description: Generate Dart types for fragments, scalars, enums, abstract types, mutations, and subscriptions.
+description: Configure scalars, enums, abstract types, type discriminators, and Dart-safe names.
 ---
 
 <header class="page-lead">
 
 # GraphQL features
 
-The generator walks each operation against the schema and emits the Dart types that operation reaches.
+Generate Dart-safe representations for GraphQL scalars, enums, interfaces, unions, lists, and names.
 
 </header>
 
-## Fragments
+## Built-in scalars
 
-Fragments can live beside an operation, in a mapping-specific glob, or in the global `fragments_glob`.
+Use built-in mappings without additional configuration:
+
+| GraphQL scalar | Generated Dart shape |
+|---|---|
+| `Boolean` | `bool` |
+| `Float` | `double` |
+| `ID` | `String` |
+| `UUID` | `String` |
+| `JSONString` | JSON-compatible value |
+| `Int` | `int` |
+| `GenericScalar` | JSON-compatible value |
+| `String` | `String` |
+
+An unknown scalar used by an operation fails generation instead of silently degrading its type.
+
+## Custom scalars and parsers
+
+Map custom schema scalars to application-owned Dart types and import their conversion functions.
+
+<span class="filename">build.yaml</span>
 
 ```yaml
 options:
-  fragments_glob: lib/graphql/common/*.fragment.graphql
-  schema_mapping:
-    - schema: schema.graphql
-      queries_glob: lib/graphql/account/*.graphql
-      fragments_glob: lib/graphql/account/fragments/*.graphql
+  scalar_mapping:
+    - graphql_type: MyUuid
+      dart_type:
+        name: MyUuid
+        imports:
+          - package:your_app/graphql/my_uuid.dart
+      custom_parser_import: package:your_app/graphql/parsers.dart
 ```
 
-Global fragments apply to every mapping. Mapping fragments apply only to that schema/operation pair. A referenced fragment that is not in the operation or either configured glob raises `MissingFragmentException`.
+Parser names are derived from the complete generated shape. The application must supply matching functions such as `fromGraphQLMyUuidToDartMyUuid`. Lists and nullable layers lengthen the name; generator tests verify this exact example:
 
-## Custom scalars
+<span class="filename">lib/graphql/parsers.dart</span>
 
-Every non-built-in scalar used by an operation needs a mapping.
+```dart
+List<MyUuid?>? fromGraphQLListNullableMyUuidNullableToDartListNullableMyUuidNullable(
+  List<Object?>? value,
+) => /* application conversion */;
+```
+
+The generated `JsonKey` also references the inverse `fromDartListNullableMyUuidNullableToGraphQLListNullableMyUuidNullable`. A missing parser import or function is a Dart compile error after generation.
+
+## Enums and unknown values
+
+By default, GraphQL enums become Dart enums. Generated enums include an `UNKNOWN` wire value mapped to Dart `unknown`, preserving deserialization when a server adds a value the client has not generated yet.
+
+Set `convert_enum_to_string: true` when the application explicitly prefers strings over generated enum typing:
+
+<span class="filename">build.yaml</span>
 
 ```yaml
-scalar_mapping:
-  - graphql_type: DateTime
-    dart_type: DateTime
-  - graphql_type: JSON
-    dart_type:
-      name: Map<String, dynamic>
-  - graphql_type: Decimal
-    dart_type:
-      name: Decimal
-      imports:
-        - package:decimal/decimal.dart
-    custom_parser_import: package:your_app/graphql/parsers.dart
+options:
+  convert_enum_to_string: true
 ```
 
-Add packages referenced by custom imports to your application's dependencies.
-
-## Enums
-
-By default, GraphQL enums become Dart enums. Set `convert_enum_to_string: true` globally or per schema mapping when forward compatibility with unknown server values is more important than enum exhaustiveness.
+The global setting effectively applies to every mapping. String conversion suppresses enum types and their exhaustive Dart API.
 
 ## Interfaces and unions
 
-Abstract GraphQL types need a runtime type field. Dartpollo uses `__typename` by default. Set `append_type_name: true` when operations do not already select it, or change `type_name_field` for schemas using another resolver field.
+Abstract GraphQL selections dispatch to concrete generated types using the mapping's `type_name_field`, which defaults to `__typename`.
 
-## Mutations
+<span class="filename">lib/graphql/search_repositories.graphql</span>
 
-Mutations generate response models and typed inputs using the same pipeline as queries. The helper suffix becomes `Mutation` and the operation type is retained in the generated document.
+```graphql
+search(query: $query, type: REPOSITORY, first: 10) {
+  nodes {
+    __typename
+    ... on Repository {
+      nameWithOwner
+    }
+  }
+}
+```
 
-## Subscriptions
+If operations omit the discriminator, set `append_type_name: true` to modify generated selection sets automatically. This option adds a GraphQL field; it does not rename Dart classes. A custom `type_name_field` must identify the concrete type values your schema returns.
 
-Subscriptions generate a `Subscription` helper and typed response model. Transport support belongs to the client. The optional Dartpollo client exposes `stream`, but the configured `Link` must support the subscription protocol you use.
+## Dart-safe names
 
-## Multiple schemas
+GraphQL names are converted to valid Dart identifiers. When a field conflicts with a Dart keyword, the generated property uses a safe identifier while `JsonKey` preserves the original wire name. Aliases also participate in generated property and path names.
 
-Add one `schema_mapping` entry per operation glob. Mappings can use different schemas, fragments, naming schemes, enum behavior, and type-name fields within the same Dart package.
+Nested class names depend on `naming_scheme`: keep `pathedWithTypes` as the collision-resistant default. `simple` is shorter but can raise `DuplicatedClassesException` when different selections resolve to the same Dart class name.
 
-<nav class="page-nav"><a href="../generated-output/">← Generated output</a><a href="../dartpollo-client/">Optional client →</a></nav>
+Continue with [multiple schemas](../multiple-schemas/) for isolated mapping behavior, or check the [generated API reference](../reference/generated-api/) and [troubleshooting](../troubleshooting/).
