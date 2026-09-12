@@ -1,3 +1,7 @@
+## 0.1.0-alpha.7
+
+- Set the package homepage to the Dartpollo documentation website
+
 ## 0.1.0-alpha.6
 
 - Version bump to keep the monorepo packages aligned (no functional changes)

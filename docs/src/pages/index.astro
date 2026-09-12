@@ -1,0 +1,71 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<DocsLayout title="Typed GraphQL generation for Dart" description="Generate typed Dart models and operation documents from local GraphQL schemas and operations.">
+  <header class="home-intro">
+    <p class="status">Prerelease · 0.1.0-alpha.7 · Dart ^3.10.0</p>
+    <h1>Generate the types.<br />Choose the client.</h1>
+    <p><code>dartpollo_generator</code> turns local schema and operation files into typed Dart models and GraphQL documents. Keep your existing GraphQL client, or add the optional <code>dartpollo</code> runtime when its link and whole-operation cache fit your application.</p>
+    <div class="home-actions">
+      <a class="primary-link" href={`${base}/getting-started/`}>Generate the first types</a>
+      <a href={`${base}/integration-modes/`}>Choose an integration</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Know the package boundary</h2>
+    <p>Use <code>dartpollo_generator</code> as a development dependency and let <code>build_runner</code> invoke it. <code>json_serializable</code> produces the paired serializers. Generated source directly imports <code>equatable</code>, <code>gql</code>, and <code>json_annotation</code>, so generator-only applications declare those packages directly.</p>
+    <p><code>dartpollo</code> is the optional runtime client and cache. <code>dartpollo_annotation</code> is normally transitive and is not a routine direct dependency.</p>
+  </section>
+
+  <section>
+    <h2>Trace one operation</h2>
+    <ol>
+      <li><strong>Map local files.</strong> <code>build.yaml</code> associates an SDL schema with <code>lib/graphql/viewer.graphql</code>.</li>
+      <li><strong>Run the build.</strong> <code>dart run build_runner build</code> invokes Dartpollo Generator and <code>json_serializable</code>.</li>
+      <li><strong>Inspect the output.</strong> <code>lib/__generated__/viewer.graphql.dart</code> contains <code>Viewer$Query</code> and <code>VIEWER_QUERY_DOCUMENT</code>; the paired <code>.g.dart</code> contains serializers.</li>
+      <li><strong>Execute through your client.</strong> Pass the document to <code>package:graphql</code>, or execute the generated <code>ViewerQuery</code> with the optional Dartpollo client.</li>
+    </ol>
+    <span class="filename">lib/graphql/viewer.graphql</span>
+    <pre><code>query Viewer &#123;
+  viewer &#123;
+    login
+  &#125;
+&#125;</code></pre>
+    <span class="filename">lib/main.dart</span>
+    <pre><code>final data = Viewer$Query.fromJson(result.data!);
+print(data.viewer.login);</code></pre>
+    <p>The observable result is typed access to <code>data.viewer.login</code>. Normal generation reads local SDL; fetching a remote schema is a separate preparation step.</p>
+  </section>
+
+  <section class="mode-summary">
+    <h2>Choose the generated boundary</h2>
+    <div>
+      <article>
+        <h3>Models only</h3>
+        <code>helpers: false · queries: false</code>
+        <p>Generate response and input types while another tool owns the request document.</p>
+      </article>
+      <article>
+        <h3>Models and documents</h3>
+        <code>helpers: false · queries: true</code>
+        <p>Use the generated AST, operation name, variables, and parser with <code>package:graphql</code> or another compatible client.</p>
+      </article>
+      <article>
+        <h3>Dartpollo helpers</h3>
+        <code>helpers: true</code>
+        <p>Generate a <code>GraphQLQuery</code> wrapper for <code>DartpolloClient</code> and <code>DartpolloCachedClient</code>.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="path-list">
+    <h2>Continue from here</h2>
+    <a href={`${base}/getting-started/`}><strong>Getting started</strong><span>Create the exact files and verify the first generated symbols.</span></a>
+    <a href={`${base}/mental-model/`}><strong>Mental model</strong><span>Understand local SDL parsing, mappings, builders, and the runtime boundary.</span></a>
+    <a href={`${base}/graphql-client/`}><strong>package:graphql</strong><span>Execute generated documents with typed <code>QueryOptions</code>.</span></a>
+    <a href={`${base}/reference/generator-options/`}><strong>Generator reference</strong><span>Check every supported option, default, scope, and caveat.</span></a>
+  </section>
+</DocsLayout>
