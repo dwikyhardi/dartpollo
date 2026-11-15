@@ -1,0 +1,6 @@
+mutation UpdateViewer($input: UpdateViewerInput!) {
+  updateViewer(input: $input) {
+    ...UserIdentity
+    visibility
+  }
+}

@@ -32,7 +32,8 @@ Developers add packages through pub, configure `build.yaml`, keep GraphQL schema
 - Typed queries, mutations, fragments, inputs, enums, and responses.
 - In-memory and Hive-backed caching with per-request policies and TTL.
 - Dio-based HTTP transport, custom GQL link chains, streaming, cancellation, and typed transport errors.
-- The packages are currently prerelease (`0.1.0-alpha.6`); documentation must not imply API stability.
+- Consumer examples are verified against published `0.1.0-alpha.6`; the checkout targets the `0.1.0-alpha.7` documentation release, which changes metadata and READMEs without changing package APIs. Documentation must not imply API stability. The workspace/CI SDK is `^3.12.1`, distinct from the package SDK floor.
+- The primary content journey is a runnable Dart consumer example followed by practical generated API recipes; Flutter UI recipes are secondary.
 
 ## Evidence on Hand
 

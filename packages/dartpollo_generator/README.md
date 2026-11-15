@@ -1,18 +1,23 @@
 # dartpollo_generator
 
-Code generator for the [dartpollo](https://pub.dev/packages/dartpollo) GraphQL client. Builds Dart types from GraphQL schemas and queries using Introspection Query.
+[Documentation](https://dwikyhardi.github.io/dartpollo/) · [Getting started](https://dwikyhardi.github.io/dartpollo/getting-started/)
+
+Generate Dart response/input types and operation documents from local GraphQL SDL and operations. The [dartpollo](https://pub.dev/packages/dartpollo) runtime is optional; generated documents also work with `package:graphql`. Schema fetching is a separate preparation step.
 
 ## Installation
 
-Add `dartpollo_generator` as a dev dependency alongside `dartpollo` and `build_runner`:
+Consumer instructions target published `0.1.0-alpha.7`, requiring Dart `^3.10.0`. Follow the [runnable quickstart](https://dwikyhardi.github.io/dartpollo/getting-started/) for every file and expected output.
 
 ```yaml
 dependencies:
-  dartpollo: ^0.1.0
+  equatable: ^2.0.8
+  gql: ^1.0.1
+  json_annotation: ^4.12.0
 
 dev_dependencies:
   build_runner: ^2.10.0
-  dartpollo_generator: ^0.1.0
+  dartpollo_generator: 0.1.0-alpha.7
+  json_serializable: ^6.11.0
 ```
 
 ## Setup
@@ -26,14 +31,18 @@ targets:
   $default:
     sources:
       - $package$
+      - pubspec.yaml
       - lib/**
       - schema.graphql
     builders:
       dartpollo_generator|dartpollo:
         options:
+          generate_helpers: false
+          generate_queries: true
+          optimize_document_nodes: false
           schema_mapping:
             - schema: schema.graphql
-              queries_glob: lib/**/*.graphql
+              queries_glob: lib/graphql/viewer.graphql
 ```
 
 3. **Write your GraphQL queries** as `.graphql` files under `lib/`.
@@ -44,7 +53,7 @@ targets:
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-This generates `.graphql.dart` files containing typed query classes, input types, enums, and fragments.
+This generates a `.graphql.dart` library and a `.graphql.g.dart` serializer for each mapping. A mapping aggregates all matched operation files into one library. Keep the fragment glob separate from operation files.
 
 ## Configuration
 
@@ -61,7 +70,7 @@ The generator is configured via `build.yaml` under the `dartpollo_generator|dart
 | `schema_mapping` | `List<SchemaMap>` | `[]` | List of schema-to-query mappings (see [Schema Mapping](#schema-mapping)) |
 | `ignore_for_file` | `List<String>` | `[]` | Linter rules to ignore in generated files (added as `// ignore_for_file:` comments) |
 | `convert_enum_to_string` | `bool` | `false` | Convert GraphQL enums to plain `String` types instead of Dart enums |
-| `optimize_document_nodes` | `bool` | `false` | Optimize `DocumentNode` generation using template-based helpers, reducing verbosity by 40-50% |
+| `optimize_document_nodes` | `bool` | `false` | Keep false in alpha.7: optimized output drops selection directives and converts inline enum literals to null; generator-only output also lacks a helper import |
 
 ### Schema Mapping (`SchemaMap`)
 
@@ -128,17 +137,18 @@ targets:
   $default:
     sources:
       - $package$
+      - pubspec.yaml
       - lib/**
       - schema.graphql
     builders:
       dartpollo_generator|dartpollo:
         options:
-          generate_helpers: true
+          generate_helpers: false
           generate_queries: true
           optimize_document_nodes: false
           convert_enum_to_string: false
           ignore_for_file:
-            - type=lint
+            - must_be_immutable
           fragments_glob: lib/fragments/**.graphql
           scalar_mapping:
             - graphql_type: timestamptz
@@ -149,13 +159,13 @@ targets:
                 name: Map<String, dynamic>
           schema_mapping:
             - schema: schema.graphql
-              queries_glob: lib/**/*.graphql
+              queries_glob: lib/graphql/viewer.graphql
               naming_scheme: pathedWithTypes
               type_name_field: __typename
               append_type_name: false
 ```
 
-See the [examples](https://github.com/dwikyhardi/dartpollo/tree/main/example) for more complete `build.yaml` configurations.
+See the [examples](https://github.com/dwikyhardi/dartpollo/tree/main/docs/examples/developer-guide) for more complete `build.yaml` configurations.
 
 ## Related Packages
 

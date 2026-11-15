@@ -1,14 +1,14 @@
 ---
 layout: ../../layouts/DocsLayout.astro
 title: Generator options
-description: Exhaustive Dartpollo Generator option types, defaults, scopes, effects, and caveats.
+description: Generator settings, defaults and schema mapping options.
 ---
 
 <header class="page-lead">
 
 # Generator options
 
-Check the supported `build.yaml` surface and its current defaults before changing generated output.
+Configure these settings under `dartpollo_generator|dartpollo` in `build.yaml`.
 
 </header>
 
@@ -22,10 +22,10 @@ Use top-level options for behavior shared by the builder or all schema mappings.
 | `generate_queries` | `bool` | `true` | Builder | Emits argument classes, operation-name constants, and `DocumentNode` constants. |
 | `scalar_mapping` | list | `[]` | Builder | Maps custom GraphQL scalar names to Dart types. Every unknown scalar reached by an operation must be mapped. |
 | `fragments_glob` | `String?` | `null` | All mappings | Makes matching fragments available globally; files must also be in target `sources`. |
-| `schema_mapping` | list | `[]` | Builder | Associates schemas and operations. The model defaults to empty, but at least one mapping is required in practice. |
+| `schema_mapping` | list | `[]` | Builder | Associates schemas and operations. Configure at least one mapping. |
 | `ignore_for_file` | list of `String` | `[]` | Generated files | Adds lint identifiers to generated file headers. |
-| `convert_enum_to_string` | `bool` | `false` | All mappings | Suppresses generated enum typing. A global true value effectively applies to every mapping. |
-| `optimize_document_nodes` | `bool` | `false` | Documents | Prints a smaller AST representation. In `alpha.7`, avoid true with `generate_helpers: false` because optimized output references `DocumentNodeHelpers` without its supplying import. |
+| `convert_enum_to_string` | `bool` | `false` | All mappings | Generates strings instead of enums. Applies to every mapping. |
+| `optimize_document_nodes` | `bool` | `false` | Documents | Keep false in `alpha.6` because of [document generation bugs](../generated-api/#documents-and-names). |
 
 <span class="filename">build.yaml</span>
 
@@ -38,8 +38,6 @@ options:
     - schema: schema.graphql
       queries_glob: lib/graphql/viewer.graphql
 ```
-
-There is no supported `output` option. `use_graphql_data_class` is not part of the current options model.
 
 ## Schema mapping options
 
@@ -59,7 +57,7 @@ Use a mapping to isolate one schema and operation set.
 
 | Value | Generated-name context | Use this when |
 |---|---|---|
-| `pathedWithTypes` | Parent GraphQL type path | Default choice; strongest collision resistance. |
+| `pathedWithTypes` | Parent GraphQL type path | Default; reduces name collisions. |
 | `pathedWithFields` | Parent field path | Field paths better distinguish operation-specific shapes. |
 | `simple` | Current type only | Only when the schema and selections cannot produce duplicate class names. |
 

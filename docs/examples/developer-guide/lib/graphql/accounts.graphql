@@ -1,0 +1,6 @@
+query Accounts {
+  viewer {
+    accountId
+    linkedIds
+  }
+}

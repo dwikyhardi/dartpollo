@@ -1,5 +1,7 @@
 # Integration Tests for Batched AppendTypename Processing
 
+[Documentation](https://dwikyhardi.github.io/dartpollo/) · [Getting started](https://dwikyhardi.github.io/dartpollo/getting-started/)
+
 This directory contains comprehensive integration tests that validate the batched AppendTypename processing implementation against the requirements specified in the design document.
 
 ## Test Coverage

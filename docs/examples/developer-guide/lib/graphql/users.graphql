@@ -1,0 +1,3 @@
+query Users($limit: Int = 10, $size: Int! = 5) {
+  users(limit: $limit, size: $size) { id }
+}

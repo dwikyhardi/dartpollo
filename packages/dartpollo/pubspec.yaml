@@ -5,6 +5,7 @@ description: A Dart GraphQL client with caching support. Build dart types from G
 repository: https://github.com/dwikyhardi/dartpollo
 issue_tracker: https://github.com/dwikyhardi/dartpollo/issues
 homepage: https://dwikyhardi.github.io/dartpollo/
+documentation: https://dwikyhardi.github.io/dartpollo/
 
 topics:
   - graphql

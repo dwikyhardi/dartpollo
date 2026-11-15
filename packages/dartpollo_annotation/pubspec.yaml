@@ -5,6 +5,7 @@ description: Shared types and annotations for the dartpollo GraphQL client and g
 repository: https://github.com/dwikyhardi/dartpollo
 issue_tracker: https://github.com/dwikyhardi/dartpollo/issues
 homepage: https://dwikyhardi.github.io/dartpollo/
+documentation: https://dwikyhardi.github.io/dartpollo/
 
 topics:
   - graphql

@@ -8,13 +8,13 @@ description: Configure Dio, authentication, GET requests, custom links, subscrip
 
 # Transport and links
 
-Use Dartpollo's Dio transport for HTTP operations, or supply a custom `gql_link` chain when authentication, routing, or streaming needs application-specific behavior.
+Configure HTTP requests with Dio, or provide custom links for routing and subscriptions.
 
 </header>
 
 ## Configure Dio
 
-Pass an application-configured `Dio` when authentication must refresh per request or when the app owns timeout, proxy, certificate, and logging policy.
+Pass a `Dio` instance to configure authentication, timeouts, proxies or logging.
 
 <span class="filename">lib/graphql_transport.dart</span>
 
@@ -70,9 +70,9 @@ final link = Link.from([
 final client = DartpolloClient.fromLink(link);
 ```
 
-Link order is observable: each link receives the request before links to its right and receives responses on the return path. In this example, the application-owned Dio interceptor above supplies the authorization header.
+Requests pass through links from left to right; responses return in the opposite direction. The Dio interceptor above adds the authorization header.
 
-Import custom links from the package that defines them rather than expecting `dartpollo` to re-export every link package. Ensure each link forwards the generated request document, variables, operation name, and context unchanged unless modifying them is its explicit responsibility.
+Import each custom link from its own package. Forward the document, variables, operation name and context so later links receive a complete request.
 
 ## Subscriptions and multiple responses
 

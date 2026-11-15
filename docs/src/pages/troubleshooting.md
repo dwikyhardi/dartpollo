@@ -1,16 +1,30 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Troubleshooting
-description: Resolve source-backed Dartpollo Generator, serializer, integration, and cache failures.
+description: Fix common generation, dependency, serialization and cache errors.
 ---
 
 <header class="page-lead">
 
 # Troubleshooting
 
-Match an exact generator or runtime symptom to the smallest configuration, source, or cache correction.
+Find the error or symptom below and follow its fix.
 
 </header>
+
+## Package version cannot be resolved
+
+Use `0.1.0-alpha.6` as shown in [Getting started](../getting-started/). A version listed in the repository may not yet be published on pub.dev. For unreleased code, use the [local package setup](../configuration/#test-an-unreleased-checkout).
+
+If `graphql` and `dartpollo` conflict on `gql_dedupe_link`, remove the unused runtime. `graphql` 5.2.x and Dartpollo `alpha.6` are alternative integrations with incompatible link constraints. Do not force a dependency override to combine them.
+
+## Generated-code analyzer warnings
+
+In `alpha.6`, generated mutable models using `Equatable` can trigger `must_be_immutable`. A global custom-scalar mapping also imports its converters into libraries that do not use them, triggering `unused_import`. Add these codes to the generator’s `ignore_for_file` option, as in the [example project](../examples/#offline-developer-recipes). This suppresses them in generated files while keeping application diagnostics enabled.
+
+## GraphQL defaults do not apply
+
+An omitted nullable Dart parameter serializes as explicit null under default serializer settings. GraphQL defaults apply to absent keys, not explicit null. Follow [omission, null and defaults](../operations-and-variables/#omission-null-and-defaults) and inspect the actual variables map, including nested inputs.
 
 ## Missing required configuration
 
@@ -131,7 +145,7 @@ options:
 
 **Symptom:** Output references `DocumentNodeHelpers` without the import that defines it.
 
-This is an `alpha.7` limitation when `optimize_document_nodes: true` is combined with `generate_helpers: false`. Leave optimization false for client-independent generation.
+This is an `alpha.6` limitation when `optimize_document_nodes: true` is combined with `generate_helpers: false`. Keep optimization false. It can also turn inline enum literals into null and drop selection directives, even with helpers enabled. See [document limitations](../reference/generated-api/#documents-and-names).
 
 ## `cacheOnly` execution miss
 
@@ -146,3 +160,8 @@ A cache miss is an empty stream, and `execute` waits for its first event. Use `s
 Cache keys include operation name, printed document, and JSON variables. They exclude endpoint, headers, authenticated user, and arbitrary context. Never share a store namespace across users or endpoints; clear or isolate it when identity changes.
 
 For configuration details, use the [generator option reference](../reference/generator-options/). For runtime behavior, continue with [caching](../caching/).
+
+
+## Outdated configuration keys
+
+Remove `use_graphql_data_class` from older configurations; it is ignored. Generated output paths are automatic, so older `output` settings can also be removed. See [generated paths](../multiple-schemas/#generated-paths).

@@ -14,7 +14,7 @@ Generate and execute typed Pokémon queries from repository files without fetchi
 
 ## Prerequisites
 
-Use this tutorial for the shortest end-to-end generator and optional-client path.
+This tutorial runs `packages/dartpollo/example/pokemon` using the local Dartpollo packages.
 
 - Dart SDK `^3.10.0`
 - A checkout of this repository
@@ -39,15 +39,13 @@ query simple_query {
 }
 ```
 
-The operation is named, so its symbols remain predictable even though the GraphQL name uses snake case.
-
 ## Read each mapping
 
 <span class="filename">build.yaml</span>
 
 ```yaml
 options:
-  optimize_document_nodes: true
+  optimize_document_nodes: false
   fragments_glob: graphql/**.fragment.graphql
   schema_mapping:
     - schema: pokemon.schema.graphql
@@ -62,7 +60,7 @@ options:
 
 All four mappings use the same schema and exact operation paths. The global fragment glob makes committed fragment files available to each mapping.
 
-The repository file also contains `use_graphql_data_class`. That key is currently unsupported and ignored; do not copy or teach it as an option.
+Keep optimization false because of the [document limitations](../../reference/generated-api/#documents-and-names).
 
 ## Install and generate
 
@@ -106,7 +104,7 @@ Run the committed example:
 dart run lib/main.dart
 ```
 
-Success means the program prints the simple-query response and a list of Pokémon without a generation or parsing error.
+The program prints the query response and a list of Pokémon.
 
 ## Add typed variables and aliases
 

@@ -5,9 +5,9 @@ const base = import.meta.env.BASE_URL;
 
 <DocsLayout title="Typed GraphQL generation for Dart" description="Generate typed Dart models and operation documents from local GraphQL schemas and operations.">
   <header class="home-intro">
-    <p class="status">Prerelease · 0.1.0-alpha.7 · Dart ^3.10.0</p>
+    <p class="status">Prerelease · 0.1.0-alpha.6 · Dart ^3.10.0</p>
     <h1>Generate the types.<br />Choose the client.</h1>
-    <p><code>dartpollo_generator</code> turns local schema and operation files into typed Dart models and GraphQL documents. Keep your existing GraphQL client, or add the optional <code>dartpollo</code> runtime when its link and whole-operation cache fit your application.</p>
+    <p><code>dartpollo_generator</code> turns local schema and operation files into typed Dart models and GraphQL documents. Use the generated code with your GraphQL client or the optional <code>dartpollo</code> runtime.</p>
     <div class="home-actions">
       <a class="primary-link" href={`${base}/getting-started/`}>Generate the first types</a>
       <a href={`${base}/integration-modes/`}>Choose an integration</a>
@@ -15,9 +15,9 @@ const base = import.meta.env.BASE_URL;
   </header>
 
   <section>
-    <h2>Know the package boundary</h2>
-    <p>Use <code>dartpollo_generator</code> as a development dependency and let <code>build_runner</code> invoke it. <code>json_serializable</code> produces the paired serializers. Generated source directly imports <code>equatable</code>, <code>gql</code>, and <code>json_annotation</code>, so generator-only applications declare those packages directly.</p>
-    <p><code>dartpollo</code> is the optional runtime client and cache. <code>dartpollo_annotation</code> is normally transitive and is not a routine direct dependency.</p>
+    <h2>Packages</h2>
+    <p><code>dartpollo_generator</code> generates models and documents through <code>build_runner</code>. <code>json_serializable</code> adds their JSON serializers.</p>
+    <p><code>dartpollo</code> provides an optional HTTP client and cache. Both packages use the shared types in <code>dartpollo_annotation</code>.</p>
   </section>
 
   <section>
@@ -37,11 +37,11 @@ const base = import.meta.env.BASE_URL;
     <span class="filename">lib/main.dart</span>
     <pre><code>final data = Viewer$Query.fromJson(result.data!);
 print(data.viewer.login);</code></pre>
-    <p>The observable result is typed access to <code>data.viewer.login</code>. Normal generation reads local SDL; fetching a remote schema is a separate preparation step.</p>
+    <p>Read response fields through typed Dart properties such as <code>data.viewer.login</code>.</p>
   </section>
 
   <section class="mode-summary">
-    <h2>Choose the generated boundary</h2>
+    <h2>Choose what to generate</h2>
     <div>
       <article>
         <h3>Models only</h3>
@@ -63,9 +63,9 @@ print(data.viewer.login);</code></pre>
 
   <section class="path-list">
     <h2>Continue from here</h2>
-    <a href={`${base}/getting-started/`}><strong>Getting started</strong><span>Create the exact files and verify the first generated symbols.</span></a>
-    <a href={`${base}/mental-model/`}><strong>Mental model</strong><span>Understand local SDL parsing, mappings, builders, and the runtime boundary.</span></a>
+    <a href={`${base}/getting-started/`}><strong>Getting started</strong><span>Generate models and run your first example.</span></a>
+    <a href={`${base}/mental-model/`}><strong>Mental model</strong><span>See how schemas and operations become typed Dart code.</span></a>
     <a href={`${base}/graphql-client/`}><strong>package:graphql</strong><span>Execute generated documents with typed <code>QueryOptions</code>.</span></a>
-    <a href={`${base}/reference/generator-options/`}><strong>Generator reference</strong><span>Check every supported option, default, scope, and caveat.</span></a>
+    <a href={`${base}/reference/generator-options/`}><strong>Generator reference</strong><span>Look up configuration options and defaults.</span></a>
   </section>
 </DocsLayout>

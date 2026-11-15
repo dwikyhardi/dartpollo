@@ -1,52 +1,102 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Examples
-description: Choose between the runnable Pokémon and GitHub GraphQL tutorials.
+description: Run offline developer recipes, then choose a live Pokémon or GitHub integration.
 ---
 
 <header class="page-lead">
 
 # Examples
 
-Choose a repository-backed tutorial based on whether you need a token-free first run or a real authenticated API integration.
+Run examples for generated models, client integration and testing.
 
 </header>
 
-## Pokémon: local and token-free
+## Offline developer recipes
 
-Use [the Pokémon tutorial](../guides/pokemon/) first when learning the generator. Its SDL, operations, fragments, and generated output are committed, so it works without network schema preparation or credentials.
+The [example project](https://github.com/dwikyhardi/dartpollo/tree/main/docs/examples/developer-guide) covers nested mutation inputs, enums, unions, custom scalars and shared fragments.
 
-<span class="filename">Terminal</span>
+From the repository root:
+
+```bash
+cd docs/examples/developer-guide
+dart pub get
+dart run build_runner build
+dart analyze --fatal-infos
+dart run lib/main.dart
+dart test
+```
+
+The program prints `octocat`. Tests use fixed responses and fake links, so they need no server or credentials.
+
+## Test response parsing
+
+Parse sample response data and assert the fields your application uses:
+
+<span class="filename">test/viewer_test.dart</span>
+
+<!-- example: test/viewer_test.dart -->
+```dart
+import 'package:dartpollo_developer_guide/__generated__/viewer.graphql.dart';
+import 'package:test/test.dart';
+
+void main() {
+  test('parses the data object, not the GraphQL response envelope', () {
+    final response = {
+      'data': {
+        'viewer': {'id': 'user-1', 'login': 'octocat'},
+      },
+    };
+    final viewer = Viewer$Query.fromJson(response['data']!);
+    expect(viewer.viewer.login, 'octocat');
+    expect(viewer.viewer.id, 'user-1');
+  });
+}
+```
+
+Add `test` as a dev dependency when copying this into your own package, and adjust the application import. Run it with `dart test`.
+
+## Test requests without a server
+
+Use `Link.function` to return a fixed response. This excerpt tests [loadViewer](../graphql-client/#execute-a-typed-query) inside an async test:
+
+```dart
+final link = Link.function((request, [forward]) {
+  expect(request.operation.operationName, 'Viewer');
+  return Stream.value(Response(
+    data: {'viewer': {'id': 'user-1', 'login': 'octocat'}},
+    response: const {},
+  ));
+});
+addTearDown(link.dispose);
+final client = GraphQLClient(link: link, cache: GraphQLCache());
+expect((await loadViewer(client)).viewer.login, 'octocat');
+```
+
+See `test/recipes_test.dart` in the example project for complete tests covering errors, mutation variables, scalars and unions.
+
+## Pokémon: public endpoint, local SDL
+
+The [Pokémon tutorial](../guides/pokemon/) includes its schema and needs no token. Running it sends requests to a public endpoint.
 
 ```bash
 cd packages/dartpollo/example/pokemon
 dart pub get
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 dart run lib/main.dart
 ```
 
-You will inspect `SimpleQuery$Query`, `SIMPLE_QUERY_QUERY_DOCUMENT`, `SimpleQueryQuery`, `BigQueryArguments(quantity: 5)`, shared fragments, and the alias-generated `charmander` property.
-
 ## GitHub: external schema and authentication
 
-Use [the GitHub tutorial](../guides/github/) after the local flow works. It adds schema fetching, token handling, custom scalars, typed variables, union parsing, and two execution clients.
-
-<span class="filename">Terminal</span>
+The [GitHub tutorial](../guides/github/) adds schema preparation, a token, custom scalar mappings and concrete union consumption. Export `GITHUB_TOKEN` in your environment. With the workspace SDK (`^3.12.1`), run `dart pub get` at the repository root before the schema-fetch command:
 
 ```bash
-GITHUB_TOKEN=your_token dart run tool/fetch_schema.dart \
+dart run tool/fetch_schema.dart \
   -e https://api.github.com/graphql \
   -o packages/dartpollo/example/github/github.schema.graphql \
   -a "Bearer $GITHUB_TOKEN"
 ```
 
-The schema download is preparation, not part of normal generation. The tutorial never prints or commits the token.
+For a single GitHub query using your own client, follow the [package:graphql guide](../graphql-client/).
 
-## Compare the outcomes
-
-| Tutorial | Schema | Authentication | Main concepts |
-|---|---|---|---|
-| Pokémon | Committed local SDL | None | mappings, variables, aliases, fragments, helpers |
-| GitHub | Fetched local SDL | bearer token | custom scalars, unions, typed variables, two clients |
-
-Both tutorials end with generated `.graphql.dart` and `.graphql.g.dart` files plus a typed runtime result. If either build fails, use the [troubleshooting reference](../troubleshooting/) before broadening globs or changing generated code.
+After adding operations, follow [project organization](../multiple-schemas/#organize-several-operations) and [schema maintenance](../configuration/#refresh-the-schema-and-regenerate). For errors, use [troubleshooting](../troubleshooting/).

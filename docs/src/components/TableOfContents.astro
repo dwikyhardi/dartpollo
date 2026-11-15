@@ -1,0 +1,110 @@
+---
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+const { headings } = Astro.props;
+---
+
+<nav class="toc-links" aria-label="On this page">
+  {headings.map((heading, index) => {
+    const x = heading.depth === 3 ? 16.5 : 8.5;
+    const previousX = headings[index - 1]?.depth === 3 ? 16.5 : 8.5;
+    return (
+      <a class:list={{ nested: heading.depth === 3 }} href={`#${heading.slug}`}>
+        <svg class="toc-rail" width="25" aria-hidden="true">
+          <path d={`M${previousX} 0 C${previousX} 8 ${x} 4 ${x} 12`} />
+          <line x1={x} y1="12" x2={x} y2="100%" />
+        </svg>
+        {heading.text}
+      </a>
+    );
+  })}
+  <svg class="toc-highlight" width="25" aria-hidden="true"><path /></svg>
+  <span class="toc-marker" aria-hidden="true"></span>
+</nav>
+
+<script>
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc-links a'));
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('.prose h2[id], .prose h3[id]'));
+  const outlines = Array.from(document.querySelectorAll<HTMLElement>('.toc-links'));
+  const endpoints = new WeakMap<HTMLAnchorElement, { start: number; end: number }>();
+  let scheduled = false;
+  let currentId = '';
+  let movingUp = false;
+
+  function positionIndicators() {
+    for (const outline of outlines) {
+      const active = outline.querySelector<HTMLAnchorElement>('[aria-current="location"]');
+      const segment = active && endpoints.get(active);
+      if (!active || !segment || !outline.offsetHeight) continue;
+      outline.style.setProperty('--toc-start', `${active.offsetTop}px`);
+      outline.style.setProperty('--toc-end', `${outline.offsetHeight - active.offsetTop - active.offsetHeight}px`);
+      outline.style.setProperty('--toc-distance', `${movingUp ? segment.start : segment.end}px`);
+    }
+  }
+
+  function measureOutlines() {
+    for (const outline of outlines) {
+      if (!outline.offsetWidth || !outline.offsetHeight) continue;
+      const path = outline.querySelector<SVGPathElement>('.toc-highlight path')!;
+      const marker = outline.querySelector<HTMLElement>('.toc-marker')!;
+      let d = 'M8.5 0';
+      let previousX = 8.5;
+      let distance = 0;
+      for (const link of outline.querySelectorAll<HTMLAnchorElement>('a')) {
+        const x = link.classList.contains('nested') ? 16.5 : 8.5;
+        const y = link.offsetTop;
+        d += ` C${previousX} ${y + 8} ${x} ${y + 4} ${x} ${y + 12} L${x} ${y + link.offsetHeight}`;
+        path.setAttribute('d', d);
+        const end = path.getTotalLength();
+        endpoints.set(link, { start: distance, end });
+        distance = end;
+        previousX = x;
+      }
+      marker.style.offsetPath = `path('${d}')`;
+      outline.dataset.measured = '';
+    }
+    positionIndicators();
+  }
+
+  function updateActiveHeading() {
+    scheduled = false;
+    const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) + 24;
+    let current = headings[0];
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top > offset) break;
+      current = heading;
+    }
+    if (window.scrollY > 0 && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      current = headings.at(-1);
+    }
+    if (!current || current.id === currentId) return;
+    const previousIndex = headings.findIndex((heading) => heading.id === currentId);
+    movingUp = headings.indexOf(current) < previousIndex;
+    const direction = movingUp ? '180deg' : '0deg';
+    for (const outline of outlines) outline.style.setProperty('--toc-direction', direction);
+    currentId = current.id;
+    for (const link of links) {
+      if (decodeURIComponent(link.hash.slice(1)) === currentId) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+    positionIndicators();
+  }
+
+  function scheduleUpdate() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(updateActiveHeading);
+  }
+
+  if (headings.length) {
+    document.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('pageshow', scheduleUpdate);
+    document.querySelectorAll('details').forEach((details) => details.addEventListener('toggle', scheduleUpdate));
+    updateActiveHeading();
+    const resizeObserver = new ResizeObserver(measureOutlines);
+    outlines.forEach((outline) => resizeObserver.observe(outline));
+    measureOutlines();
+  }
+</script>

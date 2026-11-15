@@ -8,52 +8,66 @@ description: Execute generated GraphQLQuery helpers with the optional Dartpollo 
 
 # Dartpollo client
 
-Use the optional `DartpolloClient` when you want a small `gql_link` runner that turns generated operation helpers into typed response values.
+Execute generated query helpers with the optional Dartpollo HTTP client.
 
 </header>
 
 ## Install
 
-Keep generator packages under development dependencies and add the client at runtime.
+Start with [Getting started](../getting-started/), then add `dartpollo` as shown below. Use it without `graphql` 5.2.x; their [link dependencies conflict](../integration-modes/#client-compatibility).
 
 <span class="filename">pubspec.yaml</span>
 
 ```yaml
 dependencies:
-  dartpollo: ^0.1.0-alpha.7
+  dartpollo: 0.1.0-alpha.6
+  equatable: ^2.0.8
+  gql: ^1.0.1
+  json_annotation: ^4.12.0
 
 dev_dependencies:
   build_runner: ^2.10.0
-  dartpollo_generator: ^0.1.0-alpha.7
+  dartpollo_generator: 0.1.0-alpha.6
+  json_serializable: ^6.11.0
 ```
 
-Leave `generate_helpers: true` so operations generate `GraphQLQuery` subclasses.
+Change `generate_helpers` to `true` in the complete quickstart configuration; keep `generate_queries: true` and `optimize_document_nodes: false`. Run `dart pub get` and `dart run build_runner build` again to generate `ViewerQuery`.
 
 ## Create and execute
 
-The endpoint factory composes `DedupeLink` and `DioLink` for you.
+This program sends the Viewer query from Getting started to GitHub:
 
-<span class="filename">lib/graphql_client.dart</span>
+<span class="filename">lib/main.dart</span>
 
 ```dart
+import 'dart:io';
+
 import 'package:dartpollo/dartpollo.dart';
 
-final client = DartpolloClient(
-  'https://api.example.com/graphql',
-  defaultHeaders: {'Authorization': 'Bearer $token'},
-);
+import '__generated__/viewer.graphql.dart';
 
-final response = await client.execute(ViewerQuery());
-
-if (response.hasErrors) {
-  print(response.errors);
+Future<void> main() async {
+  final token = Platform.environment['GITHUB_TOKEN'];
+  if (token == null || token.isEmpty) {
+    throw StateError('Set GITHUB_TOKEN before running this example');
+  }
+  final client = DartpolloClient(
+    'https://api.github.com/graphql',
+    defaultHeaders: {'Authorization': 'Bearer $token'},
+  );
+  try {
+    final response = await client.execute(ViewerQuery());
+    if (response.hasErrors) throw StateError('GraphQL: ${response.errors}');
+    final data = response.data;
+    if (data == null) throw StateError('GitHub returned no viewer data');
+    print(data.viewer.login);
+  } finally {
+    client.dispose();
+  }
 }
-
-print(response.data?.viewer.login);
-client.dispose();
 ```
 
-`execute` builds a `gql_exec.Request`, waits for the first link response, and calls the generated query's `parse` method when `data` is non-null.
+With `GITHUB_TOKEN` set in your environment, run `dart run lib/main.dart`. Subsequent snippets are excerpts using this client or application-owned values.
 
 ## Responses and failures
 
@@ -84,7 +98,7 @@ try {
 
 Use `stream` for subscriptions, multipart/custom streaming links, and `cacheAndNetwork`, where more than one value matters.
 
-Dispose the returned stream subscription when its consumer ends. Disposing the client does not replace ownership of each listener created by application code.
+Cancel stream subscriptions when you stop using them.
 
 ## Cancellation
 
@@ -105,7 +119,7 @@ final pending = client.execute(
 token.cancel('Screen disposed');
 ```
 
-Cancellation is implemented through a Dio link context entry. A custom non-Dio link must preserve and explicitly support that entry, and cancellation cannot guarantee that a server stops work it already accepted.
+The cancel token works with Dio transport. A custom transport must implement its own cancellation support.
 
 ## Custom Dio
 
@@ -148,6 +162,6 @@ final link = Link.from([
 final client = DartpolloClient.fromLink(link);
 ```
 
-Link order matters, and custom links must forward request context when they do not intentionally modify it. Add rotating authentication through the application-owned Dio interceptor shown above, or through a separate link package that explicitly supports your authentication model.
+Links process requests in order. Custom links must forward the request context so features such as cancellation keep working.
 
-When using `fromLink`, your application owns link resources; `dispose()` closes only the inline `DioLink` created by the endpoint factory. Close application-owned Dio clients, subscription transports, stores, and stream subscriptions according to their own lifecycles.
+With `fromLink`, close your custom links and transports yourself. See [resource ownership](../transport-and-links/#resource-ownership).

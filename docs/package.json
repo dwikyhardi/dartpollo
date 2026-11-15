@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check:links": "python3 scripts/check_links.py"
   },
   "dependencies": {
-    "astro": "^7.2.0"
+    "astro": "^7.4.12"
   },
-  "devDependencies": {},
   "allowScripts": {
     "esbuild@0.27.7": true,
     "esbuild@0.25.12": true,

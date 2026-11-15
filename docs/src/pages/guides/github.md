@@ -8,23 +8,23 @@ description: Fetch GitHub SDL, configure custom scalars, generate typed operatio
 
 # GitHub tutorial
 
-Prepare GitHub's schema, generate typed viewer and repository-search operations, and execute them without exposing credentials.
+Generate typed GitHub queries and print repository names.
 
 </header>
 
 ## Prerequisites
 
-Use this tutorial after the local Pokémon flow when you need a real authenticated API, custom scalars, variables, and union parsing.
+This tutorial runs the example in `packages/dartpollo/example/github` using the local Dartpollo packages.
 
-- Dart SDK `^3.10.0`
+- Dart SDK `^3.12.1` for the repository tools
 - A GitHub token available as `GITHUB_TOKEN`
 - Network access to GitHub's GraphQL endpoint
 
-The schema is not committed because it is large and changes independently. Fetching it is a preparation step; normal generation remains local.
+Download the schema before generating; it is not included in the repository.
 
 ## Fetch the SDL safely
 
-Run from the repository root. Keep the token in the environment and never print or commit it.
+Run `dart pub get` from the repository root, then download the schema using your token:
 
 <span class="filename">Terminal</span>
 
@@ -36,7 +36,7 @@ dart run tool/fetch_schema.dart \
   -a "Bearer $GITHUB_TOKEN"
 ```
 
-The observable result is `packages/dartpollo/example/github/github.schema.graphql` on disk.
+This writes `packages/dartpollo/example/github/github.schema.graphql`. Keep your token out of committed files.
 
 ## Review scalar mappings
 
@@ -106,7 +106,7 @@ GitHub returns a union for search nodes. The selected `__typename` lets generate
 
 ## Execute with package:graphql
 
-For client-independent output, set `generate_helpers: false`, keep `generate_queries: true`, and leave document optimization off.
+For this alternative, follow the [`package:graphql` setup](../../graphql-client/) in a separate package. Generate the search operation with helpers disabled and import its generated library. Inside an async function:
 
 <span class="filename">lib/graphql_client_example.dart</span>
 
@@ -123,10 +123,17 @@ final result = await client.query<SearchRepositories$Query>(
 );
 
 if (result.hasException) throw result.exception!;
-final repositories = result.parsedData!.search.nodes;
+final data = result.parsedData;
+if (data == null) throw StateError('GitHub returned no search data');
+final names = (data.search.nodes ?? [])
+    .whereType<
+      SearchRepositories$Query$SearchResultItemConnection$SearchResultItem$Repository
+    >()
+    .map((repository) => repository.name);
+for (final name in names) {
+  print(name);
+}
 ```
-
-See the complete [`package:graphql` guide](../../graphql-client/) for client construction and cache differences.
 
 ## Execute with optional Dartpollo
 
@@ -149,6 +156,6 @@ Run it with the environment variable still set:
 GITHUB_TOKEN="$GITHUB_TOKEN" dart run lib/main.dart
 ```
 
-Success means repository names print after concrete Repository nodes are selected. Dispose any `DartpolloClient` you create locally; a `GraphQLClient` with custom links follows those links' ownership rules.
+The program prints repository names. Close clients and custom transports when you finish using them.
 
 > **Troubleshooting:** A schema-missing error means the preparation output is absent or outside target sources. An unknown-scalar error means GitHub added a used scalar that is not mapped. Use the [troubleshooting reference](../../troubleshooting/) for exact generator messages.

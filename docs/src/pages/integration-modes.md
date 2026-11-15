@@ -1,20 +1,20 @@
 ---
 layout: ../layouts/DocsLayout.astro
 title: Integration modes
-description: Choose the exact generated boundary for models, documents, and optional Dartpollo helpers.
+description: Choose what to generate for your GraphQL client.
 ---
 
 <header class="page-lead">
 
 # Integration modes
 
-Choose the smallest generated API that supplies the types and operation artifacts your GraphQL client needs.
+Choose what Dartpollo generates based on the client you use.
 
 </header>
 
-## Option matrix
+## Generation settings
 
-Use this choice before writing `build.yaml`; both switches default to `true`.
+`generate_helpers` and `generate_queries` both default to `true`.
 
 <table class="option-matrix">
   <thead><tr><th>Helpers</th><th>Queries</th><th>Generated result</th><th>Use this when</th></tr></thead>
@@ -43,7 +43,9 @@ This removes the Dartpollo import and query wrapper. Parse a data map directly:
 <span class="filename">lib/main.dart</span>
 
 ```dart
-final viewer = Viewer$Query.fromJson(responseData);
+final viewer = Viewer$Query.fromJson({
+  'viewer': {'id': 'user-1', 'login': 'octocat'},
+});
 ```
 
 No operation constant or argument class is available in this mode, so application code must supply its own document and variable map.
@@ -59,7 +61,7 @@ options:
   optimize_document_nodes: false
 ```
 
-The output includes exact integration points:
+This mode generates operation documents and names:
 
 <span class="filename">lib/__generated__/viewer.graphql.dart</span>
 
@@ -68,7 +70,7 @@ final VIEWER_QUERY_DOCUMENT_OPERATION_NAME = 'Viewer';
 final VIEWER_QUERY_DOCUMENT = DocumentNode(/* generated AST */);
 ```
 
-`generate_helpers: false` removes the Dartpollo dependency. In `alpha.7`, also leave `optimize_document_nodes` false: optimized output references `DocumentNodeHelpers`, but generator-only output does not emit the import that supplies it.
+Keep optimization false in `alpha.6`; see [document limitations](../reference/generated-api/#documents-and-names).
 
 Follow the complete [`package:graphql` guide](../graphql-client/) for `document`, `operationName`, `parserFn`, and typed variables.
 
@@ -91,4 +93,8 @@ final response = await client.execute(ViewerQuery());
 print(response.data?.viewer.login);
 ```
 
-The runtime remains optional. Read [Dartpollo client](../dartpollo-client/) only when its execution and link model fits your application, and use the [generated API reference](../reference/generated-api/) to compare symbols across modes.
+Follow the [Dartpollo client guide](../dartpollo-client/) to execute these helpers.
+
+## Client compatibility
+
+Choose one runtime per package: `graphql` 5.2.x requires `gql_dedupe_link` 2.x, while Dartpollo `alpha.6` requires 4.x. These versions cannot be installed together. The generator works with either client.

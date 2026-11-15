@@ -8,7 +8,7 @@ description: Understand DartpolloCachedClient policies, TTL, stores, invalidatio
 
 # Caching
 
-Use `DartpolloCachedClient` when whole-operation response caching is sufficient and you can manage freshness, isolation, and mutation invalidation explicitly.
+`DartpolloCachedClient` stores complete operation responses. Your application controls expiry and invalidation.
 
 </header>
 
@@ -61,7 +61,7 @@ Current limitation: `withCacheTtl(null)` leaves the context unchanged, so it can
 
 ## Mutations and invalidation
 
-The cache link does not distinguish queries from mutations. With the default `cacheFirst`, a mutation can be cached under its operation and variables. Bypass cache reads with `networkOnly` for mutations, then evict affected query entries explicitly; mutation results do not invalidate or merge cached query data automatically.
+Run mutations with `networkOnly`, then evict affected queries. Otherwise the default `cacheFirst` policy can reuse a previous mutation response instead of sending the mutation. Query entries are not updated automatically.
 
 <span class="filename">lib/update_viewer.dart</span>
 

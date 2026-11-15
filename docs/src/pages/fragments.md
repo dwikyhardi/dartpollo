@@ -8,7 +8,7 @@ description: Reuse local, mapping-level, and global fragments while generating t
 
 # Fragments
 
-Share GraphQL selections while keeping generated models and operation documents complete and traceable.
+Reuse a group of selected fields across operations.
 
 </header>
 
@@ -48,7 +48,7 @@ options:
       fragments_glob: lib/graphql/account/fragments/*.graphql
 ```
 
-Use global fragments only when their schema types genuinely apply across all mappings; otherwise keep them mapping-specific.
+Keep schema-specific fragments inside their mapping.
 
 ## Documents include transitive dependencies
 
@@ -67,8 +67,6 @@ fragment AvatarFields on User {
   avatarUrl
 }
 ```
-
-The observable generated document is executable on its own because every transitively referenced definition is included.
 
 ## Resolve missing fragments
 

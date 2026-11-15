@@ -1,5 +1,7 @@
 # dartpollo_annotation
 
+[Documentation](https://dwikyhardi.github.io/dartpollo/) · [Getting started](https://dwikyhardi.github.io/dartpollo/getting-started/)
+
 Shared types and annotations used by the [dartpollo](https://pub.dev/packages/dartpollo) GraphQL client and [dartpollo_generator](https://pub.dev/packages/dartpollo_generator) code generator.
 
 ## Overview
@@ -16,14 +18,14 @@ This package contains the core types that both the runtime client and the build-
 
 You typically **don't need to depend on this package directly**. It is automatically included as a transitive dependency when you add `dartpollo` or `dartpollo_generator` to your project.
 
-```yaml
-# Just add these — dartpollo_annotation comes along automatically
-dependencies:
-  dartpollo: ^0.1.0
+If you import annotation types directly, declare the published dependency explicitly:
 
-dev_dependencies:
-  dartpollo_generator: ^0.1.0
+```yaml
+dependencies:
+  dartpollo_annotation: 0.1.0-alpha.7
 ```
+
+Consumer examples target `alpha.7` (Dart `^3.10.0`). For generator setup, use the [complete quickstart](https://dwikyhardi.github.io/dartpollo/getting-started/).
 
 ## Why does this package exist?
 

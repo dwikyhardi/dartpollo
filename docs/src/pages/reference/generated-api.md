@@ -8,7 +8,7 @@ description: Exact naming patterns for generated models, arguments, constants, h
 
 # Generated API
 
-Find the generated symbol that corresponds to an operation, variable set, fragment, or serialization boundary.
+Look up generated class names, operation constants and helper methods.
 
 </header>
 
@@ -46,7 +46,7 @@ Anonymous operations receive fallback names, but named operations are strongly r
 
 ## Response and nested models
 
-Response classes mirror only fields reached by the operation. The exact nested class name depends on `naming_scheme`, aliases, and the schema type path. `pathedWithTypes` is the safe default; do not couple application architecture to avoidable nested implementation names when a top-level response type is sufficient.
+Response classes contain the fields selected by the operation. Nested names depend on `naming_scheme`, aliases and the parent type path.
 
 GraphQL non-null fields are required/non-null in Dart. Nullable fields and nullable list items remain nullable independently.
 
@@ -61,13 +61,19 @@ final variables = SearchRepositoriesArguments(query: 'flutter');
 final json = variables.toJson();
 ```
 
-GraphQL non-null inputs are required. Input objects and enums reached by those variables are emitted alongside the operation. Response and argument classes provide `fromJson`, `toJson`, and equality props.
+GraphQL non-null inputs are required even when GraphQL declares a default. Nullable constructor parameters serialize as explicit null when omitted under default serializer settings; they do not represent an absent variable. See [variables and defaults](../../operations-and-variables/#omission-null-and-defaults). Input objects and enums reached by those variables are emitted alongside the operation. Response and argument classes provide `fromJson`, `toJson`, and equality props.
 
 ## Documents and names
 
 `VIEWER_QUERY_DOCUMENT` is already a `DocumentNode`. Pass it directly to an AST-compatible client; do not call `gql()` around it. The matching operation-name constant is the exact generated selection name to pass when a document contains or may contain multiple operations.
 
-Optimized printing changes the AST representation, not GraphQL behavior. In `alpha.7`, optimized document output requires the helper-side import and should not be combined with generator-only output.
+Keep `optimize_document_nodes: false` in `alpha.6`. Enabling it can:
+
+- Replace inline enum arguments such as `status: ACTIVE` with `status: null`.
+- Drop selection directives such as `@include` and `@skip`.
+- Generate a missing `DocumentNodeHelpers` import when helpers are disabled.
+
+Non-optimized output preserves these literals and directives. Test parsing when directives can omit response fields.
 
 ## Dartpollo helper contract
 

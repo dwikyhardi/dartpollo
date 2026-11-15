@@ -8,13 +8,11 @@ description: Isolate schema mappings, output paths, fragments, naming, enum beha
 
 # Multiple schemas
 
-Generate operations for independent GraphQL APIs without sharing schema-specific fragments or type behavior accidentally.
+Use separate mappings for different APIs or groups of operations.
 
 </header>
 
 ## Create one mapping per operation set
-
-Use separate mappings when a package talks to more than one schema or when operation groups need independent generation behavior.
 
 <span class="filename">build.yaml</span>
 
@@ -35,11 +33,11 @@ options:
       append_type_name: true
 ```
 
-Each mapping can independently select fragments, enum conversion, discriminator field, discriminator insertion, and naming scheme.
+Each mapping can set its own fragments, naming scheme, enum handling and type discriminator.
 
-## Predict automatic output
+## Generated paths
 
-Output is derived from `queries_glob`; there is no `output` option. An exact path such as:
+Output paths are generated automatically. This operation path:
 
 <span class="filename">Mapped operation</span>
 
@@ -56,18 +54,58 @@ lib/__generated__/viewer.graphql.dart
 lib/__generated__/viewer.graphql.g.dart
 ```
 
-The builder derives the output basename from the final glob segment. Broad wildcard patterns can therefore place or name output differently than expected. Prefer exact operation paths until each mapping's result is verified.
+## Organize several operations
+
+Each mapping combines its matched operations into one library. Use exact file paths for separate outputs: `lib/graphql/*.graphql` produces a literal `*.graphql.dart` basename in `alpha.6`.
+
+For example, two operations can share a fragment and generate separate libraries:
+
+```text
+schema.graphql
+lib/
+├── graphql/
+│   ├── viewer.graphql
+│   ├── update_viewer.graphql
+│   └── fragments/user_identity.graphql
+└── __generated__/
+    ├── viewer.graphql.dart
+    ├── viewer.graphql.g.dart
+    ├── update_viewer.graphql.dart
+    └── update_viewer.graphql.g.dart
+```
+
+Under your existing builder options, configure these two entries:
+
+```yaml
+schema_mapping:
+  - schema: schema.graphql
+    queries_glob: lib/graphql/viewer.graphql
+  - schema: schema.graphql
+    queries_glob: lib/graphql/update_viewer.graphql
+    fragments_glob: lib/graphql/fragments/*.graphql
+```
+
+The mutation spreads `UserIdentity` for its `id` and `login` selections. The fragment file contains no operation and belongs only in `fragments_glob`. Both operations and fragments are covered by the quickstart's `lib/**` target sources.
+
+Application files under `lib/` can import each generated library directly:
+
+```dart
+import '__generated__/viewer.graphql.dart';
+import '__generated__/update_viewer.graphql.dart';
+```
+
+Use Dart import prefixes when libraries expose the same type name. If mappings produce the same output path, give their operation files distinct filenames.
 
 ## Prevent collisions
 
-Multiple operations inside one matched document are supported. Across complex selection trees, `pathedWithTypes` is the safe naming default because it carries parent type context into nested names.
+The default `pathedWithTypes` naming scheme includes parent type names to reduce collisions.
 
 The `simple` scheme uses less context and is collision-prone. If two different classes receive the same generated name, use `pathedWithTypes`, introduce meaningful GraphQL aliases, or separate operations into different mapped documents.
 
-## Keep global options truly global
+## Shared options
 
 Top-level `fragments_glob` exposes fragments to every mapping, and top-level `convert_enum_to_string: true` effectively converts enums for all mappings. Put schema-specific behavior inside each mapping instead.
 
-Global scalar mappings are appropriate only when the same GraphQL scalar name has the same Dart meaning across APIs. If two endpoints use the same scalar name with different wire formats, keep their generated packages or configuration boundaries separate.
+Share a scalar mapping only when the APIs use the same wire format for that scalar. If their formats differ, generate code in separate packages.
 
-Successful isolation means each operation resolves only against its intended schema and writes a distinct generated library. Next, connect those libraries through [`package:graphql`](../graphql-client/) or inspect all naming rules in the [generated API reference](../reference/generated-api/).
+See the [option reference](../reference/generator-options/) for settings available to each mapping.

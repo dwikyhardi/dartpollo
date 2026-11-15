@@ -8,13 +8,11 @@ description: Read generated response models, arguments, serializers, documents, 
 
 # Generated output
 
-Identify every generated artifact and predict its Dart shape from the operation's fields, aliases, lists, and nullability.
+See how operation fields become Dart models, variables and documents.
 
 </header>
 
 ## Response models follow the selection
-
-Use generated response types instead of recreating API models by hand.
 
 <span class="filename">lib/graphql/viewer.graphql</span>
 
@@ -26,7 +24,7 @@ query Viewer {
 }
 ```
 
-The committed GitHub output exposes `Viewer$Query`. Nested type names depend on the configured naming scheme and the path through the selection set.
+This query generates `Viewer$Query`. Nested type names include the parent type path by default.
 
 <span class="filename">lib/main.dart</span>
 
@@ -36,7 +34,7 @@ print(data.viewer.login);
 final roundTrip = data.toJson();
 ```
 
-Response classes provide `fromJson`, `toJson`, and equality props through generated serialization and Equatable support.
+Response classes provide `fromJson`, `toJson`, and value equality through Equatable.
 
 ## Nullability stays visible
 
@@ -89,7 +87,7 @@ The document is already a `DocumentNode`; do not wrap it with `gql()`.
 
 ## Optional wrappers
 
-With helpers enabled, `ViewerQuery` and `SearchRepositoriesQuery` extend the Dartpollo `GraphQLQuery` boundary. They expose the document, operation name, serialized variables, and response parser.
+With helpers enabled, classes such as `ViewerQuery` extend `GraphQLQuery`. They bundle the document, operation name, variables and parser for the Dartpollo client.
 
 <span class="filename">lib/main.dart</span>
 
@@ -101,10 +99,8 @@ final response = await client.execute(
 );
 ```
 
-Disable helpers for client-independent output. In `alpha.7`, optimized documents are not compatible with that generator-only import set.
+## Regenerate after changes
 
-## Generated files are disposable
-
-`lib/graphql/viewer.graphql` maps to `lib/__generated__/viewer.graphql.dart` and `lib/__generated__/viewer.graphql.g.dart`. The main file contains generated headers, annotations, models, and documents; the part file contains serializers. Never edit either file directly—change schema, operations, or configuration and rebuild.
+Edit your schema, operations or configuration, then rerun `build_runner`. It rewrites the `.graphql.dart` models and documents and the `.graphql.g.dart` serializers.
 
 Continue with [fragments](../fragments/) and [GraphQL features](../graphql-features/), or use the [generated API reference](../reference/generated-api/) for exact naming patterns.

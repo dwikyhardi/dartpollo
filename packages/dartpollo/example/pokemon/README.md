@@ -1,6 +1,10 @@
 # Pokémon Example
 
+[Documentation](https://dwikyhardi.github.io/dartpollo/) · [Getting started](https://dwikyhardi.github.io/dartpollo/getting-started/)
+
 A dartpollo example using the [Pokémon GraphQL API](https://graphql-pokemon2.vercel.app).
+
+Requires Dart `^3.10.0` and a repository checkout. The annotation override keeps local packages on the same unreleased revision. Execution calls a public endpoint; use the [offline fixture](../../../../docs/examples/developer-guide/) for deterministic consumer tests.
 
 ## Setup
 
@@ -30,4 +34,4 @@ See [`build.yaml`](build.yaml) for the generator configuration. This example dem
 
 - **Multiple schema mappings** — separate entries for `simple_query`, `big_query`, `fragment_query`, and `fragments_glob`
 - **Fragments** — shared fragments via `fragments_glob`
-- **Optimized document nodes** — `optimize_document_nodes: true`
+- **Ordinary document printing** — `optimize_document_nodes: false` preserves the tested enum and directive behavior

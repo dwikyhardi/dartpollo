@@ -2,6 +2,8 @@ targets:
   $default:
     sources:
       - $package$
+      - pubspec.yaml
+      - $package$
       - lib/**
       - github.schema.graphql
     builders:
