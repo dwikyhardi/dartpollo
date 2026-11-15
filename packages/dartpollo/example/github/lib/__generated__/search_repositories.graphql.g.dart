@@ -58,10 +58,11 @@ _$SearchRepositories$Query$SearchResultItemConnectionToJson(
 
 SearchRepositories$Query _$SearchRepositories$QueryFromJson(
   Map<String, dynamic> json,
-) => SearchRepositories$Query()
-  ..search = SearchRepositories$Query$SearchResultItemConnection.fromJson(
-    json['search'] as Map<String, dynamic>,
-  );
+) =>
+    SearchRepositories$Query()
+      ..search = SearchRepositories$Query$SearchResultItemConnection.fromJson(
+        json['search'] as Map<String, dynamic>,
+      );
 
 Map<String, dynamic> _$SearchRepositories$QueryToJson(
   SearchRepositories$Query instance,
