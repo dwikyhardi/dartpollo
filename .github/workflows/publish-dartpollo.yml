@@ -4,7 +4,6 @@ name: Publish dartpollo
 # The tag is created automatically by `auto-tag.yml` when the package
 # version changes (pub.dev tag-pattern: dartpollo-v{{version}}).
 on:
-  workflow_dispatch:
   push:
     tags:
       # Stable releases, e.g. dartpollo-v1.2.3
