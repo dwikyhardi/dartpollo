@@ -10,10 +10,7 @@ name: Auto Tag Release
 #       -> pass -> create tag -> publish-<package> workflow triggered
 #       -> fail -> job fails
 #
-# IMPORTANT: the tag is pushed using `secrets.RELEASE_PAT` (a Personal Access
-# Token or fine-grained token with `contents: write`). The default
-# `GITHUB_TOKEN` cannot trigger another workflow, so a tag pushed with it
-# would NOT start the publish workflow.
+# Explicit workflow dispatch lets GITHUB_TOKEN trigger each publisher after tagging.
 on:
   workflow_run:
     workflows: [CI]
@@ -33,14 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
-          # Full history so we can diff against the previous commit, and a PAT
-          # so that pushed tags trigger the publish-* workflows.
+          # Full history verifies main ancestry and finds existing release tags.
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-          token: ${{ secrets.RELEASE_PAT }}
 
       - uses: dart-lang/setup-dart@v1
         with:
@@ -50,7 +46,7 @@ jobs:
 
       - name: Detect version changes, dry-run and tag
         env:
-          BEFORE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}^1
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
@@ -72,22 +68,11 @@ jobs:
 
             current="$(read_version < "$file")"
 
-            if previous_content="$(git show "$BEFORE_SHA:$file" 2>/dev/null)"; then
-              previous="$(printf '%s\n' "$previous_content" | read_version)"
-            else
-              previous=""
-            fi
-
-            if [ "$current" = "$previous" ]; then
-              echo "::notice::$pkg: version unchanged ($current) - skipping."
-              continue
-            fi
-
             tag="$pkg-v$current"
-            echo "::notice::$pkg: version changed '$previous' -> '$current' (tag: $tag)"
+            echo "::notice::$pkg: checking release $current (tag: $tag)"
 
-            if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
-              echo "::warning::$pkg: tag $tag already exists - skipping."
+            if curl --fail --silent "https://pub.dev/api/packages/$pkg/versions/$current" > /dev/null; then
+              echo "::notice::$pkg $current is already published - skipping."
               continue
             fi
 
@@ -96,8 +81,13 @@ jobs:
             echo "::endgroup::"
 
             echo "Dry-run passed - creating and pushing tag $tag"
-            git tag "$tag"
-            git push origin "refs/tags/$tag"
+            if ! git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+              git tag "$tag"
+              git push origin "refs/tags/$tag"
+            else
+              test "$(git rev-list -n 1 "$tag")" = "$(git rev-parse HEAD)"
+            fi
+            gh workflow run "publish-$pkg.yml" --ref "$tag"
             tagged_any=true
 
             # Publish shared annotations before validating dependent packages.
