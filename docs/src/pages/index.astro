@@ -1,0 +1,71 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<DocsLayout title="Typed GraphQL generation for Dart" description="Generate typed Dart models and operation documents from local GraphQL schemas and operations.">
+  <header class="home-intro">
+    <p class="status">Prerelease · 0.1.0-alpha.6 · Dart ^3.10.0</p>
+    <h1>Generate the types.<br />Choose the client.</h1>
+    <p><code>dartpollo_generator</code> turns local schema and operation files into typed Dart models and GraphQL documents. Use the generated code with your GraphQL client or the optional <code>dartpollo</code> runtime.</p>
+    <div class="home-actions">
+      <a class="primary-link" href={`${base}/getting-started/`}>Generate the first types</a>
+      <a href={`${base}/integration-modes/`}>Choose an integration</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Packages</h2>
+    <p><code>dartpollo_generator</code> generates models and documents through <code>build_runner</code>. <code>json_serializable</code> adds their JSON serializers.</p>
+    <p><code>dartpollo</code> provides an optional HTTP client and cache. Both packages use the shared types in <code>dartpollo_annotation</code>.</p>
+  </section>
+
+  <section>
+    <h2>Trace one operation</h2>
+    <ol>
+      <li><strong>Map local files.</strong> <code>build.yaml</code> associates an SDL schema with <code>lib/graphql/viewer.graphql</code>.</li>
+      <li><strong>Run the build.</strong> <code>dart run build_runner build</code> invokes Dartpollo Generator and <code>json_serializable</code>.</li>
+      <li><strong>Inspect the output.</strong> <code>lib/__generated__/viewer.graphql.dart</code> contains <code>Viewer$Query</code> and <code>VIEWER_QUERY_DOCUMENT</code>; the paired <code>.g.dart</code> contains serializers.</li>
+      <li><strong>Execute through your client.</strong> Pass the document to <code>package:graphql</code>, or execute the generated <code>ViewerQuery</code> with the optional Dartpollo client.</li>
+    </ol>
+    <span class="filename">lib/graphql/viewer.graphql</span>
+    <pre><code>query Viewer &#123;
+  viewer &#123;
+    login
+  &#125;
+&#125;</code></pre>
+    <span class="filename">lib/main.dart</span>
+    <pre><code>final data = Viewer$Query.fromJson(result.data!);
+print(data.viewer.login);</code></pre>
+    <p>Read response fields through typed Dart properties such as <code>data.viewer.login</code>.</p>
+  </section>
+
+  <section class="mode-summary">
+    <h2>Choose what to generate</h2>
+    <div>
+      <article>
+        <h3>Models only</h3>
+        <code>helpers: false · queries: false</code>
+        <p>Generate response and input types while another tool owns the request document.</p>
+      </article>
+      <article>
+        <h3>Models and documents</h3>
+        <code>helpers: false · queries: true</code>
+        <p>Use the generated AST, operation name, variables, and parser with <code>package:graphql</code> or another compatible client.</p>
+      </article>
+      <article>
+        <h3>Dartpollo helpers</h3>
+        <code>helpers: true</code>
+        <p>Generate a <code>GraphQLQuery</code> wrapper for <code>DartpolloClient</code> and <code>DartpolloCachedClient</code>.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="path-list">
+    <h2>Continue from here</h2>
+    <a href={`${base}/getting-started/`}><strong>Getting started</strong><span>Generate models and run your first example.</span></a>
+    <a href={`${base}/mental-model/`}><strong>Mental model</strong><span>See how schemas and operations become typed Dart code.</span></a>
+    <a href={`${base}/graphql-client/`}><strong>package:graphql</strong><span>Execute generated documents with typed <code>QueryOptions</code>.</span></a>
+    <a href={`${base}/reference/generator-options/`}><strong>Generator reference</strong><span>Look up configuration options and defaults.</span></a>
+  </section>
+</DocsLayout>

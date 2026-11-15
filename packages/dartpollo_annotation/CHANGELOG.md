@@ -1,3 +1,8 @@
+## 0.1.0-alpha.7
+
+- Link the documentation website from package metadata and the README
+- Clarify installation and usage instructions (no package API changes)
+
 ## 0.1.0-alpha.6
 
 - Version bump to keep the monorepo packages aligned (no functional changes)

@@ -1,11 +1,15 @@
 # GitHub Example
 
+[Documentation](https://dwikyhardi.github.io/dartpollo/) · [Getting started](https://dwikyhardi.github.io/dartpollo/getting-started/)
+
 A dartpollo example using the [GitHub GraphQL API](https://docs.github.com/en/graphql).
 
 ## Prerequisites
 
-- Dart SDK `>=3.4.0 <4.0.0`
-- A [GitHub Personal Access Token](https://github.com/settings/tokens) with `repo` scope
+- Dart SDK `^3.10.0` for this example; `^3.12.1` for the root workspace
+- A [GitHub Personal Access Token](https://github.com/settings/tokens) with access to the repositories you query
+
+The example uses local runtime/generator paths and an annotation override for the unreleased checkout. It is separate from the [published consumer fixture](../../../../docs/examples/developer-guide/).
 
 ## Setup
 
@@ -17,13 +21,13 @@ dart pub get
 
 2. **Fetch the GitHub GraphQL schema:**
 
-The schema is not committed to the repository due to its size. Use the included fetch tool with your GitHub token:
+The schema is not committed. Install root workspace dependencies with `dart pub get` using Dart `^3.12.1` before using the repository fetch tool. Export `GITHUB_TOKEN`, then run this command from the example directory:
 
 ```bash
-dart run ../../tool/fetch_schema.dart \
+dart run ../../../../tool/fetch_schema.dart \
   -e https://api.github.com/graphql \
   -o github.schema.graphql \
-  -a "Bearer YOUR_GITHUB_TOKEN"
+  -a "Bearer $GITHUB_TOKEN"
 ```
 
 Alternatively, download it from the [GitHub GraphQL API public schema](https://docs.github.com/en/graphql/overview/public-schema) and save it as `github.schema.graphql` in this directory.
@@ -47,4 +51,4 @@ This searches GitHub repositories for "flutter" and prints the results.
 
 See [`build.yaml`](build.yaml) for the generator configuration, including custom scalar mappings for GitHub-specific types (`GitObjectID`, `URI`, `DateTime`, etc.).
 
-For full configuration options, see the [dartpollo_generator README](../../packages/dartpollo_generator/README.md).
+For full configuration options, see the [dartpollo_generator README](../../../dartpollo_generator/README.md).

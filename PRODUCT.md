@@ -1,0 +1,47 @@
+# Product
+
+<!-- impeccable:product-schema 1 -->
+
+## Platform
+
+web
+
+## Stack
+
+Astro, selected by the user, deployed as a static site on GitHub Pages.
+
+## Users
+
+Dart and Flutter developers evaluating or adopting Dartpollo for typed GraphQL access.
+
+## Product Purpose
+
+Dartpollo combines GraphQL code generation with a Dart client so developers can generate typed query models, execute them, and opt into configurable caching.
+
+## Positioning
+
+The generator is the core product: it turns local GraphQL SDL and operations into typed Dart models and optional operation documents. Applications may use any compatible GraphQL transport. The Dartpollo runtime client and cache layer are optional integrations supplied by the same monorepo.
+
+## Operating Context
+
+Developers add packages through pub, configure `build.yaml`, keep GraphQL schemas and operations in their application, run `build_runner`, and consume generated Dart types from Dart or Flutter code.
+
+## Capabilities and Constraints
+
+- Dart SDK 3.10 or later for published packages.
+- Typed queries, mutations, fragments, inputs, enums, and responses.
+- In-memory and Hive-backed caching with per-request policies and TTL.
+- Dio-based HTTP transport, custom GQL link chains, streaming, cancellation, and typed transport errors.
+- Consumer examples are verified against published `0.1.0-alpha.6`; the checkout targets the `0.1.0-alpha.7` documentation release, which changes metadata and READMEs without changing package APIs. Documentation must not imply API stability. The workspace/CI SDK is `^3.12.1`, distinct from the package SDK floor.
+- The primary content journey is a runnable Dart consumer example followed by practical generated API recipes; Flutter UI recipes are secondary.
+
+## Evidence on Hand
+
+Repository README files, package source, tests, example applications, changelogs, and published package metadata. No testimonials, benchmarks, customer logos, or production-adoption claims are available and none should be invented.
+
+## Product Principles
+
+- Lead with the shortest generator-only path from schema to typed response.
+- Keep generated types and runtime execution understandable as one workflow.
+- Keep the runtime client and caching optional and explicit.
+- Prefer working examples over marketing claims.

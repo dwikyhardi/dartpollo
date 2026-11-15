@@ -18,10 +18,7 @@ Future<void> main() async {
     ),
   );
 
-  final client = DartpolloClient(
-    'https://api.github.com/graphql',
-    client: dio,
-  );
+  final client = DartpolloClient('https://api.github.com/graphql', client: dio);
 
   final query = SearchRepositoriesQuery(
     variables: SearchRepositoriesArguments(query: 'flutter'),

@@ -6,9 +6,7 @@ import '__generated__/big_query.graphql.dart';
 import '__generated__/simple_query.graphql.dart';
 
 Future<void> main() async {
-  final client = DartpolloClient(
-    'https://graphql-pokemon2.vercel.app',
-  );
+  final client = DartpolloClient('https://graphql-pokemon2.vercel.app');
 
   final simpleQuery = SimpleQueryQuery();
   final bigQuery = BigQueryQuery(variables: BigQueryArguments(quantity: 5));

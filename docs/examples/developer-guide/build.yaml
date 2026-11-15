@@ -1,0 +1,37 @@
+targets:
+  $default:
+    sources:
+      - $package$
+      - pubspec.yaml
+      - lib/**
+      - schema.graphql
+    builders:
+      dartpollo_generator|dartpollo:
+        options:
+          generate_helpers: false
+          generate_queries: true
+          optimize_document_nodes: false
+          # Generated response/argument models have mutable fields with Equatable.
+          ignore_for_file:
+            - must_be_immutable
+            # Global scalar imports are emitted into libraries that do not use them.
+            - unused_import
+          scalar_mapping:
+            - graphql_type: AccountId
+              dart_type:
+                name: AccountId
+                imports:
+                  - package:dartpollo_developer_guide/graphql/account_id.dart
+              custom_parser_import: package:dartpollo_developer_guide/graphql/account_id.dart
+          schema_mapping:
+            - schema: schema.graphql
+              queries_glob: lib/graphql/viewer.graphql
+            - schema: schema.graphql
+              queries_glob: lib/graphql/update_viewer.graphql
+              fragments_glob: lib/graphql/fragments/*.graphql
+            - schema: schema.graphql
+              queries_glob: lib/graphql/search.graphql
+            - schema: schema.graphql
+              queries_glob: lib/graphql/accounts.graphql
+            - schema: schema.graphql
+              queries_glob: lib/graphql/users.graphql

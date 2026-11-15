@@ -1,14 +1,15 @@
 targets:
   $default:
     sources:
+      - $package$
+      - pubspec.yaml
       - lib/**
       - graphql/**
       - pokemon.schema.graphql
     builders:
       dartpollo_generator|dartpollo:
         options:
-          optimize_document_nodes: true
-          use_graphql_data_class: true
+          optimize_document_nodes: false
           fragments_glob: graphql/**.fragment.graphql
           schema_mapping:
             - schema: pokemon.schema.graphql

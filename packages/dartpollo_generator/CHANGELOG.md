@@ -1,3 +1,9 @@
+## 0.1.0-alpha.7
+
+- Link the documentation website from package metadata and the README
+- Clarify installation and usage instructions (no package API changes)
+- Bumped `dartpollo_annotation` to `^0.1.0-alpha.7`
+
 ## 0.1.0-alpha.6
 
 - Loosened `gql_code_builder` constraint to `^0.13.4` (was pinned to `0.13.4`) so it can be used alongside other packages depending on `gql_code_builder`

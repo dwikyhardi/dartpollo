@@ -1,0 +1,7 @@
+query Search {
+  search {
+    __typename
+    ... on Repository { name }
+    ... on User { login }
+  }
+}

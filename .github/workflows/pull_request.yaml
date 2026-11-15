@@ -3,6 +3,47 @@ on: pull_request
 name: CI
 
 jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.12.1
+      - run: npm ci
+        working-directory: docs
+      - run: npm run build
+        working-directory: docs
+      - run: npm run check:links
+        working-directory: docs
+      - name: Check documentation validation scripts
+        run: python3 -m unittest discover -s docs/scripts
+      - name: Run published quickstart and compile client alternatives
+        run: python3 docs/scripts/check_quickstart.py
+      - name: Install published recipe dependencies
+        run: dart pub get
+        working-directory: docs/examples/developer-guide
+      - name: Generate recipe models and serializers
+        run: dart run build_runner build
+        working-directory: docs/examples/developer-guide
+      - name: Analyze recipes
+        run: dart analyze --fatal-infos
+        working-directory: docs/examples/developer-guide
+      - name: Check recipe formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+        working-directory: docs/examples/developer-guide
+      - name: Test consumer recipes without credentials or endpoints
+        run: dart test
+        working-directory: docs/examples/developer-guide
+
   lint:
     runs-on: ubuntu-latest
     steps:

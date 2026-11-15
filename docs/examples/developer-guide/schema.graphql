@@ -1,0 +1,34 @@
+scalar AccountId
+
+enum Visibility { PUBLIC PRIVATE }
+
+input ProfileInput {
+  displayName: String!
+  bio: String = "Hello"
+}
+
+input UpdateViewerInput {
+  profile: ProfileInput!
+  visibility: Visibility!
+}
+
+type User {
+  id: ID!
+  login: String!
+  visibility: Visibility!
+  accountId: AccountId!
+  linkedIds: [AccountId]
+}
+
+type Repository { name: String! }
+union SearchResult = User | Repository
+
+type Query {
+  viewer: User!
+  search: [SearchResult]
+  users(limit: Int, size: Int): [User!]!
+}
+
+type Mutation {
+  updateViewer(input: UpdateViewerInput!): User!
+}
