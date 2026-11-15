@@ -10,7 +10,7 @@ name: Auto Tag Release
 #       -> pass -> create tag -> publish-<package> workflow triggered
 #       -> fail -> job fails
 #
-# Explicit workflow dispatch lets GITHUB_TOKEN trigger each publisher after tagging.
+# A release credential is required: GITHUB_TOKEN tag pushes cannot trigger publishing.
 on:
   workflow_run:
     workflows: [CI]
@@ -30,13 +30,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
           # Full history verifies main ancestry and finds existing release tags.
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          token: ${{ secrets.RELEASE_PAT }}
 
       - uses: dart-lang/setup-dart@v1
         with:
@@ -45,8 +45,6 @@ jobs:
       - uses: bluefireteam/melos-action@v3
 
       - name: Detect version changes, dry-run and tag
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
@@ -87,7 +85,6 @@ jobs:
             else
               test "$(git rev-list -n 1 "$tag")" = "$(git rev-parse HEAD)"
             fi
-            gh workflow run "publish-$pkg.yml" --ref "$tag"
             tagged_any=true
 
             # Publish shared annotations before validating dependent packages.
